@@ -5513,7 +5513,7 @@ async function loadProfile() {
   function attemptFetch(timeoutMs) {
     const queryPromise = db
       .from('profiles')
-      .select('id, role, clinic_id, full_name, phone, age, sex, address, city, profile_pending_review, avatar_url, medical_history, friendly_id')
+      .select('id, role, clinic_id, full_name, phone, age, sex, address, city, profile_pending_review, avatar_url, medical_history, friendly_id, license_number, reg_state, signature_url')
       .eq('id', String(currentUser.id))
       .maybeSingle();
     const timeoutPromise = new Promise((_, reject) =>
@@ -11178,39 +11178,71 @@ async function loadDentMySpaceInbox() {
   if (!el) return;
   const activeDb = db || window.__supaDb;
   const activeProfile = currentProfile;
+  const activeUser = currentUser || window.currentUser;
   if (!activeDb || !activeProfile || !activeProfile.clinic_id) {
     if (el) el.innerHTML = '<div style="font-size:13px;color:#64748b;text-align:center;padding:12px">No clinic linked yet.</div>';
     return;
   }
   try {
-    // Step 1: fetch messages (no FK join — patient_id is TEXT)
-    const { data, error } = await activeDb.from('patient_messages')
-      .select('id, message, created_at, patient_id')
-      .eq('clinic_id', String(activeProfile.clinic_id))
-      .order('created_at', { ascending: false })
-      .limit(20);
-    if (error || !data || data.length === 0) {
+    const clinicId  = String(activeProfile.clinic_id);
+    const dentistId = activeUser ? String(activeUser.id) : null;
+    let pmRows = [], peerRows = [];
+
+    // patient_messages: messages sent by patients to the clinic
+    try {
+      const { data } = await activeDb.from('patient_messages')
+        .select('id, message, created_at, patient_id')
+        .eq('clinic_id', clinicId).eq('sender_role', 'patient')
+        .order('created_at', { ascending: false }).limit(50);
+      pmRows = data || [];
+    } catch(_) {}
+
+    // messages: direct patient→dentist peer messages
+    if (dentistId) {
+      try {
+        const { data } = await activeDb.from('messages')
+          .select('sender_id, content, created_at')
+          .eq('recipient_id', dentistId)
+          .order('created_at', { ascending: false }).limit(50);
+        peerRows = data || [];
+      } catch(_) {}
+    }
+
+    // Merge: one thread per patient, latest message wins
+    const threadMap = {};
+    for (const m of pmRows) {
+      const pid = String(m.patient_id);
+      if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at))
+        threadMap[pid] = { pid, content: m.message, created_at: m.created_at };
+    }
+    for (const m of peerRows) {
+      const pid = String(m.sender_id);
+      if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at))
+        threadMap[pid] = { pid, content: m.content, created_at: m.created_at };
+    }
+    const threads = Object.values(threadMap).sort((a,b) => new Date(b.created_at)-new Date(a.created_at));
+
+    if (!threads.length) {
       el.innerHTML = '<div style="font-size:13px;color:#64748b;text-align:center;padding:12px">No patient messages yet.</div>';
       return;
     }
-    // Step 2: fetch names for unique patient IDs
-    const ids = [...new Set(data.map(m => m.patient_id).filter(Boolean))];
     let names = {};
     try {
-      const { data: pdata } = await activeDb.from('profiles').select('id, full_name').in('id', ids);
+      const { data: pdata } = await activeDb.from('profiles').select('id, full_name').in('id', threads.map(t=>t.pid));
       if (pdata) pdata.forEach(p => { names[String(p.id)] = p.full_name || 'Patient'; });
     } catch(_) {}
 
-    el.innerHTML = data.map(m => {
-      const name = names[String(m.patient_id)] || 'Patient';
+    el.innerHTML = threads.map(m => {
+      const name = names[m.pid] || 'Patient';
       let dateStr = '';
       try { dateStr = new Date(m.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short'}); } catch(_) {}
-      return `<div class="dent-message-row" style="cursor:pointer" onclick="openDentInboxReply('${String(m.patient_id || '')}','${name.replace(/'/g,"\\'")}')">
+      const preview = (m.content||'').length>55 ? m.content.slice(0,55)+'…' : (m.content||'');
+      return `<div class="dent-message-row" style="cursor:pointer" onclick="openDentInboxReply('${m.pid}','${name.replace(/'/g,"\\'")}')">
         <div style="display:flex;justify-content:space-between;margin-bottom:4px">
           <span style="font-weight:700;font-size:13px;color:#e2e8f0">${name}</span>
           <span style="font-size:11px;color:#64748b">${dateStr}</span>
         </div>
-        <div style="font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.message}</div>
+        <div style="font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${preview}</div>
       </div>`;
     }).join('');
   } catch(e) {
@@ -12264,13 +12296,20 @@ function openCasesheet(patientId) {
   document.getElementById('cs-screen').classList.add('open');
   switchCsTab('complaint', document.querySelector('.cs-tab-pill'));
   renderToothChart(); closeDocket();
-  // Reset xray section for fresh record
+  // Reset for fresh record
   _csDocketXrays = [];
   _csToothDetails = {};
   _advisedTeeth   = new Set();
   _performedTeeth = new Set();
   _activeRegions  = new Set();
   document.querySelectorAll('.cs-region-btn').forEach(b=>b.classList.remove('active'));
+  // Reset procedure rows back to single row
+  const advList  = document.getElementById('cs-advised-procedures-list');
+  const perfList = document.getElementById('cs-performed-procedures-list');
+  if (advList)  { Array.from(advList.querySelectorAll('.cs-advised-proc-row')).slice(1).forEach(r=>r.remove()); const s=advList.querySelector('.cs-procedure-advised-sel'); if(s) s.value=''; }
+  if (perfList) { Array.from(perfList.querySelectorAll('.cs-performed-proc-row')).slice(1).forEach(r=>r.remove()); const s=perfList.querySelector('.cs-procedure-performed-sel'); if(s) s.value=''; }
+  // Hide tooth charts until a procedure is selected
+  document.querySelectorAll('.cs-row-tooth-section').forEach(s=>s.style.display='none');
   renderPerToothDetails();
   initMiniToothGrids();
   const csXrayGallery = document.getElementById('cs-xray-gallery');
@@ -12395,16 +12434,16 @@ function renderPerToothDetails() {
   }).join('');
 }
 const COMPLAINT_TEMPLATES = {
-  toothache:'Patient presents with toothache, localised pain rated /10. Pain on biting. Duration: ',
+  toothache:'Patient presents with toothache, localised pain rated /10. Pain on biting.',
   sensitivity:'Patient presents with sensitivity to hot and cold stimuli. Lingering pain after stimulus removal. No spontaneous pain.',
-  swelling:'Patient presents with intraoral swelling, tender on palpation. Associated with pain and difficulty opening. Duration: ',
+  swelling:'Patient presents with intraoral swelling, tender on palpation. Associated with pain and difficulty opening.',
   bleeding:'Patient presents with bleeding gums on brushing. No spontaneous bleeding. Mild halitosis noted.',
   loose:'Patient presents with a loose tooth (#___). Difficulty chewing.',
   fracture:'Patient presents with a fractured tooth following biting hard object. Sharp fragment present. Sensitivity to air.',
-  routine:'Patient presents for routine dental check-up and scaling. No specific complaints. Last dental visit: ',
+  routine:'Patient presents for routine dental check-up and scaling. No specific complaints.',
   whitening:'Patient presents for teeth whitening consultation. Seeking aesthetic improvement.',
   ortho:'Patient presents for orthodontic consultation. Concerns: crowding. Previous orthodontic treatment: none.',
-  pain_jaw:'Patient presents with jaw pain / TMJ symptoms. Pain on opening/closing. Clicking noted. Duration: '
+  pain_jaw:'Patient presents with jaw pain / TMJ symptoms. Pain on opening/closing. Clicking noted.'
 };
 function applyComplaintTemplate(val) {
   if (!val || !COMPLAINT_TEMPLATES[val]) return;
@@ -14050,13 +14089,46 @@ function getCaAttKey(dentistId) {
   return 'ca_att_' + getCaClinicId() + '_' + dentistId + '_' + today;
 }
 
-function setCaAttendance(dentistId, status) {
+async function setCaAttendance(dentistId, status) {
+  // Save to localStorage immediately
   try { localStorage.setItem(getCaAttKey(dentistId), status); } catch(_) {}
   const labels = {present:'✓ Marked Present', absent:'✗ Marked Absent', leave:'🏖 Leave Noted'};
   showToast(labels[status] || 'Saved');
   openCaDentDetail(dentistId);
   renderCaDentistList();
   renderCaAttendanceSummary();
+  // Persist to Supabase dentist_checkins table
+  const activeDb = db || window.__supaDb;
+  if (activeDb && _caData.clinicId) {
+    const today = new Date().toISOString().slice(0,10);
+    try {
+      // Upsert: update if exists for today, insert if not
+      const { data: existing } = await activeDb.from('dentist_checkins')
+        .select('id').eq('dentist_id', dentistId).eq('clinic_id', _caData.clinicId).eq('date', today).maybeSingle();
+      if (existing) {
+        await activeDb.from('dentist_checkins').update({ status }).eq('id', existing.id);
+      } else {
+        await activeDb.from('dentist_checkins').insert({ dentist_id: dentistId, clinic_id: _caData.clinicId, date: today, status });
+      }
+    } catch(e) { console.warn('[SerenOra] Attendance DB save failed:', e&&e.message?e.message:e); }
+  }
+}
+
+async function loadCaAttendanceFromDB() {
+  const activeDb = db || window.__supaDb;
+  if (!activeDb || !_caData.clinicId) return;
+  const today = new Date().toISOString().slice(0,10);
+  try {
+    const { data } = await activeDb.from('dentist_checkins')
+      .select('dentist_id, status').eq('clinic_id', _caData.clinicId).eq('date', today);
+    if (data) {
+      data.forEach(row => {
+        try { localStorage.setItem(getCaAttKey(row.dentist_id), row.status); } catch(_) {}
+      });
+      renderCaDentistList();
+      renderCaAttendanceSummary();
+    }
+  } catch(e) { console.warn('[SerenOra] Attendance DB load failed:', e&&e.message?e.message:e); }
 }
 
 function getCaAttStatus(dentistId) {
@@ -14386,14 +14458,31 @@ async function caApprovePatient(patientId) {
 // BILLS SYSTEM — clinic creates, patient views, dentist sees unpaid indicator
 // ══════════════════════════════════════════════════════════════════════════════
 
-// _caBills is a local cache; the actual source of truth is localStorage keyed by clinicId
-// (in production this would be a `bills` DB table)
+// _caBills is a local cache; source of truth is both localStorage + Supabase `bills` table
 let _caBills = [];
 
 function getCaBillsKey() { return 'serenora_bills_' + (_caData.clinicId || 'default'); }
 
 function loadCaBills() {
   try { _caBills = JSON.parse(localStorage.getItem(getCaBillsKey())) || []; } catch(_) { _caBills = []; }
+  // Also fetch from Supabase in background
+  _loadCaBillsFromDB();
+}
+
+async function _loadCaBillsFromDB() {
+  const activeDb = db || window.__supaDb;
+  if (!activeDb || !_caData.clinicId) return;
+  try {
+    const { data } = await activeDb.from('bills')
+      .select('*').eq('clinic_id', _caData.clinicId)
+      .order('created_at', { ascending: false }).limit(200);
+    if (data && data.length > 0) {
+      _caBills = data;
+      try { localStorage.setItem(getCaBillsKey(), JSON.stringify(_caBills)); } catch(_) {}
+      renderCaBills();
+      renderCaBillStats();
+    }
+  } catch(_) {} // bills table may not exist yet — localStorage is fallback
 }
 
 function saveCaBills() {
@@ -14430,7 +14519,7 @@ function toggleCaNewBill() {
   }
 }
 
-function createCaBill() {
+async function createCaBill() {
   const patId  = (document.getElementById('ca-bill-patient-select')||{}).value||'';
   const recId  = (document.getElementById('ca-bill-record-select')||{}).value||'';
   const amt    = parseFloat((document.getElementById('ca-bill-amount')||{}).value||0);
@@ -14446,20 +14535,20 @@ function createCaBill() {
   const PROC = {filling:'Filling',rct:'RCT',rootcanal:'RCT',extraction:'Extraction',scaling:'Scaling',crown:'Crown',implant:'Implant',other:'Treatment'};
 
   const bill = {
-    id:          'bill_' + Date.now(),
-    patient_id:  patId,
+    id:           'bill_' + Date.now(),
+    patient_id:   patId,
     patient_name: pat ? (pat.full_name||'Patient') : 'Patient',
-    record_id:   recId || null,
-    procedure:   rec ? (PROC[rec.procedure_type]||rec.procedure_type||'Treatment') : (desc||'Treatment'),
-    description: desc,
-    amount:      amt,
-    due_date:    due || null,
-    status:      'pending',  // pending | paid | waived
-    created_at:  new Date().toISOString(),
-    clinic_id:   _caData.clinicId,
-    clinic_name: _caData.clinicName,
-    join_code:   _caData.joinCode,
-    paid_at:     null
+    record_id:    recId || null,
+    procedure:    rec ? (PROC[rec.procedure_type]||rec.procedure_type||'Treatment') : (desc||'Treatment'),
+    description:  desc,
+    amount:       amt,
+    due_date:     due || null,
+    status:       'pending',
+    created_at:   new Date().toISOString(),
+    clinic_id:    _caData.clinicId,
+    clinic_name:  _caData.clinicName,
+    join_code:    _caData.joinCode,
+    paid_at:      null
   };
 
   loadCaBills();
@@ -14469,21 +14558,40 @@ function createCaBill() {
   toggleCaNewBill();
   renderCaBills();
   renderCaBillStats();
+
+  // Save to Supabase bills table
+  const activeDb = db || window.__supaDb;
+  if (activeDb && _caData.clinicId) {
+    try {
+      await activeDb.from('bills').insert({
+        patient_id: patId, clinic_id: _caData.clinicId,
+        record_id: recId||null, procedure: bill.procedure, description: desc||null,
+        amount: amt, due_date: due||null, status: 'pending',
+        patient_name: bill.patient_name, created_at: bill.created_at
+      });
+    } catch(e) { console.warn('[SerenOra] Bill DB save failed:', e&&e.message?e.message:e); }
+  }
 }
 
-function markCaBillPaid(billId) {
+async function markCaBillPaid(billId) {
   loadCaBills();
   const bill = _caBills.find(b=>b.id===billId);
   if (!bill) return;
+  const paidAt = new Date().toISOString();
   bill.status  = 'paid';
-  bill.paid_at = new Date().toISOString();
+  bill.paid_at = paidAt;
   saveCaBills();
   showToast('Bill marked as paid ✅');
   renderCaBills();
   renderCaBillStats();
+  // Update in Supabase
+  const activeDb = db || window.__supaDb;
+  if (activeDb) {
+    try { await activeDb.from('bills').update({ status:'paid', paid_at: paidAt }).eq('id', billId); } catch(_) {}
+  }
 }
 
-function markCaBillWaived(billId) {
+async function markCaBillWaived(billId) {
   loadCaBills();
   const bill = _caBills.find(b=>b.id===billId);
   if (!bill) return;
@@ -14492,6 +14600,11 @@ function markCaBillWaived(billId) {
   showToast('Bill waived 🎁');
   renderCaBills();
   renderCaBillStats();
+  // Update in Supabase
+  const activeDb = db || window.__supaDb;
+  if (activeDb) {
+    try { await activeDb.from('bills').update({ status:'waived' }).eq('id', billId); } catch(_) {}
+  }
 }
 
 function renderCaBillStats() {
@@ -14775,37 +14888,41 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 }
 
 function openPrintWindow(html, filename) {
-  // Use Blob URL instead of document.write() — document.write fires unload events
-  // on the parent window in some browsers, corrupting Supabase auth state and app data
+  // Open a named blank window first, then set its content via srcdoc on an iframe
+  // This NEVER calls document.write on the new window, which can fire unload events
   try {
-    const blob = new Blob([html], { type: 'text/html' });
-    const url  = URL.createObjectURL(blob);
-    const win  = window.open(url, '_blank');
+    const win = window.open('', '_blank', 'noopener=yes');
     if (!win) {
-      // Pop-up blocked — offer download as fallback
-      const a = document.createElement('a');
-      a.href     = url;
-      a.download = (filename || 'serenora_document') + '.html';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
-      showToast('Saved as file — open to print');
+      // Popup blocked — download as HTML file instead
+      const blob = new Blob([html], { type: 'text/html' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = (filename || 'serenora_doc') + '.html'; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+      showToast('Popup blocked — saved as file instead');
       return;
     }
-    // Revoke after the window has loaded
-    win.addEventListener('load', () => {
-      setTimeout(() => {
-        win.print();
-        URL.revokeObjectURL(url);
-      }, 400);
-    });
-  } catch(e) {
-    // Fallback for browsers that don't support Blob URLs
-    const win = window.open('', '_blank');
-    if (!win) { showToast('Please allow pop-ups to download PDFs'); return; }
+    // Write a minimal shell that loads the content in an iframe with srcdoc
+    // The iframe is sandboxed so it can't affect the parent at all
+    const encoded = html.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
     win.document.open();
-    win.document.write(html);
+    win.document.write(`<!DOCTYPE html><html><head><style>
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{background:#fff}
+      iframe{width:100%;height:100vh;border:none;display:block}
+      @media print{iframe{height:auto}}
+    </style></head><body>
+    <iframe id="f" sandbox="allow-modals allow-same-origin allow-scripts"></iframe>
+    <script>
+      var f=document.getElementById('f');
+      f.srcdoc=\`${encoded}\`;
+      f.onload=function(){
+        try{f.contentWindow.print();}catch(e){window.print();}
+      };
+    </script></body></html>`);
     win.document.close();
-    win.onload = function() { setTimeout(() => win.print(), 500); };
+  } catch(e) {
+    showToast('Could not open print window — please allow popups');
   }
 }
 
@@ -14942,6 +15059,8 @@ _caLoadAll = async function() {
   renderCaPatientApprovals();
   loadCaBills();
   renderCaBillStats();
+  // Load today's attendance from Supabase
+  loadCaAttendanceFromDB();
   // Populate bill patient dropdown in case tab is already open
   const patSel = document.getElementById('ca-bill-patient-select');
   if (patSel && _caData.patients) {
