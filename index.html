@@ -14103,12 +14103,12 @@ async function setCaAttendance(dentistId, status) {
     const today = new Date().toISOString().slice(0,10);
     try {
       // Upsert: update if exists for today, insert if not
-      const { data: existing } = await activeDb.from('dentist_checkins')
+      const { data: existing } = await activeDb.from('attendance_logs')
         .select('id').eq('dentist_id', dentistId).eq('clinic_id', _caData.clinicId).eq('date', today).maybeSingle();
       if (existing) {
-        await activeDb.from('dentist_checkins').update({ status }).eq('id', existing.id);
+        await activeDb.from('attendance_logs').update({ status }).eq('id', existing.id);
       } else {
-        await activeDb.from('dentist_checkins').insert({ dentist_id: dentistId, clinic_id: _caData.clinicId, date: today, status });
+        await activeDb.from('attendance_logs').insert({ dentist_id: dentistId, clinic_id: _caData.clinicId, date: today, status });
       }
     } catch(e) { console.warn('[SerenOra] Attendance DB save failed:', e&&e.message?e.message:e); }
   }
@@ -14119,7 +14119,7 @@ async function loadCaAttendanceFromDB() {
   if (!activeDb || !_caData.clinicId) return;
   const today = new Date().toISOString().slice(0,10);
   try {
-    const { data } = await activeDb.from('dentist_checkins')
+    const { data } = await activeDb.from('attendance_logs')
       .select('dentist_id, status').eq('clinic_id', _caData.clinicId).eq('date', today);
     if (data) {
       data.forEach(row => {
