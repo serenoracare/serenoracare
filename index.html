@@ -1593,41 +1593,39 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
       <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:6px">
         <!-- Animated tooth+leaf logo — UNTOUCHED -->
-        <svg width="120" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" style="animation:toothPulse 4s ease-in-out infinite;overflow:visible">
+        <svg width="120" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;filter:drop-shadow(0 0 18px rgba(99,246,228,0.35))">
           <defs>
             <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#A7F3D0"/>
               <stop offset="100%" stop-color="#10B981"/>
             </linearGradient>
+            <linearGradient id="leafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6EE7B7"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
             <clipPath id="toothClip">
               <path d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
             </clipPath>
           </defs>
-          <!-- Tooth outline -->
-          <path fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="3"
-            style="animation:toothPulse 4s ease-in-out infinite"
+          <!-- Tooth outline — static glow, no breathing -->
+          <path fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="3.5"
             d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
-          <!-- Floating dots inside tooth -->
-          <g clip-path="url(#toothClip)">
-            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8s linear infinite" cx="85" cy="185" r="2"/>
-            <circle fill="#93C5FD" style="filter:drop-shadow(0 0 6px rgba(147,197,253,0.9));opacity:0;animation:floatUp 9s linear infinite 1s" cx="115" cy="185" r="2.3"/>
-            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 7.5s linear infinite 2s" cx="100" cy="190" r="2.1"/>
-            <circle fill="#93C5FD" style="filter:drop-shadow(0 0 6px rgba(147,197,253,0.9));opacity:0;animation:floatUp 8.5s linear infinite 0.5s" cx="75" cy="165" r="1.8"/>
-            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 9.5s linear infinite 1.5s" cx="125" cy="165" r="2.2"/>
-            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8s linear infinite 2.5s" cx="100" cy="170" r="1.9"/>
-            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 7.8s linear infinite 1.2s" cx="90" cy="145" r="1.7"/>
-            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8.8s linear infinite 2.2s" cx="110" cy="145" r="1.8"/>
-          </g>
-          <!-- Large leaf -->
-          <g style="transform-origin:110px 100px;animation:breatheLeaf 4s ease-in-out infinite,leafGlow 4s ease-in-out infinite">
+          <!-- Inner fill for depth -->
+          <path fill="rgba(255,255,255,0.04)"
+            d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+          <!-- Large leaf — static -->
+          <g style="transform-origin:110px 100px">
             <path fill="url(#leafGrad)" d="M110 130 C135 115, 140 90, 110 70 C85 90, 90 115, 110 130 Z"/>
-            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
+            <path stroke="rgba(255,255,255,0.75)" stroke-width="1.3" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
           </g>
-          <!-- Small leaf -->
-          <g style="transform-origin:85px 117px;animation:breatheLeaf2 4s ease-in-out infinite,leafGlow 4s ease-in-out infinite">
-            <path fill="url(#leafGrad)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
-            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
+          <!-- Small leaf — static -->
+          <g style="transform-origin:85px 117px">
+            <path fill="url(#leafGrad2)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
+            <path stroke="rgba(255,255,255,0.75)" stroke-width="1.3" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
           </g>
+          <!-- Cross detail on tooth crown — SerenOra brand mark -->
+          <line x1="100" y1="48" x2="100" y2="72" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="88" y1="60" x2="112" y2="60" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         <div class="logo-serenora-text" style="font-family:var(--display);font-size:24px;font-weight:700;color:#fff;margin-top:4px">
           <span class="s1">Seren</span><span class="s2" style="color:#99f6e4">Ora</span> <span class="s3" style="color:#bfdbfe">Care</span>
@@ -7241,11 +7239,18 @@ function initMiniToothGrids() {
   renderMiniToothGrid('cs-performed-tooth-grid',  _performedTeeth, 'performed');
 }
 
+function renderMiniToothGrids() { initMiniToothGrids(); }
+function clearMiniGrids() { _performedTeeth.clear(); _advisedTeeth.clear(); initMiniToothGrids(); }
+
 function renderMiniToothGrid(containerId, selectedSet, mode) {
   const el = document.getElementById(containerId); if (!el) return;
+  // Use the treatment tab's tooth system selector if present, else fall back to complaint tab's
+  const systemSel = document.getElementById('cs-treatment-tooth-system') || document.getElementById('cs-tooth-system');
+  const system = systemSel ? systemSel.value : 'fdi';
   el.innerHTML = FDI_ALL.map(t => {
+    const label = getToothLabel(t, system);
     const isSel = selectedSet.has(t);
-    return `<button onclick="toggleMiniTooth(${t},'${mode}')" style="width:34px;height:28px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid ${isSel?'#0d9488':'rgba(255,255,255,.15)'};background:${isSel?'rgba(13,148,136,.35)':'rgba(255,255,255,.05)'};color:${isSel?'#99f6e4':'rgba(255,255,255,.55)'};cursor:pointer;font-family:var(--font);transition:all .15s">${t}</button>`;
+    return `<button onclick="toggleMiniTooth(${t},'${mode}')" title="Tooth ${t} (FDI)" style="width:34px;height:28px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid ${isSel?'#0d9488':'rgba(255,255,255,.15)'};background:${isSel?'rgba(13,148,136,.35)':'rgba(255,255,255,.05)'};color:${isSel?'#99f6e4':'rgba(255,255,255,.55)'};cursor:pointer;font-family:var(--font);transition:all .15s">${label}</button>`;
   }).join('');
 }
 
@@ -8099,51 +8104,67 @@ async function loadDentistInbox() {
   if (!listEl || !currentUser || !db) return;
 
   const dentistId = String(currentUser.id);
+  const clinicId  = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
   listEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0">⏳ Loading…</div>';
 
   try {
-    // Get distinct patients who have messaged this dentist
-    const { data, error } = await db
+    // patient_messages table: messages sent by patients to this clinic
+    let pmRows = [];
+    if (clinicId) {
+      const { data: pmData } = await db
+        .from('patient_messages')
+        .select('id, message, created_at, patient_id, sender_role')
+        .eq('clinic_id', clinicId)
+        .eq('sender_role', 'patient')
+        .order('created_at', { ascending: false });
+      pmRows = pmData || [];
+    }
+
+    // Also check the peer messages table (patient→dentist direct messages)
+    const { data: peerData, error } = await db
       .from('messages')
       .select('sender_id, content, created_at')
       .eq('recipient_id', dentistId)
       .order('created_at', { ascending: false });
-
     if (error) throw error;
+    const peerRows = peerData || [];
 
-    if (!data || data.length === 0) {
+    if (pmRows.length === 0 && peerRows.length === 0) {
       listEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:12px 0;text-align:center">No patient messages yet. When patients message you, they\'ll appear here.</div>';
       return;
     }
 
-    // Group by sender — show latest per patient
-    const seen = new Set();
-    const threads = [];
-    for (const m of data) {
-      if (!seen.has(m.sender_id)) {
-        seen.add(m.sender_id);
-        threads.push(m);
+    // Build thread list — one entry per patient (latest message wins)
+    const threadMap = {};
+    for (const m of pmRows) {
+      const pid = String(m.patient_id);
+      if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) {
+        threadMap[pid] = { pid, content: m.message, created_at: m.created_at };
       }
     }
+    for (const m of peerRows) {
+      const pid = String(m.sender_id);
+      if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) {
+        threadMap[pid] = { pid, content: m.content, created_at: m.created_at };
+      }
+    }
+    const threads = Object.values(threadMap).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
     // Fetch patient names
-    const patientIds = threads.map(t => t.sender_id);
+    const patientIds = threads.map(t => t.pid);
     let profiles = {};
     try {
-      const { data: pdata } = await db
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', patientIds);
-      if (pdata) pdata.forEach(p => { profiles[p.id] = p.full_name || 'Patient'; });
+      const { data: pdata } = await db.from('profiles').select('id, full_name').in('id', patientIds);
+      if (pdata) pdata.forEach(p => { profiles[String(p.id)] = p.full_name || 'Patient'; });
     } catch(_) {}
 
     listEl.innerHTML = threads.map(t => {
-      const patientName = profiles[t.sender_id] || 'Patient';
+      const patientName = profiles[t.pid] || 'Patient';
       const initials    = patientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
       let timeStr = '';
       try { timeStr = new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch(_) {}
-      const preview = t.content.length > 50 ? t.content.slice(0, 50) + '…' : t.content;
-      return `<div class="patient-row" onclick="openDentistReply('${t.sender_id}','${patientName.replace(/'/g,"\\'")}')">
+      const preview = t.content && t.content.length > 50 ? t.content.slice(0, 50) + '…' : (t.content || '');
+      return `<div class="patient-row" onclick="openDentistReply('${t.pid}','${patientName.replace(/'/g,"\\'")}')">
         <div class="patient-avatar">${initials}</div>
         <div style="flex:1;min-width:0">
           <div class="patient-name">${patientName}</div>
@@ -9834,6 +9855,48 @@ function makeDraggable(el, onTap) {
           <button onclick="openProfileEdit()" style="width:100%;margin-top:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#e2e8f0;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">✏️ Edit Profile</button>
         </div>
 
+        <!-- Digital Signature -->
+        <div class="dent-card" id="dent-sig-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-weight:700;font-size:15px;color:#e2e8f0">🖊️ Digital Signature</div>
+            <span style="font-size:10px;color:#64748b">Used on all PDF documents</span>
+          </div>
+          <!-- Current signature preview -->
+          <div id="dent-sig-preview" style="display:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;margin-bottom:12px;text-align:center">
+            <img id="dent-sig-img" src="" alt="Signature" style="max-width:240px;max-height:80px;object-fit:contain;filter:invert(1) brightness(2)">
+            <div style="font-size:11px;color:#64748b;margin-top:6px">Current signature</div>
+          </div>
+          <div id="dent-sig-none" style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);border-radius:12px;padding:16px;text-align:center;margin-bottom:12px">
+            <div style="font-size:28px;margin-bottom:6px">✍️</div>
+            <div style="font-size:12px;color:#64748b">No signature yet. Upload an image or draw below.</div>
+          </div>
+          <!-- Tab toggle: upload vs draw -->
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button id="sig-tab-upload" onclick="switchSigTab('upload')" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid rgba(13,148,136,.5);background:rgba(13,148,136,.2);color:#99f6e4;font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer">📁 Upload Image</button>
+            <button id="sig-tab-draw" onclick="switchSigTab('draw')" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:#94a3b8;font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer">✏️ Draw</button>
+          </div>
+          <!-- Upload panel -->
+          <div id="sig-panel-upload">
+            <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px dashed rgba(255,255,255,.15);border-radius:12px;cursor:pointer;background:rgba(255,255,255,.03)" onmouseover="this.style.borderColor='#0d9488'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)'">
+              <span style="font-size:22px">🖼️</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:#99f6e4">Tap to upload signature image</div>
+                <div style="font-size:11px;color:#64748b">PNG with transparent bg recommended · max 2MB</div>
+              </div>
+              <input id="dent-sig-upload-input" type="file" accept="image/*" style="display:none" onchange="handleSigUpload(this)">
+            </label>
+          </div>
+          <!-- Draw panel -->
+          <div id="sig-panel-draw" style="display:none">
+            <canvas id="dent-sig-canvas" width="320" height="100" style="width:100%;border:1.5px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.06);touch-action:none;cursor:crosshair"></canvas>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button onclick="clearSigCanvas()" style="flex:1;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Clear</button>
+              <button onclick="saveSigFromCanvas()" style="flex:2;background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:8px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Save Drawn Signature →</button>
+            </div>
+          </div>
+          <div id="dent-sig-status" style="font-size:12px;color:#22c55e;margin-top:8px;display:none"></div>
+        </div>
+
         <!-- Stress trend -->
         <div class="dent-card">
           <div style="font-weight:700;font-size:15px;color:#e2e8f0;margin-bottom:12px">Wellbeing Trend</div>
@@ -10200,6 +10263,7 @@ function loadDentistAppDashboard() {
   loadDentInboxBadge();
   loadDentPatientList();
   renderDentReminders();
+  loadStressHistory();
 }
 
 // Override routeAfterAuth to send dentist to new app
@@ -10232,18 +10296,65 @@ function updateStressSlider(type, val) {
   document.getElementById('sl-' + type + '-val').textContent = val;
 }
 
-function saveStressCheckin() {
+async function saveStressCheckin() {
   const energy = parseInt(document.getElementById('sl-energy').value);
   const mood   = parseInt(document.getElementById('sl-mood').value);
   const strain = parseInt(document.getElementById('sl-strain').value);
   const activeUser = currentUser || window.currentUser;
+  const activeDb   = db || window.__supaDb;
+  const now = new Date().toISOString();
   const key = activeUser ? 'dent_stress_' + activeUser.id : 'dent_stress_guest';
+
+  // Save to localStorage immediately (instant feedback)
   let history = [];
   try { history = JSON.parse(localStorage.getItem(key)) || []; } catch(_) {}
-  history.unshift({ date: new Date().toISOString(), energy, mood, strain });
+  history.unshift({ date: now, energy, mood, strain });
   if (history.length > 30) history = history.slice(0, 30);
   try { localStorage.setItem(key, JSON.stringify(history)); } catch(_) {}
+
   showToast('Check-in saved 🌿');
+  renderDentStressTrend(history);
+
+  // Also persist to Supabase wellbeing_checkins table
+  if (activeDb && activeUser) {
+    try {
+      await activeDb.from('wellbeing_checkins').insert({
+        user_id:    String(activeUser.id),
+        energy,
+        mood,
+        strain,
+        checked_in_at: now
+      });
+    } catch(e) {
+      // Table may not exist yet — silently ignore (localStorage is the fallback)
+      console.warn('[SerenOra] wellbeing_checkins insert failed:', e && e.message ? e.message : e);
+    }
+  }
+}
+
+async function loadStressHistory() {
+  const activeUser = currentUser || window.currentUser;
+  const activeDb   = db || window.__supaDb;
+  const key = activeUser ? 'dent_stress_' + activeUser.id : 'dent_stress_guest';
+  let history = [];
+  // Try Supabase first
+  if (activeDb && activeUser) {
+    try {
+      const { data } = await activeDb.from('wellbeing_checkins')
+        .select('energy, mood, strain, checked_in_at')
+        .eq('user_id', String(activeUser.id))
+        .order('checked_in_at', { ascending: false })
+        .limit(30);
+      if (data && data.length > 0) {
+        history = data.map(r => ({ date: r.checked_in_at, energy: r.energy, mood: r.mood, strain: r.strain }));
+        try { localStorage.setItem(key, JSON.stringify(history)); } catch(_) {}
+        renderDentStressTrend(history);
+        return;
+      }
+    } catch(_) {}
+  }
+  // Fall back to localStorage
+  try { history = JSON.parse(localStorage.getItem(key)) || []; } catch(_) {}
   renderDentStressTrend(history);
 }
 
@@ -10915,6 +11026,131 @@ function loadDentMySpace() {
 
   // Journal
   renderDentJournal();
+
+  // Signature
+  loadDentSignature();
+}
+
+// ── DIGITAL SIGNATURE ────────────────────────────────────────────────────────
+let _sigDrawing = false;
+let _sigCtx     = null;
+
+function switchSigTab(tab) {
+  const uploadBtn   = document.getElementById('sig-tab-upload');
+  const drawBtn     = document.getElementById('sig-tab-draw');
+  const uploadPanel = document.getElementById('sig-panel-upload');
+  const drawPanel   = document.getElementById('sig-panel-draw');
+  const active = 'border:1.5px solid rgba(13,148,136,.5);background:rgba(13,148,136,.2);color:#99f6e4;';
+  const inactive = 'border:1.5px solid rgba(255,255,255,.15);background:transparent;color:#94a3b8;';
+  if (tab === 'upload') {
+    if (uploadBtn) uploadBtn.style.cssText += active;
+    if (drawBtn)   drawBtn.style.cssText   += inactive;
+    if (uploadPanel) uploadPanel.style.display = 'block';
+    if (drawPanel)   drawPanel.style.display   = 'none';
+  } else {
+    if (uploadBtn) uploadBtn.style.cssText += inactive;
+    if (drawBtn)   drawBtn.style.cssText   += active;
+    if (uploadPanel) uploadPanel.style.display = 'none';
+    if (drawPanel)   drawPanel.style.display   = 'block';
+    initSigCanvas();
+  }
+}
+
+function initSigCanvas() {
+  const canvas = document.getElementById('dent-sig-canvas');
+  if (!canvas || _sigCtx) return;
+  _sigCtx = canvas.getContext('2d');
+  _sigCtx.strokeStyle = '#ffffff';
+  _sigCtx.lineWidth = 2.5;
+  _sigCtx.lineCap = 'round';
+  _sigCtx.lineJoin = 'round';
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - r.left) * (canvas.width / r.width), y: (src.clientY - r.top) * (canvas.height / r.height) };
+  }
+  canvas.addEventListener('mousedown',  e => { _sigDrawing = true; const p=getPos(e); _sigCtx.beginPath(); _sigCtx.moveTo(p.x,p.y); });
+  canvas.addEventListener('mousemove',  e => { if (!_sigDrawing) return; const p=getPos(e); _sigCtx.lineTo(p.x,p.y); _sigCtx.stroke(); });
+  canvas.addEventListener('mouseup',    () => _sigDrawing = false);
+  canvas.addEventListener('mouseleave', () => _sigDrawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); _sigDrawing = true; const p=getPos(e); _sigCtx.beginPath(); _sigCtx.moveTo(p.x,p.y); }, {passive:false});
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if(!_sigDrawing) return; const p=getPos(e); _sigCtx.lineTo(p.x,p.y); _sigCtx.stroke(); }, {passive:false});
+  canvas.addEventListener('touchend',   () => _sigDrawing = false);
+}
+
+function clearSigCanvas() {
+  const canvas = document.getElementById('dent-sig-canvas');
+  if (canvas && _sigCtx) _sigCtx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+async function saveSigFromCanvas() {
+  const canvas = document.getElementById('dent-sig-canvas');
+  if (!canvas) return;
+  const dataUrl = canvas.toDataURL('image/png');
+  await _saveDentSignature(dataUrl);
+}
+
+async function handleSigUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 2 * 1024 * 1024) { showToast('File too large (max 2MB)'); return; }
+  const reader = new FileReader();
+  reader.onload = async e => await _saveDentSignature(e.target.result);
+  reader.readAsDataURL(file);
+}
+
+async function _saveDentSignature(dataUrl) {
+  const statusEl = document.getElementById('dent-sig-status');
+  if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.style.display = 'block'; }
+  const activeUser = currentUser || window.currentUser;
+  const activeDb   = db || window.__supaDb;
+
+  // Save locally
+  if (activeUser) {
+    try { localStorage.setItem('serenora_sig_' + activeUser.id, dataUrl); } catch(_) {}
+  }
+  // Update preview
+  _updateSigPreview(dataUrl);
+
+  // Save to Supabase profiles.signature_url
+  if (activeDb && activeUser) {
+    try {
+      await activeDb.from('profiles').update({ signature_url: dataUrl }).eq('id', String(activeUser.id));
+      if (currentProfile) currentProfile.signature_url = dataUrl;
+      if (statusEl) { statusEl.textContent = '✅ Signature saved'; }
+    } catch(e) {
+      if (statusEl) { statusEl.textContent = '⚠️ Saved locally (DB update failed — see SQL note)'; statusEl.style.color = '#f59e0b'; }
+    }
+  } else {
+    if (statusEl) { statusEl.textContent = '✅ Saved locally'; }
+  }
+  setTimeout(() => { if (statusEl) statusEl.style.display = 'none'; }, 3000);
+}
+
+function _updateSigPreview(dataUrl) {
+  const preview = document.getElementById('dent-sig-preview');
+  const img     = document.getElementById('dent-sig-img');
+  const none    = document.getElementById('dent-sig-none');
+  if (img) img.src = dataUrl;
+  if (preview) preview.style.display = 'block';
+  if (none) none.style.display = 'none';
+}
+
+function loadDentSignature() {
+  const activeUser = currentUser || window.currentUser;
+  const activeProf = currentProfile;
+  // Check profile first, then localStorage
+  const sigUrl = (activeProf && activeProf.signature_url) ||
+    (activeUser ? localStorage.getItem('serenora_sig_' + activeUser.id) : null);
+  if (sigUrl) _updateSigPreview(sigUrl);
+}
+
+function getDentSignatureUrl() {
+  const activeUser = currentUser || window.currentUser;
+  const activeProf = currentProfile;
+  return (activeProf && activeProf.signature_url) ||
+    (activeUser ? localStorage.getItem('serenora_sig_' + activeUser.id) : null);
 }
 
 async function loadDentMySpaceInbox() {
@@ -11349,7 +11585,15 @@ function continueAsGuest() {
             <option value="pain_jaw">Jaw pain / TMJ</option>
           </select>
         </div>
-        <div class="cs-field"><div class="cs-label">Chief Complaint Statement</div><textarea class="cs-textarea" id="cs-complaint-text" rows="3" placeholder="Patient presents with…"></textarea></div>
+        <div class="cs-field">
+          <div class="cs-label">Chief Complaint Statement</div>
+          <textarea class="cs-textarea" id="cs-complaint-text" rows="3" placeholder="Patient presents with…"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <div style="font-size:11px;font-weight:600;color:#64748b;display:flex;align-items:center;white-space:nowrap;flex-shrink:0">Duration:</div>
+            <input class="cs-input" id="cs-complaint-duration-val" type="number" placeholder="e.g. 3" style="width:70px;margin-bottom:0;padding:6px 10px;font-size:12px">
+            <select class="cs-select" id="cs-complaint-duration-unit" style="flex:1;margin-bottom:0;padding:6px 10px;font-size:12px"><option>Days</option><option>Weeks</option><option>Months</option></select>
+          </div>
+        </div>
 
         <!-- Quadrant / Region selector — appends to existing text -->
         <div class="cs-field">
@@ -11382,12 +11626,7 @@ function continueAsGuest() {
             <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Bad taste</span>
           </div>
         </div>
-        <div class="cs-field" style="margin-top:12px"><div class="cs-label">Duration</div>
-          <div style="display:flex;gap:8px">
-            <input class="cs-input" id="cs-complaint-duration-val" type="number" placeholder="e.g. 3" style="width:80px">
-            <select class="cs-select" id="cs-complaint-duration-unit" style="flex:1"><option>Days</option><option>Weeks</option><option>Months</option></select>
-          </div>
-        </div>
+        
         <div class="cs-field"><div class="cs-label">Past Medical / Dental History</div>
           <div class="cs-picklist">
             <span class="cs-pick-chip" onclick="togglePick(this,'history')">Diabetes</span>
@@ -11586,30 +11825,37 @@ function continueAsGuest() {
       <div class="cs-section">
         <div class="cs-section-title">📋 Treatment Advised</div>
         <div style="font-size:12px;color:#64748b;margin-bottom:10px">Procedures recommended to the patient at this visit (may be done in future visits)</div>
-        <div class="cs-field"><div class="cs-label">Procedure Advised</div>
-          <select class="cs-select" id="cs-procedure-advised" onchange="updateAdvisedTeethHint()">
-            <option value="">— None —</option>
-            <option value="filling">🦷 Dental Filling (Composite)</option>
-            <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
-            <option value="rct">🔩 Root Canal Treatment</option>
-            <option value="extraction">🪥 Tooth Extraction</option>
-            <option value="surgical_ext">🪥 Surgical Extraction</option>
-            <option value="scaling">✨ Scaling &amp; Root Planing</option>
-            <option value="crown">👑 Crown / Cap</option>
-            <option value="crown_prep">👑 Crown Preparation</option>
-            <option value="implant">🔧 Dental Implant</option>
-            <option value="whitening">⭐ Teeth Whitening</option>
-            <option value="ortho">📐 Orthodontic Treatment</option>
-            <option value="denture">🦷 Denture</option>
-            <option value="pulpotomy">💉 Pulpotomy</option>
-            <option value="abscess_drain">🔴 Abscess Drainage</option>
-            <option value="flouride">✨ Fluoride Application</option>
-            <option value="sealant">✨ Pit &amp; Fissure Sealant</option>
-            <option value="surgery">🏥 Oral Surgery</option>
-            <option value="xray_consult">📷 Further X-Ray / Review</option>
-            <option value="other">📋 Other</option>
-          </select>
+        <div id="cs-advised-procedures-list">
+          <div class="cs-advised-proc-row" data-index="0">
+            <div class="cs-field"><div class="cs-label">Procedure Advised</div>
+              <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint()">
+                <option value="">— None —</option>
+                <option value="filling">🦷 Dental Filling (Composite)</option>
+                <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
+                <option value="rct">🔩 Root Canal Treatment</option>
+                <option value="extraction">🪥 Tooth Extraction</option>
+                <option value="surgical_ext">🪥 Surgical Extraction</option>
+                <option value="scaling">✨ Scaling &amp; Root Planing</option>
+                <option value="crown">👑 Crown / Cap</option>
+                <option value="crown_prep">👑 Crown Preparation</option>
+                <option value="implant">🔧 Dental Implant</option>
+                <option value="whitening">⭐ Teeth Whitening</option>
+                <option value="ortho">📐 Orthodontic Treatment</option>
+                <option value="denture">🦷 Denture</option>
+                <option value="pulpotomy">💉 Pulpotomy</option>
+                <option value="abscess_drain">🔴 Abscess Drainage</option>
+                <option value="flouride">✨ Fluoride Application</option>
+                <option value="sealant">✨ Pit &amp; Fissure Sealant</option>
+                <option value="surgery">🏥 Oral Surgery</option>
+                <option value="xray_consult">📷 Further X-Ray / Review</option>
+                <option value="other">📋 Other</option>
+              </select>
+            </div>
+          </div>
         </div>
+        <!-- Hidden primary select kept for backward compat with JS that reads cs-procedure-advised -->
+        <select id="cs-procedure-advised" style="display:none" onchange="updateAdvisedTeethHint()"><option value="">— None —</option></select>
+        <button onclick="addAdvisedProcedure()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px">+ Add Another Procedure</button>
         <div class="cs-field"><div class="cs-label">Advice / Treatment Plan Notes</div><textarea class="cs-textarea" id="cs-advised-notes" rows="3" placeholder="e.g. RCT advised on 26. Patient to review in 2 weeks. OPG pending…"></textarea></div>
 
         <!-- Mini tooth grid for advised teeth -->
@@ -11623,34 +11869,49 @@ function continueAsGuest() {
       <!-- TREATMENT PERFORMED -->
       <div class="cs-section">
         <div class="cs-section-title">🔧 Treatment Performed</div>
-        <div class="cs-field"><div class="cs-label">Procedure</div>
-          <select class="cs-select" id="cs-procedure" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()">
-            <option value="">— None —</option>
-            <option value="filling">🦷 Dental Filling (Composite)</option>
-            <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
-            <option value="rct">🔩 Root Canal Treatment</option>
-            <option value="extraction">🪥 Tooth Extraction</option>
-            <option value="surgical_ext">🪥 Surgical Extraction</option>
-            <option value="scaling">✨ Scaling &amp; Root Planing</option>
-            <option value="crown">👑 Crown Cementation</option>
-            <option value="crown_prep">👑 Crown Preparation</option>
-            <option value="implant">🔧 Implant Placement</option>
-            <option value="whitening">⭐ Teeth Whitening</option>
-            <option value="ortho">📐 Orthodontic Adjustment</option>
-            <option value="denture">🦷 Denture Fitting</option>
-            <option value="pulpotomy">💉 Pulpotomy</option>
-            <option value="abscess_drain">🔴 Abscess Drainage</option>
-            <option value="flouride">✨ Fluoride Application</option>
-            <option value="sealant">✨ Pit &amp; Fissure Sealant</option>
-            <option value="xray_consult">📷 X-Ray / Consultation</option>
-            <option value="other">📋 Other</option>
-          </select>
+        <div id="cs-performed-procedures-list">
+          <div class="cs-performed-proc-row" data-index="0">
+            <div class="cs-field"><div class="cs-label">Procedure</div>
+              <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()">
+                <option value="">— None —</option>
+                <option value="filling">🦷 Dental Filling (Composite)</option>
+                <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
+                <option value="rct">🔩 Root Canal Treatment</option>
+                <option value="extraction">🪥 Tooth Extraction</option>
+                <option value="surgical_ext">🪥 Surgical Extraction</option>
+                <option value="scaling">✨ Scaling &amp; Root Planing</option>
+                <option value="crown">👑 Crown Cementation</option>
+                <option value="crown_prep">👑 Crown Preparation</option>
+                <option value="implant">🔧 Implant Placement</option>
+                <option value="whitening">⭐ Teeth Whitening</option>
+                <option value="ortho">📐 Orthodontic Adjustment</option>
+                <option value="denture">🦷 Denture Fitting</option>
+                <option value="pulpotomy">💉 Pulpotomy</option>
+                <option value="abscess_drain">🔴 Abscess Drainage</option>
+                <option value="flouride">✨ Fluoride Application</option>
+                <option value="sealant">✨ Pit &amp; Fissure Sealant</option>
+                <option value="xray_consult">📷 X-Ray / Consultation</option>
+                <option value="other">📋 Other</option>
+              </select>
+            </div>
+          </div>
         </div>
+        <!-- Hidden primary select kept for backward compat -->
+        <select id="cs-procedure" style="display:none" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()"><option value="">— None —</option></select>
+        <button onclick="addPerformedProcedure()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px">+ Add Another Procedure</button>
         <div class="cs-field"><div class="cs-label">Treatment Notes</div><textarea class="cs-textarea" id="cs-treatment-notes" rows="4" placeholder="Detailed treatment notes will auto-fill when you select a procedure…"></textarea></div>
 
         <!-- Mini tooth grid for performed teeth -->
         <div class="cs-field">
           <div class="cs-label">Teeth Treated <span style="font-size:10px;color:#64748b;font-weight:400">(tap → appends to treatment notes)</span></div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <select class="cs-select" id="cs-treatment-tooth-system" onchange="renderMiniToothGrids()" style="flex:1;margin-bottom:0;font-size:12px;padding:6px 10px">
+              <option value="fdi">FDI World System</option>
+              <option value="palmer">Palmer Notation</option>
+              <option value="universal">Universal (US)</option>
+            </select>
+            <button onclick="clearMiniGrids()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer;flex-shrink:0">Clear</button>
+          </div>
           <div id="cs-performed-tooth-grid" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
           <div id="cs-performed-sentence-preview" style="font-size:12px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:8px;padding:8px 10px;display:none;line-height:1.5"></div>
         </div>
@@ -11984,29 +12245,42 @@ function togglePick(el, group) {
   const ta = document.getElementById(taId); if (!ta) return;
 
   // Investigations (radio + lab) share one textarea — collect ALL selected chips from BOTH fields
-  // and build the text additively so selecting HbA1c + X-Ray both appear together
   if (group === 'radio' || group === 'lab') {
-    const allInvestChips = document.querySelectorAll(
-      '#cs-tab-investigation .cs-pick-chip.sel'
-    );
+    const allInvestChips = document.querySelectorAll('#cs-tab-investigation .cs-pick-chip.sel');
     const vals = Array.from(allInvestChips).map(c => c.textContent.trim());
-    // Keep any manually typed text that comes after the chip line
     const existingLines = ta.value.split('\n');
-    const manualLines = existingLines.filter(l => {
-      // Keep lines that are NOT pure chip text
-      const chipTexts = Array.from(document.querySelectorAll('#cs-tab-investigation .cs-pick-chip')).map(c=>c.textContent.trim());
-      return l.trim() && !chipTexts.some(ct => l.trim() === ct || l.includes(ct));
-    });
+    const chipTexts = Array.from(document.querySelectorAll('#cs-tab-investigation .cs-pick-chip')).map(c=>c.textContent.trim());
+    const manualLines = existingLines.filter(l => l.trim() && !chipTexts.some(ct => l.trim() === ct || l.includes(ct)));
     ta.value = (vals.length ? vals.join(', ') : '') + (manualLines.length ? '\n' + manualLines.join('\n') : '');
     return;
   }
 
-  // All other groups: scope to cs-field, collect selected chips in that field only
+  // For complaint group: chips append/remove individually — never overwrite manual text
+  if (group === 'complaint') {
+    const chipText = el.textContent.trim();
+    const isSelected = el.classList.contains('sel');
+    if (isSelected) {
+      // Adding: append chip text with comma if text already exists
+      const cur = ta.value.trim();
+      ta.value = cur ? cur + (cur.endsWith('.') ? ' ' + chipText + '.' : ', ' + chipText) : chipText;
+    } else {
+      // Removing: strip the chip text from wherever it appears
+      ta.value = ta.value
+        .replace(new RegExp(',\\s*' + chipText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '')
+        .replace(new RegExp(chipText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ',?\\s*', 'gi'), '')
+        .trim();
+    }
+    return;
+  }
+
+  // All other groups: scope to cs-field, collect selected chips; preserve any manual lines below
   const parent = el.closest('.cs-field') || el.closest('.cs-section') || document.body;
   const chips = parent.querySelectorAll('.cs-pick-chip.sel');
   const vals = Array.from(chips).map(c=>c.textContent.trim());
-  const extra = ta.value.replace(/^[^\n]*\n?/,'');
-  ta.value = vals.join(', ') + (extra ? '\n' + extra : '');
+  const allChipTexts = Array.from(parent.querySelectorAll('.cs-pick-chip')).map(c=>c.textContent.trim());
+  const existingLines = ta.value.split('\n');
+  const manualLines = existingLines.filter(l => l.trim() && !allChipTexts.some(ct => l.trim() === ct || l.trim().startsWith(ct)));
+  ta.value = (vals.length ? vals.join(', ') : '') + (manualLines.length ? '\n' + manualLines.join('\n') : '');
 }
 const FDI_UPPER = [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
 const FDI_LOWER = [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38];
@@ -12088,6 +12362,92 @@ function applyComplaintTemplate(val) {
   if (!val || !COMPLAINT_TEMPLATES[val]) return;
   const ta = document.getElementById('cs-complaint-text');
   if (ta) ta.value = COMPLAINT_TEMPLATES[val];
+}
+
+// ── MULTI-PROCEDURE HELPERS ──────────────────────────────────────────────────
+const PROC_SELECT_HTML = `<option value="">— None —</option>
+<option value="filling">🦷 Dental Filling (Composite)</option>
+<option value="amalgam">🦷 Dental Filling (Amalgam)</option>
+<option value="rct">🔩 Root Canal Treatment</option>
+<option value="extraction">🪥 Tooth Extraction</option>
+<option value="surgical_ext">🪥 Surgical Extraction</option>
+<option value="scaling">✨ Scaling &amp; Root Planing</option>
+<option value="crown">👑 Crown Cementation</option>
+<option value="crown_prep">👑 Crown Preparation</option>
+<option value="implant">🔧 Implant Placement</option>
+<option value="whitening">⭐ Teeth Whitening</option>
+<option value="ortho">📐 Orthodontic Adjustment</option>
+<option value="denture">🦷 Denture Fitting</option>
+<option value="pulpotomy">💉 Pulpotomy</option>
+<option value="abscess_drain">🔴 Abscess Drainage</option>
+<option value="flouride">✨ Fluoride Application</option>
+<option value="sealant">✨ Pit &amp; Fissure Sealant</option>
+<option value="xray_consult">📷 X-Ray / Consultation</option>
+<option value="other">📋 Other</option>`;
+
+function addAdvisedProcedure() {
+  const list = document.getElementById('cs-advised-procedures-list');
+  if (!list) return;
+  const idx = list.querySelectorAll('.cs-advised-proc-row').length;
+  const row = document.createElement('div');
+  row.className = 'cs-advised-proc-row';
+  row.setAttribute('data-index', idx);
+  row.innerHTML = `<div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
+    <div style="flex:1"><div class="cs-label">Procedure Advised #${idx+1}</div>
+      <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint()">${PROC_SELECT_HTML}</select>
+    </div>
+    <button onclick="this.closest('.cs-advised-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
+  </div>`;
+  list.appendChild(row);
+}
+
+function addPerformedProcedure() {
+  const list = document.getElementById('cs-performed-procedures-list');
+  if (!list) return;
+  const idx = list.querySelectorAll('.cs-performed-proc-row').length;
+  const row = document.createElement('div');
+  row.className = 'cs-performed-proc-row';
+  row.setAttribute('data-index', idx);
+  row.innerHTML = `<div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
+    <div style="flex:1"><div class="cs-label">Procedure #${idx+1}</div>
+      <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()">${PROC_SELECT_HTML}</select>
+    </div>
+    <button onclick="this.closest('.cs-performed-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
+  </div>`;
+  list.appendChild(row);
+}
+
+// Sync hidden selects (used by existing JS) with first visible select
+function syncProcedureSelects() {
+  const firstAdvised = document.querySelector('.cs-procedure-advised-sel');
+  const hiddenAdvised = document.getElementById('cs-procedure-advised');
+  if (firstAdvised && hiddenAdvised) hiddenAdvised.value = firstAdvised.value;
+  const firstPerformed = document.querySelector('.cs-procedure-performed-sel');
+  const hiddenPerformed = document.getElementById('cs-procedure');
+  if (firstPerformed && hiddenPerformed) hiddenPerformed.value = firstPerformed.value;
+}
+
+// Get all selected procedure values as array
+function getAllAdvisedProcedures() {
+  return Array.from(document.querySelectorAll('.cs-procedure-advised-sel')).map(s=>s.value).filter(Boolean);
+}
+function getAllPerformedProcedures() {
+  return Array.from(document.querySelectorAll('.cs-procedure-performed-sel')).map(s=>s.value).filter(Boolean);
+}
+
+// Override g() for these two IDs to return first non-empty value
+const _origG = typeof g === 'function' ? g : null;
+function g(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  if (id === 'cs-procedure-advised') {
+    const all = getAllAdvisedProcedures(); return all[0]||'';
+  }
+  if (id === 'cs-procedure') {
+    const all = getAllPerformedProcedures(); return all[0]||'';
+  }
+  if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return el.value||'';
+  return el.textContent||'';
 }
 const PROC_TEMPLATES = {
   filling:'Composite resin filling performed on tooth #___. Caries excavated under local anaesthesia. Cavity prepared and filled with composite resin. Occlusion checked and adjusted. Post-op instructions given.',
@@ -14112,6 +14472,11 @@ showDentScreen = function(tabId) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, licenseNo, regState, footerNote) {
+  // Get the dentist's saved signature
+  const sigUrl = typeof getDentSignatureUrl === 'function' ? getDentSignatureUrl() : null;
+  const sigHtml = sigUrl
+    ? `<div style="margin-bottom:6px"><img src="${sigUrl}" alt="Signature" style="max-width:160px;max-height:60px;object-fit:contain"></div>`
+    : '<div style="height:44px"></div>';
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -14172,7 +14537,8 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 
   /* Signature area */
   .pdf-sig { display: flex; justify-content: flex-end; margin-top: 32px; }
-  .pdf-sig-box { text-align: center; border-top: 1.5px solid #0f172a; padding-top: 6px; min-width: 160px; }
+  .pdf-sig-box { text-align: center; min-width: 180px; }
+  .pdf-sig-line { border-top: 1.5px solid #0f172a; padding-top: 6px; }
   .pdf-sig-box .name { font-weight: 700; font-size: 12px; }
   .pdf-sig-box .role { font-size: 10px; color: #64748b; }
 
@@ -14202,9 +14568,11 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 <div class="pdf-content">${contentHtml}</div>
 <div class="pdf-sig">
   <div class="pdf-sig-box">
-    <div style="height:36px"></div>
-    <div class="name">${dentistName?'Dr. '+dentistName:'Authorised Signatory'}</div>
-    <div class="role">Dentist${licenseNo?' · Reg: '+licenseNo:''}</div>
+    ${sigHtml}
+    <div class="pdf-sig-line">
+      <div class="name">${dentistName?'Dr. '+dentistName:'Authorised Signatory'}</div>
+      <div class="role">Dentist${licenseNo?' · Reg: '+licenseNo:''}</div>
+    </div>
   </div>
 </div>
 <div class="pdf-footer">
@@ -14316,7 +14684,7 @@ async function downloadOPSummary(recordId, patientId) {
     ${csData&&(csData.softTissue||csData.hardTissue||csData.perio)?`<div class="pdf-section"><div class="pdf-section-title">Intraoral Examination</div>${csData.softTissue?`<div class="pdf-row"><span class="lbl">Soft Tissue</span><span class="val">${csData.softTissue}</span></div>`:''}${csData.hardTissue?`<div class="pdf-row"><span class="lbl">Hard Tissue</span><span class="val">${csData.hardTissue}</span></div>`:''}${csData.perio?`<div class="pdf-row"><span class="lbl">Periodontal</span><span class="val">${csData.perio}</span></div>`:''}</div>`:''}
     ${csData&&csData.toothDetails&&Object.keys(csData.toothDetails).length?`<div class="pdf-section"><div class="pdf-section-title">Per-Tooth Findings</div><table><tr><th>Tooth</th><th>Type</th><th>Condition</th><th>Notes</th></tr>${Object.entries(csData.toothDetails).map(([t,d])=>`<tr><td><strong>${t}</strong></td><td>${(csData.selectedTeeth||[]).includes(Number(t))?'Treatment':'Affected'}</td><td>${d.condition&&d.condition!=='— Select condition —'?d.condition:'—'}</td><td>${d.notes||'—'}</td></tr>`).join('')}</table></div>`:''}
     ${csData&&(csData.bp||csData.pulse)?`<div class="pdf-section"><div class="pdf-section-title">Vitals</div>${csData.bp?`<div class="pdf-row"><span class="lbl">Blood Pressure</span><span class="val">${csData.bp} mmHg</span></div>`:''}${csData.pulse?`<div class="pdf-row"><span class="lbl">Pulse</span><span class="val">${csData.pulse} bpm</span></div>`:''}</div>`:''}
-    ${csData&&csData.treatment?`<div class="pdf-section"><div class="pdf-section-title">Treatment Performed</div><p style="margin:0;color:#334155">${csData.treatment}</p></div>`:''}
+    ${csData&&csData.treatment?`<div class="pdf-section"><div class="pdf-section-title">Treatment Performed</div><p style="margin:0;color:#334155">${csData.treatment.charAt(0).toUpperCase()+csData.treatment.slice(1)}</p></div>`:''}
     ${csData&&(csData.procedureAdvised||csData.advisedNotes)?`<div class="pdf-section"><div class="pdf-section-title">Treatment Advised</div>${csData.procedureAdvised?`<p style="margin:0 0 4px;font-weight:700;color:#0f172a">${PROC[csData.procedureAdvised]||csData.procedureAdvised}${csData.advisedCost?' — Est. ₹'+csData.advisedCost:''}</p>`:''}${csData.advisedNotes?`<p style="margin:0;color:#334155">${csData.advisedNotes}</p>`:''}</div>`:''}
     ${csData&&csData.rx&&csData.rx.length?`<div class="pdf-section"><div class="pdf-section-title">Prescription</div><table><tr><th>Medicine</th><th>Dosage / Instructions</th></tr>${csData.rx.map(r=>`<tr><td><strong>${r.name}</strong></td><td>${r.dose}</td></tr>`).join('')}</table></div>`:''}
     ${csData&&csData.postOp?`<div class="pdf-section"><div class="pdf-section-title">Post-Operative Instructions</div><p style="margin:0;color:#334155">${csData.postOp}</p></div>`:''}
