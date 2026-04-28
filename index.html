@@ -425,11 +425,12 @@ body.morning-mode .card{background:#fffbf5!important;box-shadow:0 2px 16px rgba(
 body.morning-mode .card-teal{background:linear-gradient(135deg,#fef3c7,#ffedd5)!important}
 body.morning-mode .card-blue{background:linear-gradient(135deg,#ffedd5,#fef9c3)!important}
 body.morning-mode .hero-wave{background:linear-gradient(180deg,#7c2d12 0%,#c2410c 45%,#ea580c 100%)!important}
+body.morning-mode #theme-bar-global,body.morning-mode .theme-bar,body.morning-mode #lang-bar-global,body.morning-mode .lang-bar,body.morning-mode #home-mini-nav{background:linear-gradient(135deg,#7c2d12,#c2410c)!important}
 body.morning-mode .stat-chip{background:linear-gradient(135deg,#c2410c,#ea580c)!important;border-color:rgba(255,255,255,.3)!important;box-shadow:0 4px 16px rgba(194,65,12,.35)!important}
 body.morning-mode .stat-chip .num{color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.2)!important}
 body.morning-mode .stat-chip .lbl{color:rgba(255,255,255,.85)!important}
 body.morning-mode #screen-welcome{background:#fff7ed!important}
-body.morning-mode #home-scroll{background:#fff7ed!important}
+body.morning-mode #home-scroll{background:linear-gradient(180deg,#7c2d12 0%,#fff7ed 40%)!important}
 body.morning-mode #screen-welcome .page-content{background:linear-gradient(180deg,#ffedd5 0%,#fff7ed 30%,#fffbf5 100%)!important}
 body.morning-mode #screen-welcome [style*="One app"]{color:#431407!important;font-weight:900!important}
 body.morning-mode #screen-welcome [style*="rgba(255,255,255,.55)"]{color:#7c2d12!important}
@@ -1592,40 +1593,42 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <div class="hero-wave" id="home-hero">
 
       <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:6px">
-        <!-- Animated tooth+leaf logo — UNTOUCHED -->
-        <svg width="120" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;filter:drop-shadow(0 0 18px rgba(99,246,228,0.35))">
+        <!-- Animated tooth+leaf logo -->
+        <svg width="120" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" style="animation:toothPulse 4s ease-in-out infinite;overflow:visible">
           <defs>
             <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#A7F3D0"/>
               <stop offset="100%" stop-color="#10B981"/>
             </linearGradient>
-            <linearGradient id="leafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#6EE7B7"/>
-              <stop offset="100%" stop-color="#059669"/>
-            </linearGradient>
             <clipPath id="toothClip">
               <path d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
             </clipPath>
           </defs>
-          <!-- Tooth outline — static glow, no breathing -->
-          <path fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="3.5"
+          <!-- Tooth outline -->
+          <path fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="3"
+            style="animation:toothPulse 4s ease-in-out infinite"
             d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
-          <!-- Inner fill for depth -->
-          <path fill="rgba(255,255,255,0.04)"
-            d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
-          <!-- Large leaf — static -->
-          <g style="transform-origin:110px 100px">
+          <!-- Floating dots inside tooth -->
+          <g clip-path="url(#toothClip)">
+            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8s linear infinite" cx="85" cy="185" r="2"/>
+            <circle fill="#93C5FD" style="filter:drop-shadow(0 0 6px rgba(147,197,253,0.9));opacity:0;animation:floatUp 9s linear infinite 1s" cx="115" cy="185" r="2.3"/>
+            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 7.5s linear infinite 2s" cx="100" cy="190" r="2.1"/>
+            <circle fill="#93C5FD" style="filter:drop-shadow(0 0 6px rgba(147,197,253,0.9));opacity:0;animation:floatUp 8.5s linear infinite 0.5s" cx="75" cy="165" r="1.8"/>
+            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 9.5s linear infinite 1.5s" cx="125" cy="165" r="2.2"/>
+            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8s linear infinite 2.5s" cx="100" cy="170" r="1.9"/>
+            <circle fill="#6EE7B7" style="filter:drop-shadow(0 0 6px rgba(110,231,183,0.9));opacity:0;animation:floatUp 7.8s linear infinite 1.2s" cx="90" cy="145" r="1.7"/>
+            <circle fill="#ffffff" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));opacity:0;animation:floatUp 8.8s linear infinite 2.2s" cx="110" cy="145" r="1.8"/>
+          </g>
+          <!-- Large leaf -->
+          <g style="transform-origin:110px 100px;animation:breatheLeaf 4s ease-in-out infinite,leafGlow 4s ease-in-out infinite">
             <path fill="url(#leafGrad)" d="M110 130 C135 115, 140 90, 110 70 C85 90, 90 115, 110 130 Z"/>
-            <path stroke="rgba(255,255,255,0.75)" stroke-width="1.3" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
           </g>
-          <!-- Small leaf — static -->
-          <g style="transform-origin:85px 117px">
-            <path fill="url(#leafGrad2)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
-            <path stroke="rgba(255,255,255,0.75)" stroke-width="1.3" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
+          <!-- Small leaf -->
+          <g style="transform-origin:85px 117px;animation:breatheLeaf2 4s ease-in-out infinite,leafGlow 4s ease-in-out infinite">
+            <path fill="url(#leafGrad)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
           </g>
-          <!-- Cross detail on tooth crown — SerenOra brand mark -->
-          <line x1="100" y1="48" x2="100" y2="72" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="88" y1="60" x2="112" y2="60" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         <div class="logo-serenora-text" style="font-family:var(--display);font-size:24px;font-weight:700;color:#fff;margin-top:4px">
           <span class="s1">Seren</span><span class="s2" style="color:#99f6e4">Ora</span> <span class="s3" style="color:#bfdbfe">Care</span>
@@ -8023,35 +8026,52 @@ async function sendDentistMessage() {
 
   const now = new Date().toISOString();
 
-  // Storage key always: patient_id + dentist_id (patient is the non-dentist side)
   const patientId  = isReplyMode ? otherId : myId;
   const dentistId2 = isReplyMode ? myId    : otherId;
   const storageKey = `serenora_msgs_${patientId}_${dentistId2}`;
 
-  // Optimistic local append — fromMe=true from current user's perspective
+  // Optimistic local append
   let localMsgs = [];
   try { localMsgs = JSON.parse(localStorage.getItem(storageKey)) || []; } catch(_) {}
   localMsgs.push({ id: 'local_' + Date.now(), senderId: myId, content, createdAt: now, fromMe: true });
   try { localStorage.setItem(storageKey, JSON.stringify(localMsgs)); } catch(_) {}
   renderDentistMessages(localMsgs, myId);
 
-  // Persist to Supabase
   if (db) {
     try {
-      await db.from('messages').insert({
-        sender_id:    myId,
-        recipient_id: otherId,
-        content,
-        created_at:   now
-      });
-      // Reload from server with correct perspective
+      const inserts = [
+        // Always write to messages (peer-to-peer, for the chat screen)
+        db.from('messages').insert({
+          sender_id:    myId,
+          recipient_id: otherId,
+          content,
+          created_at:   now
+        })
+      ];
+
+      // If patient is sending (not reply mode), ALSO write to patient_messages
+      // so it appears in the dentist's clinic inbox
+      if (!isReplyMode && currentProfile && currentProfile.clinic_id) {
+        inserts.push(
+          db.from('patient_messages').insert({
+            patient_id:  myId,
+            clinic_id:   String(currentProfile.clinic_id),
+            message:     content,
+            sender_role: 'patient',
+            created_at:  now
+          })
+        );
+      }
+
+      await Promise.all(inserts);
+
       if (isReplyMode) {
         await openDentistReply(otherId, _activeDentistName);
       } else {
         await loadDentistMessages();
       }
     } catch(_) {
-      // Message stays in local cache
+      // stays in local cache
     }
   }
 }
@@ -11828,7 +11848,7 @@ function continueAsGuest() {
         <div id="cs-advised-procedures-list">
           <div class="cs-advised-proc-row" data-index="0">
             <div class="cs-field"><div class="cs-label">Procedure Advised</div>
-              <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint()">
+              <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint();initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">
                 <option value="">— None —</option>
                 <option value="filling">🦷 Dental Filling (Composite)</option>
                 <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
@@ -11851,6 +11871,20 @@ function continueAsGuest() {
                 <option value="other">📋 Other</option>
               </select>
             </div>
+            <!-- Per-row tooth chart for this procedure -->
+            <div class="cs-row-tooth-section" style="display:none;margin-bottom:8px">
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <div style="font-size:11px;color:#64748b;font-weight:600;flex-shrink:0">Teeth for this procedure:</div>
+                <select class="cs-row-tooth-system cs-select" onchange="renderRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')" style="flex:1;margin-bottom:0;font-size:11px;padding:5px 8px">
+                  <option value="fdi">FDI</option>
+                  <option value="palmer">Palmer</option>
+                  <option value="universal">Universal</option>
+                </select>
+                <button onclick="clearRowGrid(this.closest('.cs-advised-proc-row'),'advised')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0">Clear</button>
+              </div>
+              <div class="cs-row-tooth-grid" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+              <div class="cs-row-tooth-preview" style="font-size:11px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:6px;padding:6px 8px;display:none;line-height:1.5"></div>
+            </div>
           </div>
         </div>
         <!-- Hidden primary select kept for backward compat with JS that reads cs-procedure-advised -->
@@ -11872,7 +11906,7 @@ function continueAsGuest() {
         <div id="cs-performed-procedures-list">
           <div class="cs-performed-proc-row" data-index="0">
             <div class="cs-field"><div class="cs-label">Procedure</div>
-              <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()">
+              <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint();initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">
                 <option value="">— None —</option>
                 <option value="filling">🦷 Dental Filling (Composite)</option>
                 <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
@@ -11893,6 +11927,20 @@ function continueAsGuest() {
                 <option value="xray_consult">📷 X-Ray / Consultation</option>
                 <option value="other">📋 Other</option>
               </select>
+            </div>
+            <!-- Per-row tooth chart for this procedure -->
+            <div class="cs-row-tooth-section" style="display:none;margin-bottom:8px">
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <div style="font-size:11px;color:#64748b;font-weight:600;flex-shrink:0">Teeth for this procedure:</div>
+                <select class="cs-row-tooth-system cs-select" onchange="renderRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')" style="flex:1;margin-bottom:0;font-size:11px;padding:5px 8px">
+                  <option value="fdi">FDI</option>
+                  <option value="palmer">Palmer</option>
+                  <option value="universal">Universal</option>
+                </select>
+                <button onclick="clearRowGrid(this.closest('.cs-performed-proc-row'),'performed')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0">Clear</button>
+              </div>
+              <div class="cs-row-tooth-grid" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+              <div class="cs-row-tooth-preview" style="font-size:11px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:6px;padding:6px 8px;display:none;line-height:1.5"></div>
             </div>
           </div>
         </div>
@@ -12392,11 +12440,24 @@ function addAdvisedProcedure() {
   const row = document.createElement('div');
   row.className = 'cs-advised-proc-row';
   row.setAttribute('data-index', idx);
-  row.innerHTML = `<div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
+  row.innerHTML = `<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
+  <div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
     <div style="flex:1"><div class="cs-label">Procedure Advised #${idx+1}</div>
-      <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint()">${PROC_SELECT_HTML}</select>
+      <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint();initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">${PROC_SELECT_HTML}</select>
     </div>
     <button onclick="this.closest('.cs-advised-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
+  </div>
+  <div class="cs-row-tooth-section" style="display:none;margin-bottom:8px">
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <div style="font-size:11px;color:#64748b;font-weight:600;flex-shrink:0">Teeth for this procedure:</div>
+      <select class="cs-row-tooth-system cs-select" onchange="renderRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')" style="flex:1;margin-bottom:0;font-size:11px;padding:5px 8px">
+        <option value="fdi">FDI</option><option value="palmer">Palmer</option><option value="universal">Universal</option>
+      </select>
+      <button onclick="clearRowGrid(this.closest('.cs-advised-proc-row'),'advised')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0">Clear</button>
+    </div>
+    <div class="cs-row-tooth-grid" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+    <div class="cs-row-tooth-preview" style="font-size:11px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:6px;padding:6px 8px;display:none;line-height:1.5"></div>
+  </div>
   </div>`;
   list.appendChild(row);
 }
@@ -12408,13 +12469,112 @@ function addPerformedProcedure() {
   const row = document.createElement('div');
   row.className = 'cs-performed-proc-row';
   row.setAttribute('data-index', idx);
-  row.innerHTML = `<div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
+  row.innerHTML = `<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
+  <div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
     <div style="flex:1"><div class="cs-label">Procedure #${idx+1}</div>
-      <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()">${PROC_SELECT_HTML}</select>
+      <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint();initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">${PROC_SELECT_HTML}</select>
     </div>
     <button onclick="this.closest('.cs-performed-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
+  </div>
+  <div class="cs-row-tooth-section" style="display:none;margin-bottom:8px">
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <div style="font-size:11px;color:#64748b;font-weight:600;flex-shrink:0">Teeth for this procedure:</div>
+      <select class="cs-row-tooth-system cs-select" onchange="renderRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')" style="flex:1;margin-bottom:0;font-size:11px;padding:5px 8px">
+        <option value="fdi">FDI</option><option value="palmer">Palmer</option><option value="universal">Universal</option>
+      </select>
+      <button onclick="clearRowGrid(this.closest('.cs-performed-proc-row'),'performed')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0">Clear</button>
+    </div>
+    <div class="cs-row-tooth-grid" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+    <div class="cs-row-tooth-preview" style="font-size:11px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:6px;padding:6px 8px;display:none;line-height:1.5"></div>
+  </div>
   </div>`;
   list.appendChild(row);
+}
+
+// ── PER-ROW TOOTH GRID FUNCTIONS ─────────────────────────────────────────────
+// Each procedure row has its own Set of selected teeth, keyed by the row element
+const _rowTeethMap = new WeakMap(); // row element → Set of selected FDI tooth numbers
+
+function initRowToothGrid(row, mode) {
+  if (!row) return;
+  const section = row.querySelector('.cs-row-tooth-section');
+  if (section) section.style.display = 'block';
+  if (!_rowTeethMap.has(row)) _rowTeethMap.set(row, new Set());
+  renderRowToothGrid(row, mode);
+}
+
+function renderRowToothGrid(row, mode) {
+  if (!row) return;
+  const grid    = row.querySelector('.cs-row-tooth-grid');
+  const sysSel  = row.querySelector('.cs-row-tooth-system');
+  const system  = sysSel ? sysSel.value : 'fdi';
+  const teeth   = _rowTeethMap.get(row) || new Set();
+  if (!_rowTeethMap.has(row)) _rowTeethMap.set(row, teeth);
+  if (!grid) return;
+  grid.innerHTML = FDI_ALL.map(t => {
+    const label = getToothLabel(t, system);
+    const isSel = teeth.has(t);
+    return `<button onclick="toggleRowTooth(${t},this,${JSON.stringify(mode)})" style="width:30px;height:24px;border-radius:5px;font-size:10px;font-weight:700;border:1.5px solid ${isSel?'#0d9488':'rgba(255,255,255,.15)'};background:${isSel?'rgba(13,148,136,.35)':'rgba(255,255,255,.05)'};color:${isSel?'#99f6e4':'rgba(255,255,255,.55)'};cursor:pointer;font-family:var(--font);transition:all .1s" title="Tooth ${t} (FDI)">${label}</button>`;
+  }).join('');
+}
+
+function toggleRowTooth(t, btn, mode) {
+  const row   = btn.closest('.cs-advised-proc-row') || btn.closest('.cs-performed-proc-row');
+  if (!row) return;
+  if (!_rowTeethMap.has(row)) _rowTeethMap.set(row, new Set());
+  const teeth = _rowTeethMap.get(row);
+  if (teeth.has(t)) teeth.delete(t); else teeth.add(t);
+  renderRowToothGrid(row, mode);
+
+  // Build sentence and APPEND (never replace) to the shared notes textarea
+  const taId   = mode === 'advised' ? 'cs-advised-notes' : 'cs-treatment-notes';
+  const ta     = document.getElementById(taId);
+  const sel    = row.querySelector('.cs-procedure-advised-sel, .cs-procedure-performed-sel');
+  const proc   = sel ? sel.value : '';
+  const PLABELS= {filling:'Dental Filling',amalgam:'Amalgam Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',surgical_ext:'Surgical Extraction',scaling:'Scaling & Root Planing',crown:'Crown',crown_prep:'Crown Preparation',implant:'Implant',whitening:'Teeth Whitening',ortho:'Orthodontic Treatment',denture:'Denture',pulpotomy:'Pulpotomy',abscess_drain:'Abscess Drainage',flouride:'Fluoride Application',sealant:'Pit & Fissure Sealant',surgery:'Oral Surgery',xray_consult:'X-Ray / Consultation',other:'Treatment'};
+  const procLabel = proc ? (PLABELS[proc]||proc) : 'Treatment';
+  const teethArr  = Array.from(teeth).sort((a,b)=>a-b);
+  const preview   = row.querySelector('.cs-row-tooth-preview');
+
+  if (teethArr.length === 0) {
+    if (preview) preview.style.display = 'none';
+    return;
+  }
+  const sentence = mode === 'advised'
+    ? `${procLabel} advised on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`
+    : `${procLabel} performed on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`;
+
+  if (preview) { preview.textContent = sentence; preview.style.display = 'block'; }
+
+  // Append to textarea — replace this row's previous sentence if it exists, otherwise append
+  if (ta) {
+    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+    // Look for existing line from this row
+    const lines = ta.value.split('\n');
+    const existIdx = lines.findIndex(l => l.includes(rowKey));
+    const tagged   = `${sentence} ${rowKey}`;
+    if (existIdx >= 0) {
+      lines[existIdx] = tagged;
+      ta.value = lines.join('\n');
+    } else {
+      ta.value = ta.value.trim() ? ta.value.trim() + '\n' + tagged : tagged;
+    }
+  }
+}
+
+function clearRowGrid(row, mode) {
+  if (!row) return;
+  _rowTeethMap.set(row, new Set());
+  renderRowToothGrid(row, mode);
+  const preview = row.querySelector('.cs-row-tooth-preview');
+  if (preview) preview.style.display = 'none';
+  // Remove this row's tagged sentence from the textarea
+  const taId = mode === 'advised' ? 'cs-advised-notes' : 'cs-treatment-notes';
+  const ta   = document.getElementById(taId);
+  if (ta) {
+    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+    ta.value = ta.value.split('\n').filter(l => !l.includes(rowKey)).join('\n').trim();
+  }
 }
 
 // Sync hidden selects (used by existing JS) with first visible select
@@ -12608,12 +12768,18 @@ async function saveCasesheetRecord() {
     showToast('No patient selected'); return;
   }
   const g = id => (document.getElementById(id)||{}).value || '';
-  const procedure = g('cs-procedure'); const treatNotes = g('cs-treatment-notes').trim();
+  const procedure = g('cs-procedure'); 
+  // Strip internal row-key tags before saving
+  const cleanNotes = t => (t||'').replace(/__row_\d+_(advised|performed)__/g,'').replace(/\s+\n/g,'\n').trim();
+  const treatNotes = cleanNotes(g('cs-treatment-notes'));
+  const advisedNotes = cleanNotes(g('cs-advised-notes'));
   const complaint = g('cs-complaint-text').trim(); const rxText = _csRxList.map(r=>r.name+' — '+r.dose).join('\n');
   const nextAppt = g('cs-next-appt'); const postOpNotes = g('cs-postop-notes').trim();
   const procedureAdvised = g('cs-procedure-advised');
-  const advisedNotes = g('cs-advised-notes').trim();
   const advisedCost = g('cs-advised-cost').trim();
+  // Collect all procedures from multi-row selects
+  const allPerformed = getAllPerformedProcedures();
+  const allAdvised   = getAllAdvisedProcedures();
   const csData = {
     complaint, duration: g('cs-complaint-duration-val')+' '+g('cs-complaint-duration-unit'),
     history: g('cs-history-notes'), familyHistory: g('cs-family-history'),
@@ -12622,7 +12788,8 @@ async function saveCasesheetRecord() {
     bp: g('cs-bp-sys')+'/'+g('cs-bp-dia'), pulse: g('cs-pulse'),
     temp: g('cs-temp')+' '+g('cs-temp-unit'), observations: g('cs-obs-notes'),
     investigations: g('cs-invest-notes'), treatment: treatNotes,
-    procedureAdvised, advisedNotes, advisedCost,
+    procedureAdvised: allAdvised.join(', ') || procedureAdvised, advisedNotes, advisedCost,
+    allPerformedProcedures: allPerformed, allAdvisedProcedures: allAdvised,
     selectedTeeth: Array.from(_csSelectedTeeth), affectedTeeth: Array.from(_csAffectedTeeth),
     toothNotes: g('cs-tooth-notes'), toothDetails: _csToothDetails, billingStatus: _csBillingStatus,
     internalNotes: g('cs-internal-notes'), rx: _csRxList, rxNotes: g('cs-rx-notes'), postOp: postOpNotes
@@ -12636,7 +12803,7 @@ async function saveCasesheetRecord() {
     const { data: inserted, error } = await db.from('medical_records').insert({
       patient_id: _csDocketPatientId, clinic_id: String(currentProfile.clinic_id),
       prescription_details: rxText||null, treatment_summary: summaryText||null,
-      next_appointment: nextAppt||null, procedure_type: procedure||procedureAdvised||null,
+      next_appointment: nextAppt||null, procedure_type: allPerformed[0]||procedure||allAdvised[0]||procedureAdvised||null,
       post_op_reminders: JSON.stringify(baseReminders), cs_data: JSON.stringify(csData)
     }).select();
     if (error) throw error;
@@ -14500,15 +14667,7 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 3px solid #0d9488; padding-bottom: 14px; margin-bottom: 18px;
   }
-  .pdf-logo { display: flex; align-items: center; gap: 10px; }
-  .pdf-logo-icon {
-    width: 44px; height: 44px; background: linear-gradient(135deg,#0d9488,#3b82f6);
-    border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 22px;
-  }
-  .pdf-brand { font-size: 20px; font-weight: 900; color: #0f172a; }
-  .pdf-brand span { color: #0d9488; }
-  .pdf-tagline { font-size: 10px; color: #64748b; margin-top: 1px; }
+  .pdf-logo { display: flex; align-items: center; gap: 0; }
   .pdf-header-right { text-align: right; font-size: 11px; color: #475569; line-height: 1.8; }
   .pdf-header-right strong { color: #0f172a; }
 
@@ -14544,15 +14703,48 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 
   /* Footer */
   .pdf-footer { border-top: 1px solid #e2e8f0; margin-top: 24px; padding-top: 8px; font-size: 10px; color: #94a3b8; text-align: center; }
+
+  /* Logo wordmark */
+  .pdf-brand { font-size: 22px; font-weight: 900; color: #0f172a; font-family: 'Segoe UI', Arial, sans-serif; letter-spacing: -0.3px; }
+  .pdf-brand .ora  { color: #0d9488; }
+  .pdf-brand .care { color: #3b82f6; }
+  .pdf-tagline { font-size: 10px; color: #64748b; margin-top: 1px; letter-spacing: 0.3px; }
 </style>
 </head>
 <body>
 <div class="watermark">SerenOra</div>
 <div class="pdf-header">
   <div class="pdf-logo">
-    <div class="pdf-logo-icon">🦷</div>
+    <!-- SerenOra tooth+leaf logo — static (no CSS animation in print) -->
+    <svg width="48" height="54" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-right:10px">
+      <defs>
+        <linearGradient id="pdfLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#A7F3D0"/>
+          <stop offset="100%" stop-color="#10B981"/>
+        </linearGradient>
+        <linearGradient id="pdfLeafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#6EE7B7"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+      </defs>
+      <!-- Tooth outline -->
+      <path fill="none" stroke="#0f172a" stroke-width="7"
+        d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+      <!-- Tooth fill — white -->
+      <path fill="#ffffff" stroke="none"
+        d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+      <!-- Tooth outline again on top -->
+      <path fill="none" stroke="#0d9488" stroke-width="5"
+        d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+      <!-- Large leaf -->
+      <path fill="#10B981" d="M110 130 C135 115, 140 90, 110 70 C85 90, 90 115, 110 130 Z"/>
+      <path stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
+      <!-- Small leaf -->
+      <path fill="#34d399" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
+      <path stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
+    </svg>
     <div>
-      <div class="pdf-brand">Seren<span>Ora</span> Care</div>
+      <div class="pdf-brand">Seren<span class="ora">Ora</span> <span class="care">Care</span></div>
       <div class="pdf-tagline">Compassionate Dental Care</div>
     </div>
   </div>
@@ -14583,13 +14775,38 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 }
 
 function openPrintWindow(html, filename) {
-  const win = window.open('', '_blank');
-  if (!win) { showToast('Please allow pop-ups to download PDFs'); return; }
-  win.document.write(html);
-  win.document.close();
-  win.onload = function() {
-    setTimeout(() => { win.print(); }, 500);
-  };
+  // Use Blob URL instead of document.write() — document.write fires unload events
+  // on the parent window in some browsers, corrupting Supabase auth state and app data
+  try {
+    const blob = new Blob([html], { type: 'text/html' });
+    const url  = URL.createObjectURL(blob);
+    const win  = window.open(url, '_blank');
+    if (!win) {
+      // Pop-up blocked — offer download as fallback
+      const a = document.createElement('a');
+      a.href     = url;
+      a.download = (filename || 'serenora_document') + '.html';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast('Saved as file — open to print');
+      return;
+    }
+    // Revoke after the window has loaded
+    win.addEventListener('load', () => {
+      setTimeout(() => {
+        win.print();
+        URL.revokeObjectURL(url);
+      }, 400);
+    });
+  } catch(e) {
+    // Fallback for browsers that don't support Blob URLs
+    const win = window.open('', '_blank');
+    if (!win) { showToast('Please allow pop-ups to download PDFs'); return; }
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+    win.onload = function() { setTimeout(() => win.print(), 500); };
+  }
 }
 
 // Download receipt for a bill
