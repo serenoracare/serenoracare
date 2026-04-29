@@ -5624,6 +5624,9 @@ async function loadProfile() {
         avatar_url:             data.avatar_url             ? String(data.avatar_url) : null,
         medical_history:        (data.medical_history && typeof data.medical_history === 'object') ? data.medical_history : null,
         friendly_id:            data.friendly_id ? String(data.friendly_id) : null,
+        license_number:         data.license_number ? String(data.license_number) : null,
+        reg_state:              data.reg_state ? String(data.reg_state) : null,
+        signature_url:          data.signature_url ? String(data.signature_url) : null,
         clinics:                null
       };
       // Fetch clinic separately — avoids PostgREST join which can hang on stale schema cache
@@ -12634,20 +12637,8 @@ function getAllPerformedProcedures() {
   return Array.from(document.querySelectorAll('.cs-procedure-performed-sel')).map(s=>s.value).filter(Boolean);
 }
 
-// Override g() for these two IDs to return first non-empty value
-const _origG = typeof g === 'function' ? g : null;
-function g(id) {
-  const el = document.getElementById(id);
-  if (!el) return '';
-  if (id === 'cs-procedure-advised') {
-    const all = getAllAdvisedProcedures(); return all[0]||'';
-  }
-  if (id === 'cs-procedure') {
-    const all = getAllPerformedProcedures(); return all[0]||'';
-  }
-  if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return el.value||'';
-  return el.textContent||'';
-}
+
+
 const PROC_TEMPLATES = {
   filling:'Composite resin filling performed on tooth #___. Caries excavated under local anaesthesia. Cavity prepared and filled with composite resin. Occlusion checked and adjusted. Post-op instructions given.',
   rct:'Root canal treatment performed on tooth #___. Access cavity prepared. Working length determined. Biomechanical preparation done. Canals irrigated with NaOCl. Obturation done with gutta-percha. Tooth temporised.',
@@ -12806,7 +12797,11 @@ async function saveCasesheetRecord() {
     if (statusEl) { statusEl.textContent = 'Select a patient first'; statusEl.style.color = '#ef4444'; }
     showToast('No patient selected'); return;
   }
-  const g = id => (document.getElementById(id)||{}).value || '';
+  const g = id => {
+    if (id === 'cs-procedure-advised') { const all = getAllAdvisedProcedures(); return all[0]||''; }
+    if (id === 'cs-procedure')         { const all = getAllPerformedProcedures(); return all[0]||''; }
+    return (document.getElementById(id)||{}).value || '';
+  };
   const procedure = g('cs-procedure'); 
   // Strip internal row-key tags before saving
   const cleanNotes = t => (t||'').replace(/__row_\d+_(advised|performed)__/g,'').replace(/\s+\n/g,'\n').trim();
@@ -14888,39 +14883,30 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 }
 
 function openPrintWindow(html, filename) {
-  // Open a named blank window first, then set its content via srcdoc on an iframe
-  // This NEVER calls document.write on the new window, which can fire unload events
+  // Use a Blob URL — the only approach that is safe regardless of HTML content.
+  // document.write() and srcdoc both break when the HTML contains backticks,
+  // dollar signs, or other template-literal characters.
   try {
-    const win = window.open('', '_blank', 'noopener=yes');
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const win = window.open(url, '_blank');
     if (!win) {
-      // Popup blocked — download as HTML file instead
-      const blob = new Blob([html], { type: 'text/html' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = (filename || 'serenora_doc') + '.html'; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 3000);
-      showToast('Popup blocked — saved as file instead');
+      // Popup blocked — trigger a direct download instead
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (filename || 'serenora_doc') + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      showToast('Popup blocked — file downloaded instead');
       return;
     }
-    // Write a minimal shell that loads the content in an iframe with srcdoc
-    // The iframe is sandboxed so it can't affect the parent at all
-    const encoded = html.replace(/\\/g,'\\\\').replace(/`/g,'\\`');
-    win.document.open();
-    win.document.write(`<!DOCTYPE html><html><head><style>
-      *{margin:0;padding:0;box-sizing:border-box}
-      body{background:#fff}
-      iframe{width:100%;height:100vh;border:none;display:block}
-      @media print{iframe{height:auto}}
-    </style></head><body>
-    <iframe id="f" sandbox="allow-modals allow-same-origin allow-scripts"></iframe>
-    <script>
-      var f=document.getElementById('f');
-      f.srcdoc=\`${encoded}\`;
-      f.onload=function(){
-        try{f.contentWindow.print();}catch(e){window.print();}
-      };
-    </script></body></html>`);
-    win.document.close();
+
+    // Revoke after a generous delay to ensure the window has loaded
+    setTimeout(() => URL.revokeObjectURL(url), 8000);
+
   } catch(e) {
     showToast('Could not open print window — please allow popups');
   }
