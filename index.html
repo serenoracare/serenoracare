@@ -5401,6 +5401,10 @@ function _initSupabase() {
   if (!db) { console.error('Supabase ESM module did not load'); return; }
 
   db.auth.onAuthStateChange(async (event, session) => {
+    // Never interfere with auth state while a PDF window is opening —
+    // Blob URL windows can briefly trigger SIGNED_OUT/TOKEN_REFRESHED in some browsers
+    if (_pdfWindowOpen) return;
+
     currentUser = (session && session.user) ? {
       id:    String(session.user.id    || ''),
       email: String(session.user.email || '')
@@ -11254,13 +11258,17 @@ async function loadDentMySpaceInbox() {
 }
 
 function openDentInboxReply(patientId, patientName) {
-  // Switch to Patient Notes tab, select this patient
-  switchDentDayTab('notes', document.getElementById('dtab-notes'));
-  showDentScreen('dent-dashboard');
-  setTimeout(() => {
-    const sel = document.getElementById('dent-note-patient-select');
-    if (sel && patientId) { sel.value = patientId; loadDentPatientContext(patientId); }
-  }, 100);
+  // Open the actual chat thread with this patient
+  // _dentistReplyMode = true means the dentist is replying to a patient
+  window._dentistReplyMode = true;
+  window._dentistReplyPatientId = patientId;
+  _activeDentistName = patientName;
+  const nameEl = document.getElementById('dmsg-dentist-name');
+  const clinicEl = document.getElementById('dmsg-dentist-clinic');
+  if (nameEl) nameEl.textContent = patientName;
+  if (clinicEl) clinicEl.textContent = 'Patient message thread';
+  showScreen('screen-dentist-messages');
+  loadDentistMessages();
 }
 
 async function loadDentInboxBadge() {
@@ -14303,45 +14311,7 @@ function setCaBillFilter(filter, btn) {
   renderCaBills();
 }
 
-function renderCaBills() {
-  const dentFil = (document.getElementById('ca-bill-dent-filter')||{}).value||'';
-  const getStatus = r => { try{const cs=JSON.parse(r.cs_data||'{}');return cs.billingStatus||'';}catch(_){return '';} };
-
-  const all = _caData.records;
-  document.getElementById('ca-bill-billed').textContent  = all.filter(r=>getStatus(r)==='billed').length;
-  document.getElementById('ca-bill-pending').textContent = all.filter(r=>getStatus(r)==='pending').length;
-  document.getElementById('ca-bill-waived').textContent  = all.filter(r=>getStatus(r)==='waived').length;
-  document.getElementById('ca-bill-unset').textContent   = all.filter(r=>!getStatus(r)).length;
-
-  let recs = [...all];
-  if (_caBillFil !== 'all') recs = recs.filter(r => getStatus(r) === _caBillFil);
-  if (dentFil) {
-    const dentPats = _caData.patients.filter(p=>p.id===dentFil).map(p=>p.id);
-    recs = recs.filter(r=>dentPats.includes(r.patient_id));
-  }
-
-  const PROC={filling:'Filling',rct:'RCT',rootcanal:'RCT',extraction:'Extraction',scaling:'Scaling',crown:'Crown',implant:'Implant',whitening:'Whitening',ortho:'Orthodontics',xray_consult:'X-Ray',other:'Treatment'};
-  const patMap={}; _caData.patients.forEach(p=>{patMap[p.id]=p.full_name||'Patient';});
-
-  const list=document.getElementById('ca-bills-list');
-  if(!list)return;
-  if(!recs.length){list.innerHTML='<div style="text-align:center;padding:28px;color:#64748b;font-size:13px">No records match this filter.</div>';return;}
-
-  list.innerHTML=recs.slice(0,100).map(r=>{
-    const status=getStatus(r);
-    const bc=status==='billed'?'ca-badge-green':status==='pending'?'ca-badge-amber':status==='waived'?'ca-badge-blue':'ca-badge-gray';
-    const bl=status==='billed'?'✅ Billed':status==='pending'?'⏳ Pending':status==='waived'?'🎁 Waived':'— Unset';
-    let dateStr='—';try{dateStr=new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){}
-    const proc=PROC[r.procedure_type]||r.procedure_type||'Visit';
-    return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-bottom:8px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
-        <span style="font-weight:700;font-size:13px;color:#e2e8f0">${patMap[r.patient_id]||'Patient'}</span>
-        <span class="ca-badge ${bc}">${bl}</span>
-      </div>
-      <div style="font-size:12px;color:#64748b">${proc} · ${dateStr}</div>
-    </div>`;
-  }).join('');
-}
+// renderCaBills is defined further below — reading from _caBills (bills table)
 
 // ── MY SPACE ─────────────────────────────────────────────
 function renderCaMySpace() {
@@ -14882,17 +14852,17 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 </body></html>`;
 }
 
+let _pdfWindowOpen = false; // prevents onAuthStateChange from re-routing during PDF open
+
 function openPrintWindow(html, filename) {
-  // Use a Blob URL — the only approach that is safe regardless of HTML content.
-  // document.write() and srcdoc both break when the HTML contains backticks,
-  // dollar signs, or other template-literal characters.
   try {
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
-
+    _pdfWindowOpen = true;
     const win = window.open(url, '_blank');
+    setTimeout(() => { _pdfWindowOpen = false; }, 3000);
     if (!win) {
-      // Popup blocked — trigger a direct download instead
+      _pdfWindowOpen = false;
       const a = document.createElement('a');
       a.href = url;
       a.download = (filename || 'serenora_doc') + '.html';
@@ -14903,11 +14873,9 @@ function openPrintWindow(html, filename) {
       showToast('Popup blocked — file downloaded instead');
       return;
     }
-
-    // Revoke after a generous delay to ensure the window has loaded
     setTimeout(() => URL.revokeObjectURL(url), 8000);
-
   } catch(e) {
+    _pdfWindowOpen = false;
     showToast('Could not open print window — please allow popups');
   }
 }
