@@ -3528,10 +3528,41 @@ function loadMdasHistory() {
     const stored = JSON.parse(localStorage.getItem(getMdasKey()));
     if (Array.isArray(stored) && stored.length > 0) return stored;
   } catch(e) {}
-  return [];  // empty by default — no fake data
+  return [];
 }
 function saveMdasHistory(hist) {
   try { localStorage.setItem(getMdasKey(), JSON.stringify(hist)); } catch(e) {}
+  // Also persist to Supabase dental_stories.mdas_history
+  const activeDb   = db || window.__supaDb;
+  const activeUser = currentUser || window.currentUser;
+  const activeProf = currentProfile;
+  if (activeDb && activeUser && activeProf && activeProf.clinic_id) {
+    activeDb.from('dental_stories').upsert({
+      patient_id:   String(activeUser.id),
+      clinic_id:    String(activeProf.clinic_id),
+      mdas_history: JSON.stringify(hist),
+      updated_at:   new Date().toISOString()
+    }, { onConflict: 'patient_id' }).then(() => {}).catch(() => {});
+  }
+}
+async function loadMdasHistoryFromDB() {
+  const activeDb   = db || window.__supaDb;
+  const activeUser = currentUser || window.currentUser;
+  if (!activeDb || !activeUser) return;
+  try {
+    const { data } = await activeDb.from('dental_stories')
+      .select('mdas_history')
+      .eq('patient_id', String(activeUser.id))
+      .maybeSingle();
+    if (data && data.mdas_history) {
+      const hist = JSON.parse(data.mdas_history);
+      if (Array.isArray(hist) && hist.length > 0) {
+        mdasHistory = hist;
+        try { localStorage.setItem(getMdasKey(), JSON.stringify(hist)); } catch(_) {}
+        renderMDASTrend();
+      }
+    }
+  } catch(_) {}
 }
 let mdasHistory = loadMdasHistory();
 
@@ -7028,7 +7059,8 @@ async function loadPatientDashboard() {
 
   showScreen('screen-dashboard');
 
-  // Extract only plain strings from currentUser — never pass the user object onward
+  // Load MDAS history from Supabase (persists across logins)
+  loadMdasHistoryFromDB();
   const email       = currentUser && currentUser.email ? String(currentUser.email) : '';
   const userId      = currentUser && currentUser.id    ? String(currentUser.id)    : '';
   // Prefer full_name from profile; fall back to email prefix
@@ -13763,6 +13795,7 @@ function closePickerModal() {
         <!-- Today's attendance summary -->
         <div class="ca-card">
           <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:12px">📅 Today's Attendance</div>
+          <div id="ca-att-count-summary" style="display:none"></div>
           <div id="ca-ms-attendance"></div>
         </div>
 
@@ -14053,7 +14086,7 @@ function renderCaDentistList() {
   }).join('');
 }
 
-function openCaDentDetail(dentistId) {
+async function openCaDentDetail(dentistId) {
   const d = _caData.dentists.find(x => x.id === dentistId);
   if (!d) return;
   const name  = /^dr\.?\s/i.test(d.full_name||'') ? d.full_name : 'Dr. '+(d.full_name||'Dentist');
@@ -14068,6 +14101,8 @@ function openCaDentDetail(dentistId) {
   }).length;
 
   const body = document.getElementById('ca-dent-sheet-body');
+
+  // Attendance stats placeholder while loading
   body.innerHTML = `
     <div class="ca-stat-grid">
       <div class="ca-stat"><div class="num">${_caData.records.length}</div><div class="lbl">Total Clinic Records</div></div>
@@ -14081,6 +14116,9 @@ function openCaDentDetail(dentistId) {
         <button onclick="setCaAttendance('${dentistId}','leave')"   style="flex:1;padding:10px;border-radius:10px;border:2px solid ${attStatus==='leave'?'#fbbf24':'rgba(255,255,255,.1)'};background:${attStatus==='leave'?'rgba(245,158,11,.15)':'transparent'};color:${attStatus==='leave'?'#fbbf24':'#94a3b8'};font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer">🏖 Leave</button>
       </div>
     </div>
+    <div class="ca-card" id="ca-dent-att-history">
+      <div style="font-size:13px;color:#64748b;text-align:center;padding:8px">⏳ Loading attendance history…</div>
+    </div>
     <div class="ca-card">
       <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:10px">📋 Professional Details</div>
       <div style="font-size:13px;color:#94a3b8;line-height:2">
@@ -14091,6 +14129,77 @@ function openCaDentDetail(dentistId) {
     </div>`;
 
   document.getElementById('ca-dent-overlay').classList.add('open');
+
+  // Fetch attendance history from Supabase
+  const activeDb = db || window.__supaDb;
+  const histEl   = document.getElementById('ca-dent-att-history');
+  if (!activeDb || !_caData.clinicId || !histEl) return;
+
+  try {
+    const { data } = await activeDb.from('attendance_logs')
+      .select('date, status')
+      .eq('dentist_id', dentistId)
+      .eq('clinic_id', _caData.clinicId)
+      .order('date', { ascending: false })
+      .limit(90); // last 90 days
+
+    if (!data || !data.length) {
+      histEl.innerHTML = `<div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:8px">📊 Attendance History</div>
+        <div style="font-size:13px;color:#64748b;text-align:center;padding:8px">No history yet.</div>`;
+      return;
+    }
+
+    // Count by status
+    const counts = { present:0, absent:0, leave:0 };
+    data.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+    const total = data.length;
+
+    // This month
+    const monthStart = today.slice(0,8) + '01';
+    const thisMonth  = data.filter(r => r.date >= monthStart);
+    const mCounts    = { present:0, absent:0, leave:0 };
+    thisMonth.forEach(r => { if (mCounts[r.status] !== undefined) mCounts[r.status]++; });
+
+    // Recent 10 entries as mini log
+    const recentRows = data.slice(0, 10).map(r => {
+      const dc = r.status==='present'?'#4ade80':r.status==='absent'?'#f87171':'#fbbf24';
+      const dl = r.status==='present'?'Present':r.status==='absent'?'Absent':'Leave';
+      let ds=''; try{ds=new Date(r.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}catch(_){}
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <span style="font-size:12px;color:#94a3b8">${ds}</span>
+        <span style="font-size:11px;font-weight:700;color:${dc};background:${dc}18;border:1px solid ${dc}44;border-radius:6px;padding:2px 8px">${dl}</span>
+      </div>`;
+    }).join('');
+
+    histEl.innerHTML = `
+      <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:12px">📊 Attendance History</div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">All Time (last 90 days)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:#4ade80">${counts.present}</div>
+          <div style="font-size:10px;color:#64748b;font-weight:600">Present</div>
+        </div>
+        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:#f87171">${counts.absent}</div>
+          <div style="font-size:10px;color:#64748b;font-weight:600">Absent</div>
+        </div>
+        <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:#fbbf24">${counts.leave}</div>
+          <div style="font-size:10px;color:#64748b;font-weight:600">Leaves</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">This Month</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;font-size:13px">
+        <span style="color:#4ade80;font-weight:700">✓ ${mCounts.present} present</span>
+        <span style="color:#f87171;font-weight:700">✗ ${mCounts.absent} absent</span>
+        <span style="color:#fbbf24;font-weight:700">🏖 ${mCounts.leave} leave</span>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Recent</div>
+      ${recentRows}`;
+
+  } catch(e) {
+    if (histEl) histEl.innerHTML = `<div style="font-size:12px;color:#64748b;text-align:center;padding:8px">Could not load history.</div>`;
+  }
 }
 
 // ── ATTENDANCE HELPERS ───────────────────────────────────────────────────────
@@ -14114,6 +14223,8 @@ async function setCaAttendance(dentistId, status) {
   openCaDentDetail(dentistId);
   renderCaDentistList();
   renderCaAttendanceSummary();
+  // Refresh the count summary from DB
+  loadCaAttendanceFromDB();
   // Persist to Supabase dentist_checkins table
   const activeDb = db || window.__supaDb;
   if (activeDb && _caData.clinicId) {
@@ -14136,15 +14247,45 @@ async function loadCaAttendanceFromDB() {
   if (!activeDb || !_caData.clinicId) return;
   const today = new Date().toISOString().slice(0,10);
   try {
+    // Load individual statuses
     const { data } = await activeDb.from('attendance_logs')
       .select('dentist_id, status').eq('clinic_id', _caData.clinicId).eq('date', today);
     if (data) {
       data.forEach(row => {
         try { localStorage.setItem(getCaAttKey(row.dentist_id), row.status); } catch(_) {}
       });
-      renderCaDentistList();
-      renderCaAttendanceSummary();
     }
+    // Load summary counts from todays_attendance view
+    const { data: summary } = await activeDb.from('todays_attendance')
+      .select('present_count, absent_count, leave_count, total_marked')
+      .eq('clinic_id', _caData.clinicId).eq('date', today).maybeSingle();
+    if (summary) {
+      const el = document.getElementById('ca-att-count-summary');
+      if (el) {
+        el.innerHTML = `
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+            <div style="flex:1;min-width:70px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:#4ade80">${summary.present_count||0}</div>
+              <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Present</div>
+            </div>
+            <div style="flex:1;min-width:70px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:#f87171">${summary.absent_count||0}</div>
+              <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Absent</div>
+            </div>
+            <div style="flex:1;min-width:70px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:#fbbf24">${summary.leave_count||0}</div>
+              <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Leave</div>
+            </div>
+            <div style="flex:1;min-width:70px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:22px;font-weight:900;color:#a5b4fc">${summary.total_marked||0}</div>
+              <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Marked</div>
+            </div>
+          </div>`;
+        el.style.display = 'block';
+      }
+    }
+    renderCaDentistList();
+    renderCaAttendanceSummary();
   } catch(e) { console.warn('[SerenOra] Attendance DB load failed:', e&&e.message?e.message:e); }
 }
 
