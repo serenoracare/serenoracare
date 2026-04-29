@@ -11131,13 +11131,16 @@ async function _saveDentSignature(dataUrl) {
   const statusEl = document.getElementById('dent-sig-status');
   if (statusEl) { statusEl.textContent = 'Saving…'; statusEl.style.display = 'block'; }
   const activeUser = currentUser || window.currentUser;
+  const activeProf = currentProfile;
   const activeDb   = db || window.__supaDb;
 
-  // Save locally
+  // Save locally under user key AND clinic key (so patient-side PDFs can find it)
   if (activeUser) {
     try { localStorage.setItem('serenora_sig_' + activeUser.id, dataUrl); } catch(_) {}
   }
-  // Update preview
+  if (activeProf && activeProf.clinic_id) {
+    try { localStorage.setItem('serenora_clinic_sig_' + activeProf.clinic_id, dataUrl); } catch(_) {}
+  }
   _updateSigPreview(dataUrl);
 
   // Save to Supabase profiles.signature_url
@@ -11147,7 +11150,7 @@ async function _saveDentSignature(dataUrl) {
       if (currentProfile) currentProfile.signature_url = dataUrl;
       if (statusEl) { statusEl.textContent = '✅ Signature saved'; }
     } catch(e) {
-      if (statusEl) { statusEl.textContent = '⚠️ Saved locally (DB update failed — see SQL note)'; statusEl.style.color = '#f59e0b'; }
+      if (statusEl) { statusEl.textContent = '⚠️ Saved locally'; statusEl.style.color = '#f59e0b'; }
     }
   } else {
     if (statusEl) { statusEl.textContent = '✅ Saved locally'; }
@@ -11167,7 +11170,6 @@ function _updateSigPreview(dataUrl) {
 function loadDentSignature() {
   const activeUser = currentUser || window.currentUser;
   const activeProf = currentProfile;
-  // Check profile first, then localStorage
   const sigUrl = (activeProf && activeProf.signature_url) ||
     (activeUser ? localStorage.getItem('serenora_sig_' + activeUser.id) : null);
   if (sigUrl) _updateSigPreview(sigUrl);
@@ -11176,6 +11178,7 @@ function loadDentSignature() {
 function getDentSignatureUrl() {
   const activeUser = currentUser || window.currentUser;
   const activeProf = currentProfile;
+  // Only used for preview in dentist portal — PDF generation fetches from Supabase directly
   return (activeProf && activeProf.signature_url) ||
     (activeUser ? localStorage.getItem('serenora_sig_' + activeUser.id) : null);
 }
@@ -11437,20 +11440,27 @@ async function loadDentPatientMessages(patientId) {
   const dentistId = currentUser ? String(currentUser.id) : null;
   try {
     const queries = [
+      // patient_messages: this patient ↔ this clinic
       db.from('patient_messages').select('id,message,created_at,sender_role')
         .eq('patient_id', patientId).eq('clinic_id', String(currentProfile.clinic_id))
         .order('created_at', { ascending: true }).limit(40)
     ];
-    if (dentistId) queries.push(
-      db.from('messages').select('id,sender_id,content,created_at')
-        .eq('sender_id', patientId).eq('recipient_id', dentistId)
-    );
+    if (dentistId) {
+      // messages: patient→dentist AND dentist→patient (both directions, scoped to THIS patient)
+      queries.push(
+        db.from('messages').select('id,sender_id,content,created_at')
+          .or(`and(sender_id.eq.${patientId},recipient_id.eq.${dentistId}),and(sender_id.eq.${dentistId},recipient_id.eq.${patientId})`)
+          .order('created_at', { ascending: true }).limit(40)
+      );
+    }
     const [res1, res2] = await Promise.all(queries);
     const pmRows = (res1.data||[]).map(m => ({
-      id:'pm_'+String(m.id), content:String(m.message), createdAt:String(m.created_at), isDentist:m.sender_role==='dentist'
+      id:'pm_'+String(m.id), content:String(m.message), createdAt:String(m.created_at),
+      isDentist: m.sender_role === 'dentist'
     }));
     const msgRows = (res2&&res2.data?res2.data:[]).map(m => ({
-      id:'msg_'+String(m.id), content:String(m.content), createdAt:String(m.created_at), isDentist:false
+      id:'msg_'+String(m.id), content:String(m.content), createdAt:String(m.created_at),
+      isDentist: String(m.sender_id) === dentistId
     }));
     const seen = new Set();
     const allRows = [...pmRows, ...msgRows]
@@ -11466,6 +11476,8 @@ async function loadDentPatientMessages(patientId) {
           <div style="font-size:13px;color:#e2e8f0">${m.content}</div>
         </div></div>`;
     }).join('');
+    // Scroll to bottom
+    list.scrollTop = list.scrollHeight;
   } catch(e) { card.style.display='none'; }
 }
 
@@ -13234,13 +13246,15 @@ async function loadPatDentistFolder() {
         treatment_summary:r.treatment_summary, prescription_details:r.prescription_details,
         next_appointment:r.next_appointment, cs_data:r.cs_data
       }).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f1f5f9;cursor:pointer" onclick='showPatientVisitSummary(JSON.parse(this.getAttribute("data-rec")))' data-rec="${safeRec}">
-        <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ccfbf1,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📄</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proc}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">${dateStr}</div>
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f1f5f9">
+        <div onclick='showPatientVisitSummary(JSON.parse(this.closest("[data-rec]").getAttribute("data-rec")))' style="display:flex;align-items:center;gap:12px;flex:1;cursor:pointer" data-rec="${safeRec}">
+          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ccfbf1,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📄</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proc}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${dateStr}</div>
+          </div>
         </div>
-        <div style="color:var(--teal);font-size:14px;flex-shrink:0">›</div>
+        <button onclick="downloadOPSummary('${r.id}','${String(activeUser.id)}')" style="background:rgba(13,148,136,.1);color:var(--teal);border:1.5px solid var(--teal);padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);flex-shrink:0">📋 PDF</button>
       </div>`;
     }).join('');
   } catch(e) {
@@ -13951,7 +13965,7 @@ async function _caLoadAll() {
   try {
     // Profiles in this clinic
     const { data: profiles } = await activeDb.from('profiles')
-      .select('id,full_name,role,friendly_id,age,sex,license_number,reg_state,medical_history')
+      .select('id,full_name,role,friendly_id,age,sex,license_number,reg_state,medical_history,assigned_dentist_id')
       .eq('clinic_id', _caData.clinicId);
 
     _caData.dentists = (profiles||[]).filter(p => ['dentist','dentist_pending'].includes(p.role));
@@ -14173,6 +14187,7 @@ function renderCaPatientList() {
   let pats = [..._caData.patients];
 
   if (search)  pats = pats.filter(p=>(p.full_name||'').toLowerCase().includes(search.toLowerCase())||(p.friendly_id||'').toLowerCase().includes(search.toLowerCase()));
+  if (dentFil) pats = pats.filter(p=>p.assigned_dentist_id===dentFil);
   if (_caAgeFil==='child')  pats = pats.filter(p=>p.age&&p.age<18);
   if (_caAgeFil==='adult')  pats = pats.filter(p=>p.age&&p.age>=18&&p.age<60);
   if (_caAgeFil==='senior') pats = pats.filter(p=>p.age&&p.age>=60);
@@ -14181,18 +14196,34 @@ function renderCaPatientList() {
   if (!list) return;
   if (!pats.length) { list.innerHTML='<div style="text-align:center;padding:28px;color:#64748b;font-size:13px">No patients match your filters.</div>'; return; }
 
+  const dentMap = {};
+  _caData.dentists.filter(d=>d.role==='dentist').forEach(d=>{ dentMap[d.id]=d.full_name||'Dentist'; });
+  const dentOpts = _caData.dentists.filter(d=>d.role==='dentist')
+    .map(d=>`<option value="${d.id}">${d.full_name||'Dentist'}</option>`).join('');
+
   list.innerHTML = pats.map(p => {
     const name  = p.full_name||'Patient';
     const init  = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const recs  = _caData.records.filter(r=>r.patient_id===p.id).length;
     const mhAlert = p.medical_history && ((p.medical_history.conditions||[]).length||p.medical_history.allergies);
-    return `<div class="ca-row" onclick="openCaPatDocket('${p.id}')">
-      <div class="ca-avatar">${init}</div>
-      <div style="flex:1">
-        <div class="ca-name">${name}${mhAlert?'<span style="color:#f87171;margin-left:5px;font-size:11px">⚠️</span>':''}</div>
-        <div class="ca-meta">${p.age?p.age+' yrs':''} ${p.sex?'· '+p.sex.charAt(0).toUpperCase()+p.sex.slice(1):''} ${p.friendly_id?'· '+p.friendly_id:''} · ${recs} visit${recs!==1?'s':''}</div>
+    const assignedDentName = p.assigned_dentist_id ? (dentMap[p.assigned_dentist_id]||'') : '';
+    return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:12px" onclick="openCaPatDocket('${p.id}')" style="cursor:pointer">
+        <div class="ca-avatar" style="cursor:pointer">${init}</div>
+        <div style="flex:1;cursor:pointer">
+          <div class="ca-name">${name}${mhAlert?'<span style="color:#f87171;margin-left:5px;font-size:11px">⚠️</span>':''}</div>
+          <div class="ca-meta">${p.age?p.age+' yrs':''} ${p.sex?'· '+p.sex.charAt(0).toUpperCase()+p.sex.slice(1):''} ${p.friendly_id?'· '+p.friendly_id:''} · ${recs} visit${recs!==1?'s':''}</div>
+        </div>
+        <div style="color:#475569;font-size:18px;cursor:pointer">›</div>
       </div>
-      <div style="color:#475569;font-size:18px">›</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)">
+        <div style="font-size:11px;color:#64748b;flex-shrink:0">Assigned dentist:</div>
+        <select onchange="assignPatientToDentist('${p.id}',this.value)" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#e2e8f0;font-family:var(--font);font-size:12px;padding:5px 8px;cursor:pointer" onclick="event.stopPropagation()">
+          <option value="">— Unassigned —</option>
+          ${dentOpts.replace(`value="${p.assigned_dentist_id||''}"`,`value="${p.assigned_dentist_id||''}" selected`)}
+        </select>
+        ${assignedDentName?`<span style="font-size:11px;color:#99f6e4;flex-shrink:0">Dr. ${assignedDentName}</span>`:''}
+      </div>
     </div>`;
   }).join('');
 }
@@ -14248,6 +14279,26 @@ function populateCaDentDropdowns() {
   const dents = _caData.dentists.filter(d=>d.role==='dentist');
   const opts  = '<option value="">All Dentists</option>' + dents.map(d=>`<option value="${d.id}">${d.full_name||'Dentist'}</option>`).join('');
   ['ca-pat-dent-filter','ca-bill-dent-filter'].forEach(id=>{ const el=document.getElementById(id); if(el){const v=el.value;el.innerHTML=opts;el.value=v;} });
+}
+
+async function assignPatientToDentist(patientId, dentistId) {
+  // Update in _caData immediately for UI
+  const pat = _caData.patients.find(p=>p.id===patientId);
+  if (pat) pat.assigned_dentist_id = dentistId || null;
+  const dent = _caData.dentists.find(d=>d.id===dentistId);
+  const dentName = dent ? (dent.full_name||'Dentist') : '';
+  showToast(dentistId ? `Assigned to Dr. ${dentName} ✓` : 'Assignment removed');
+  // Save to Supabase
+  const activeDb = db || window.__supaDb;
+  if (activeDb) {
+    try {
+      await activeDb.from('profiles').update({
+        assigned_dentist_id: dentistId || null
+      }).eq('id', patientId);
+    } catch(e) { showToast('Could not save assignment: ' + safeMsg(e)); }
+  }
+  renderCaPatientList();
+  renderCaBills();
 }
 
 // ── STATISTICS TAB ───────────────────────────────────────
@@ -14337,16 +14388,119 @@ function renderCaAttendanceSummary() {
   const today = new Date().toISOString().slice(0,10);
   const dents = _caData.dentists.filter(d=>d.role==='dentist');
   if(!dents.length){el.innerHTML='<div style="font-size:13px;color:#64748b;text-align:center;padding:12px">No dentists registered yet.</div>';return;}
-  el.innerHTML=dents.map(d=>{
-    const s    = getCaAttStatus(d.id);
+
+  // Date selector for viewing specific day/month
+  const selId = 'ca-att-date-sel';
+  const existing = document.getElementById(selId);
+  const selVal = existing ? existing.value : today;
+
+  el.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+      <input type="date" id="${selId}" value="${selVal}" max="${today}"
+        onchange="renderCaAttendanceSummary()"
+        style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#e2e8f0;font-family:var(--font);font-size:12px;padding:6px 10px">
+      <button onclick="downloadMonthlyAttendance()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);flex-shrink:0">📊 Monthly PDF</button>
+    </div>
+    ${dents.map(d=>{
+      const selDate = (document.getElementById(selId)||{}).value || today;
+      const s    = getCaAttStatusForDate(d.id, selDate);
+      const name = d.full_name||'Dentist';
+      const bc   = s==='present'?'ca-badge-green':s==='absent'?'ca-badge-red':s==='leave'?'ca-badge-amber':'ca-badge-gray';
+      const bl   = s==='present'?'✓ Present':s==='absent'?'✗ Absent':s==='leave'?'🏖 Leave':'— Not marked';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+        <span style="font-size:13px;color:#e2e8f0;font-weight:600">${/^dr\.?\s/i.test(name)?name:'Dr. '+name}</span>
+        <span class="ca-badge ${bc}">${bl}</span>
+      </div>`;
+    }).join('')}`;
+}
+
+// Get attendance for a specific date (checks localStorage key with date suffix)
+function getCaAttStatusForDate(dentistId, date) {
+  const dateKey = 'serenora_att_' + (_caData.clinicId||'') + '_' + dentistId + '_' + date;
+  // Try date-specific key first, then fall back to legacy key (today only)
+  try {
+    const v = localStorage.getItem(dateKey);
+    if (v) return v;
+    if (date === new Date().toISOString().slice(0,10)) return getCaAttStatus(dentistId);
+    return null;
+  } catch(_) { return null; }
+}
+
+async function downloadMonthlyAttendance() {
+  const dateEl = document.getElementById('ca-att-date-sel');
+  const date = dateEl ? dateEl.value : new Date().toISOString().slice(0,10);
+  const monthStart = date.slice(0,8) + '01';
+  const [year, month] = date.slice(0,7).split('-');
+  const monthName = new Date(date).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const dents = _caData.dentists.filter(d=>d.role==='dentist');
+  const daysInMonth = new Date(Number(year), Number(month), 0).getDate();
+
+  // Try Supabase first for full month data
+  let dbRows = [];
+  const activeDb = db || window.__supaDb;
+  if (activeDb && _caData.clinicId) {
+    try {
+      const { data } = await activeDb.from('attendance_logs')
+        .select('dentist_id, date, status')
+        .eq('clinic_id', _caData.clinicId)
+        .gte('date', monthStart)
+        .lte('date', date);
+      dbRows = data || [];
+    } catch(_) {}
+  }
+
+  // Build attendance map: dentistId → { date → status }
+  const attMap = {};
+  dents.forEach(d => { attMap[d.id] = {}; });
+  dbRows.forEach(r => {
+    if (attMap[r.dentist_id]) attMap[r.dentist_id][r.date] = r.status;
+  });
+
+  const days = Array.from({length:daysInMonth},(_,i)=>{
+    const d = String(i+1).padStart(2,'0');
+    return `${year}-${month}-${d}`;
+  }).filter(d=>d<=date);
+
+  const tableRows = dents.map(d=>{
     const name = d.full_name||'Dentist';
-    const bc   = s==='present'?'ca-badge-green':s==='absent'?'ca-badge-red':s==='leave'?'ca-badge-amber':'ca-badge-gray';
-    const bl   = s==='present'?'✓ Present':s==='absent'?'✗ Absent':s==='leave'?'🏖 Leave':'— Not marked';
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-      <span style="font-size:13px;color:#e2e8f0;font-weight:600">${/^dr\.?\s/i.test(name)?name:'Dr. '+name}</span>
-      <span class="ca-badge ${bc}">${bl}</span>
-    </div>`;
+    const row = days.map(day=>{
+      const s = attMap[d.id][day];
+      const c = s==='present'?'#16a34a':s==='absent'?'#dc2626':s==='leave'?'#d97706':'#94a3b8';
+      const l = s==='present'?'P':s==='absent'?'A':s==='leave'?'L':'—';
+      return `<td style="text-align:center;padding:4px 2px;font-size:11px;color:${c};font-weight:700">${l}</td>`;
+    }).join('');
+    const p = Object.values(attMap[d.id]).filter(s=>s==='present').length;
+    const a = Object.values(attMap[d.id]).filter(s=>s==='absent').length;
+    const l = Object.values(attMap[d.id]).filter(s=>s==='leave').length;
+    return `<tr><td style="padding:6px 10px;font-weight:700;font-size:12px;white-space:nowrap">Dr. ${name}</td>${row}
+      <td style="padding:4px 8px;text-align:center;font-size:11px;color:#16a34a;font-weight:700">${p}</td>
+      <td style="padding:4px 8px;text-align:center;font-size:11px;color:#dc2626;font-weight:700">${a}</td>
+      <td style="padding:4px 8px;text-align:center;font-size:11px;color:#d97706;font-weight:700">${l}</td>
+    </tr>`;
   }).join('');
+
+  const dateHeaders = days.map(d=>`<th style="padding:4px 2px;min-width:22px;text-align:center;font-size:10px">${d.slice(8)}</th>`).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    body{font-family:Arial,sans-serif;padding:24px;color:#0f172a}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{background:#f1f5f9;padding:6px;text-align:left}
+    tr:nth-child(even){background:#f8fafc}
+    td,th{border:1px solid #e2e8f0}
+    h2{color:#0d9488;margin-bottom:4px}
+  </style></head><body>
+    <h2>SerenOra Care — Attendance Report</h2>
+    <div style="font-size:13px;color:#64748b;margin-bottom:16px">${_caData.clinicName||'Clinic'} · ${monthName}</div>
+    <table><thead><tr>
+      <th>Dentist</th>${dateHeaders}
+      <th style="background:#dcfce7;text-align:center">P</th>
+      <th style="background:#fee2e2;text-align:center">A</th>
+      <th style="background:#fef3c7;text-align:center">L</th>
+    </tr></thead><tbody>${tableRows}</tbody></table>
+    <div style="margin-top:12px;font-size:11px;color:#94a3b8">P = Present · A = Absent · L = Leave · — = Not marked</div>
+  </body></html>`;
+
+  openPrintWindow(html, 'attendance_' + date.slice(0,7));
 }
 
 function copyJoinCode() {
@@ -14584,11 +14738,19 @@ function renderCaBillStats() {
 
 function renderCaBills() {
   const list = document.getElementById('ca-bills-list'); if (!list) return;
+  const dentFil = (document.getElementById('ca-bill-dent-filter')||{}).value||'';
   loadCaBills();
   renderCaBillStats();
   const clinicBills = _caBills.filter(b=>b.clinic_id===_caData.clinicId);
   let bills = [...clinicBills];
   if (_caBillFil !== 'all') bills = bills.filter(b=>b.status===_caBillFil);
+  // Filter by assigned dentist — show bills for patients assigned to selected dentist
+  if (dentFil) {
+    const assignedPatIds = _caData.patients
+      .filter(p=>p.assigned_dentist_id===dentFil)
+      .map(p=>p.id);
+    bills = bills.filter(b=>assignedPatIds.includes(b.patient_id));
+  }
   if (!bills.length) { list.innerHTML='<div style="text-align:center;padding:28px;color:#64748b;font-size:13px">No bills match this filter.</div>'; return; }
 
   list.innerHTML = bills.map(b => {
@@ -14631,15 +14793,29 @@ async function loadPatBills() {
     list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Link to a clinic to see your bills here.</div>';
     return;
   }
-  const key = 'serenora_bills_' + String(activeProf.clinic_id);
+  list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">⏳ Loading…</div>';
+
+  // Try Supabase first, fall back to localStorage
   let bills = [];
-  try { bills = JSON.parse(localStorage.getItem(key)) || []; } catch(_) {}
-  const myBills = bills.filter(b => b.patient_id === String(activeUser.id));
-  if (!myBills.length) {
+  const activeDb = db || window.__supaDb;
+  if (activeDb) {
+    try {
+      const { data } = await activeDb.from('bills')
+        .select('*').eq('patient_id', String(activeUser.id))
+        .order('created_at', { ascending: false });
+      if (data && data.length > 0) bills = data;
+    } catch(_) {}
+  }
+  if (!bills.length) {
+    const key = 'serenora_bills_' + String(activeProf.clinic_id);
+    try { bills = (JSON.parse(localStorage.getItem(key))||[]).filter(b=>b.patient_id===String(activeUser.id)); } catch(_) {}
+  }
+
+  if (!bills.length) {
     list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">No bills yet. They will appear here after your clinic creates one.</div>';
     return;
   }
-  list.innerHTML = myBills.map(b => {
+  list.innerHTML = bills.map(b => {
     const bc = b.status==='paid'?'#22c55e':b.status==='waived'?'#93c5fd':'#fbbf24';
     const bl = b.status==='paid'?'✅ Paid':b.status==='waived'?'🎁 Waived':'⏳ Pending';
     let dateStr='';try{dateStr=new Date(b.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}catch(_){}
@@ -14647,14 +14823,15 @@ async function loadPatBills() {
     return `<div style="background:var(--card-bg,#fff);border:1.5px solid ${b.status==='pending'?'#fbbf24':b.status==='paid'?'#22c55e':'#cbd5e1'};border-radius:16px;padding:16px;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div>
-          <div style="font-weight:700;font-size:14px;color:var(--navy)">${b.procedure}${b.description?' — '+b.description:''}</div>
+          <div style="font-weight:700;font-size:14px;color:var(--navy)">${b.procedure||'Treatment'}${b.description?' — '+b.description:''}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">${dateStr}</div>
         </div>
         <span style="background:${bc}22;color:${bc};border:1px solid ${bc}66;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700;flex-shrink:0;margin-left:8px">${bl}</span>
       </div>
-      <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:10px">₹${b.amount.toLocaleString('en-IN')}</div>
-      <div style="display:flex;gap:8px">
+      <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:10px">₹${Number(b.amount||0).toLocaleString('en-IN')}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button onclick="downloadReceipt(decodeURIComponent('${safeBill}'))" style="flex:1;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 ${b.status==='paid'?'Download Receipt':'View Bill'}</button>
+        ${b.record_id?`<button onclick="downloadOPSummary('${b.record_id}','${String(activeUser.id)}')" style="background:rgba(13,148,136,.1);color:var(--teal);border:1.5px solid var(--teal);padding:10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -14716,9 +14893,9 @@ showDentScreen = function(tabId) {
 // White base, watermark logo, header with clinic + dentist details
 // ══════════════════════════════════════════════════════════════════════════════
 
-function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, licenseNo, regState, footerNote) {
-  // Get the dentist's saved signature
-  const sigUrl = typeof getDentSignatureUrl === 'function' ? getDentSignatureUrl() : null;
+function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, licenseNo, regState, footerNote, signatureUrl) {
+  // signatureUrl passed explicitly — falls back to getDentSignatureUrl() for dentist portal
+  const sigUrl = signatureUrl || (typeof getDentSignatureUrl === 'function' ? getDentSignatureUrl() : null);
   const sigHtml = sigUrl
     ? `<div style="margin-bottom:6px"><img src="${sigUrl}" alt="Signature" style="max-width:160px;max-height:60px;object-fit:contain"></div>`
     : '<div style="height:44px"></div>';
@@ -14881,7 +15058,24 @@ function openPrintWindow(html, filename) {
 }
 
 // Download receipt for a bill
-function downloadReceipt(billOrStr) {
+// Fetch the clinic's dentist signature from Supabase — works from any portal (patient, dentist, CA)
+async function fetchClinicSignature(clinicId) {
+  const activeDb = db || window.__supaDb;
+  if (!activeDb || !clinicId) return null;
+  try {
+    // Find any dentist in this clinic who has a signature saved
+    const { data } = await activeDb.from('profiles')
+      .select('signature_url')
+      .eq('clinic_id', String(clinicId))
+      .eq('role', 'dentist')
+      .not('signature_url', 'is', null)
+      .limit(1)
+      .maybeSingle();
+    return (data && data.signature_url) || null;
+  } catch(_) { return null; }
+}
+
+async function downloadReceipt(billOrStr) {
   let b;
   try { b = typeof billOrStr === 'string' ? JSON.parse(billOrStr) : billOrStr; } catch(_) { showToast('Could not load bill data'); return; }
 
@@ -14890,6 +15084,10 @@ function downloadReceipt(billOrStr) {
   const joinC     = b.join_code   || '';
   const licNo     = (currentProfile && currentProfile.license_number) || '';
   const regSt     = (currentProfile && currentProfile.reg_state) || '';
+
+  // Fetch signature from Supabase (works even when patient is logged in)
+  const clinicId  = b.clinic_id || (currentProfile && currentProfile.clinic_id);
+  const sigUrl    = await fetchClinicSignature(clinicId);
 
   let dateStr='';try{dateStr=new Date(b.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}catch(_){}
   let paidStr='';try{if(b.paid_at)paidStr=new Date(b.paid_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}catch(_){}
@@ -14925,7 +15123,7 @@ function downloadReceipt(billOrStr) {
     ${b.status==='paid'?`<div style="margin-top:14px;background:#dcfce7;border-radius:10px;padding:10px 14px;font-size:12px;color:#166534;font-weight:600">✅ Payment received. Thank you!</div>`:''}`;
 
   const title = b.status==='paid' ? 'Payment Receipt' : 'Bill / Invoice';
-  const html = buildPdfHtml(content, title, dentName, clinicN, joinC, licNo, regSt, `Bill ID: ${b.id}`);
+  const html = buildPdfHtml(content, title, dentName, clinicN, joinC, licNo, regSt, `Bill ID: ${b.id}`, sigUrl);
   openPrintWindow(html, `receipt_${b.id}`);
 }
 
@@ -14978,7 +15176,10 @@ async function downloadOPSummary(recordId, patientId) {
     ${csData&&csData.postOp?`<div class="pdf-section"><div class="pdf-section-title">Post-Operative Instructions</div><p style="margin:0;color:#334155">${csData.postOp}</p></div>`:''}
     ${rec&&rec.next_appointment?`<div style="background:#f0fdfa;border:1.5px solid #0d9488;border-radius:10px;padding:12px 14px;margin-top:8px"><span style="font-weight:700;color:#0d9488">📅 Next Appointment: </span><span style="font-weight:700;color:#0f172a">${(()=>{try{return new Date(rec.next_appointment).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch(_){return rec.next_appointment;}})()}</span></div>`:''}`;
 
-  const html = buildPdfHtml(content, `OP Visit Summary — ${procLabel}`, dentName, clinicN, joinC, licNo, regSt, `Patient: ${pat?pat.full_name||'':''}`);
+  const clinicId = (currentProfile && currentProfile.clinic_id) || _caData.clinicId;
+  const sigUrl   = await fetchClinicSignature(clinicId);
+
+  const html = buildPdfHtml(content, `OP Visit Summary — ${procLabel}`, dentName, clinicN, joinC, licNo, regSt, `Patient: ${pat?pat.full_name||'':''}`, sigUrl);
   openPrintWindow(html, `op_summary_${recordId||Date.now()}`);
 }
 
