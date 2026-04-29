@@ -13720,7 +13720,7 @@ function closePickerModal() {
 .ca-bnav-item span{font-size:10px;color:rgba(255,255,255,.3);font-weight:600;transition:color .2s}
 .ca-bnav-item.active svg{stroke:#0d9488}
 .ca-bnav-item.active span{color:#0d9488}
-.ca-tab-content{display:none}
+.ca-tab-content{display:none;padding-bottom:80px}
 .ca-tab-content.active{display:block}
 .ca-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.65);align-items:flex-end}
 .ca-overlay.open{display:flex}
@@ -13833,9 +13833,10 @@ function closePickerModal() {
         <div id="ca-cal-day-title" style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:10px"></div>
         <div id="ca-cal-day-appts"></div>
       </div>
-    </div>
+    </div><!-- end ca-tab-calendar -->
 
     <!-- BILLS TAB -->
+    <div id="ca-tab-bills" class="ca-tab-content">
       <div class="ca-page">
         <div class="ca-section-title">Billing</div>
         <div class="ca-section-sub">Create bills, track payments, and download receipts.</div>
@@ -14041,6 +14042,10 @@ function showCaTab(tabId, btn, title) {
   document.querySelectorAll('.ca-bnav-item').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   const titleEl = document.getElementById('ca-screen-title'); if (titleEl) titleEl.textContent = title;
+  // Tab-specific init — only runs when that tab is actually opened
+  if (tabId === 'ca-tab-bills')    { loadCaBills(); renderCaBillStats(); renderCaBills(); }
+  if (tabId === 'ca-tab-patients') { renderCaPatientList(); }
+  if (tabId === 'ca-tab-calendar') { renderCaCalendar(); }
 }
 
 function closeCaOverlay(id) {
@@ -14905,10 +14910,14 @@ async function _loadCaBillsFromDB() {
     if (data && data.length > 0) {
       _caBills = data;
       try { localStorage.setItem(getCaBillsKey(), JSON.stringify(_caBills)); } catch(_) {}
-      renderCaBills();
-      renderCaBillStats();
+      // Only re-render if bills tab is currently visible
+      const billsTab = document.getElementById('ca-tab-bills');
+      if (billsTab && billsTab.classList.contains('active')) {
+        renderCaBillStats();
+        renderCaBills();
+      }
     }
-  } catch(_) {} // bills table may not exist yet — localStorage is fallback
+  } catch(_) {}
 }
 
 function saveCaBills() {
@@ -15195,8 +15204,6 @@ function renderCaBillStats() {
 function renderCaBills() {
   const list = document.getElementById('ca-bills-list'); if (!list) return;
   const dentFil = (document.getElementById('ca-bill-dent-filter')||{}).value||'';
-  loadCaBills();
-  renderCaBillStats();
   const clinicBills = _caBills.filter(b=>b.clinic_id===_caData.clinicId);
   let bills = [...clinicBills];
   if (_caBillFil !== 'all') bills = bills.filter(b=>b.status===_caBillFil);
@@ -15689,21 +15696,20 @@ async function downloadMyOPSummary(recordId) {
   downloadOPSummary(recordId, String(activeUser.id));
 }
 
-// Override _caLoadAll to also run patient approvals and bill stats
+// Override _caLoadAll to also run patient approvals and attendance load
 const _origCaLoadAll = _caLoadAll;
 _caLoadAll = async function() {
   await _origCaLoadAll.call(this);
   renderCaPatientApprovals();
-  loadCaBills();
-  renderCaBillStats();
-  // Load today's attendance from Supabase
   loadCaAttendanceFromDB();
-  // Populate bill patient dropdown in case tab is already open
+  // Pre-populate bill patient dropdown (without rendering bills yet)
   const patSel = document.getElementById('ca-bill-patient-select');
   if (patSel && _caData.patients) {
     patSel.innerHTML = '<option value="">Select Patient…</option>' +
       _caData.patients.map(p=>`<option value="${p.id}">${p.full_name||'Patient'}</option>`).join('');
   }
+  // Pre-populate dentist dropdowns
+  populateCaDentDropdowns();
 };
 
 </script>
