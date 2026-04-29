@@ -7999,8 +7999,13 @@ async function loadDentistMessages() {
   const container = document.getElementById('dmsg-messages');
   if (!container || !_activeDentistId || !currentUser) return;
 
-  const patientId  = String(currentUser.id);
-  const dentistId  = _activeDentistId;
+  const isReplyMode = !!window._dentistReplyMode;
+  // Normal mode (patient): currentUser=patient, _activeDentistId=dentist
+  // Reply mode (dentist):  currentUser=dentist, _activeDentistId=patient
+  const patientId = isReplyMode ? String(_activeDentistId)   : String(currentUser.id);
+  const dentistId = isReplyMode ? String(currentUser.id)     : String(_activeDentistId);
+  const myId      = String(currentUser.id);
+
   const storageKey = `serenora_msgs_${patientId}_${dentistId}`;
   let messages = [];
 
@@ -8019,14 +8024,16 @@ async function loadDentistMessages() {
             .eq('patient_id', patientId).eq('clinic_id', clinicId)
         );
       }
-      const [res1, res2, res3] = await Promise.all(allQueries);
-      const peerRows = [...(res1.data||[]), ...(res2.data||[])].map(m => ({
+      const results = await Promise.all(allQueries);
+      const peerRows = [...(results[0].data||[]), ...(results[1].data||[])].map(m => ({
         id: 'msg_'+String(m.id), senderId: String(m.sender_id), content: String(m.content),
-        createdAt: String(m.created_at), fromMe: String(m.sender_id) === patientId
+        createdAt: String(m.created_at), fromMe: String(m.sender_id) === myId
       }));
-      const docketRows = (res3 && res3.data ? res3.data : []).map(m => ({
-        id: 'pm_'+String(m.id), senderId: m.sender_role==='dentist' ? dentistId : patientId,
-        content: String(m.message), createdAt: String(m.created_at), fromMe: m.sender_role !== 'dentist'
+      const docketRows = (results[2] && results[2].data ? results[2].data : []).map(m => ({
+        id: 'pm_'+String(m.id),
+        senderId: m.sender_role === 'dentist' ? dentistId : patientId,
+        content: String(m.message), createdAt: String(m.created_at),
+        fromMe: isReplyMode ? m.sender_role === 'dentist' : m.sender_role !== 'dentist'
       }));
       const seen = new Set();
       const combined = [...peerRows, ...docketRows]
@@ -8042,7 +8049,7 @@ async function loadDentistMessages() {
     try { messages = JSON.parse(localStorage.getItem(storageKey)) || []; } catch(_) {}
   }
 
-  renderDentistMessages(messages, patientId);
+  renderDentistMessages(messages, myId);
 }
 
 function renderDentistMessages(messages, patientId) {
@@ -11322,14 +11329,15 @@ async function loadDentMySpaceInbox() {
 }
 
 function openDentInboxReply(patientId, patientName) {
-  // Open the actual chat thread with this patient
-  // _dentistReplyMode = true means the dentist is replying to a patient
-  window._dentistReplyMode = true;
+  window._dentistReplyMode      = true;
   window._dentistReplyPatientId = patientId;
+  // In reply mode the "other side" is the patient — store patient ID in _activeDentistId
+  // so loadDentistMessages can query the right thread (patient↔dentist)
+  _activeDentistId   = patientId;
   _activeDentistName = patientName;
-  const nameEl = document.getElementById('dmsg-dentist-name');
+  const nameEl   = document.getElementById('dmsg-dentist-name');
   const clinicEl = document.getElementById('dmsg-dentist-clinic');
-  if (nameEl) nameEl.textContent = patientName;
+  if (nameEl)   nameEl.textContent   = patientName;
   if (clinicEl) clinicEl.textContent = 'Patient message thread';
   showScreen('screen-dentist-messages');
   loadDentistMessages();
@@ -14349,7 +14357,12 @@ function getCaClinicId() {
 
 function getCaAttKey(dentistId) {
   const today = new Date().toISOString().slice(0,10);
-  return 'ca_att_' + getCaClinicId() + '_' + dentistId + '_' + today;
+  return 'serenora_att_' + (getCaClinicId()||'') + '_' + dentistId + '_' + today;
+}
+
+function getCaAttStatus(dentistId) {
+  const today = new Date().toISOString().slice(0,10);
+  return getCaAttStatusForDate(dentistId, today);
 }
 
 async function setCaAttendance(dentistId, status) {
@@ -14506,6 +14519,19 @@ function renderCaPatientList() {
   }).join('');
 }
 
+function openCaVisitSummaryModal(rec) {
+  // Reuse the existing showVisitSummaryModal if available (patient portal function)
+  if (typeof showVisitSummaryModal === 'function') {
+    const procLabels = { filling:'Dental Filling', rct:'Root Canal (RCT)', extraction:'Extraction', scaling:'Scaling', crown:'Crown', implant:'Implant', other:'Treatment' };
+    let dateStr = '—'; try { dateStr = new Date(rec.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch(_) {}
+    const proc = procLabels[rec.procedure_type]||rec.procedure_type||'Dental Visit';
+    showVisitSummaryModal(rec.id, proc, dateStr, rec);
+    return;
+  }
+  // Fallback: download the PDF
+  downloadOPSummary(rec.id, '');
+}
+
 async function openCaPatDocket(patientId) {
   const p = _caData.patients.find(x=>x.id===patientId);
   if (!p) return;
@@ -14549,6 +14575,10 @@ async function openCaPatDocket(patientId) {
           </div>
           ${complaint}${treatment}${teeth}${rx}
           ${r.next_appointment?`<div style="font-size:11px;color:#0d9488;margin-top:4px;font-weight:600">📅 Next: ${(()=>{try{return new Date(r.next_appointment).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){return r.next_appointment;}})()}</div>`:''}
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button onclick="downloadOPSummary('${r.id}','${patientId}')" style="flex:1;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 PDF</button>
+            <button onclick="openCaVisitSummaryModal(${JSON.stringify({id:r.id,procedure_type:r.procedure_type,created_at:r.created_at,treatment_summary:r.treatment_summary,prescription_details:r.prescription_details,next_appointment:r.next_appointment,cs_data:r.cs_data}).replace(/"/g,'&quot;')})" style="flex:1;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">👁 Summary</button>
+          </div>
         </div>`;
       }).join('')
     }`;
@@ -15084,17 +15114,26 @@ async function renderCaCalendar() {
     try {
       // Appointments = next_appointment dates from medical_records
       const { data: recs } = await activeDb.from('medical_records')
-        .select('next_appointment, patient_id, procedure_type')
+        .select('next_appointment, patient_id, procedure_type, clinic_id')
         .eq('clinic_id', _caData.clinicId)
         .gte('next_appointment', monthStart)
         .lte('next_appointment', monthEnd + 'T23:59:59');
       const patMap = {};
       _caData.patients.forEach(p => { patMap[p.id] = p.full_name||'Patient'; });
+      // Map patient → assigned dentist name
+      const dentMap = {};
+      _caData.dentists.filter(d=>d.role==='dentist').forEach(d=>{ dentMap[d.id]=d.full_name||'Dentist'; });
+      const patDentMap = {};
+      _caData.patients.forEach(p => { if (p.assigned_dentist_id) patDentMap[p.id] = dentMap[p.assigned_dentist_id]||''; });
       (recs||[]).forEach(r => {
         const d = r.next_appointment ? r.next_appointment.slice(0,10) : null;
         if (!d) return;
         if (!apptMap[d]) apptMap[d] = [];
-        apptMap[d].push({ name: patMap[r.patient_id]||'Patient', proc: r.procedure_type||'Visit' });
+        apptMap[d].push({
+          name: patMap[r.patient_id]||'Patient',
+          proc: r.procedure_type||'Visit',
+          dentist: patDentMap[r.patient_id]||''
+        });
       });
     } catch(_) {}
     try {
@@ -15161,29 +15200,33 @@ function showCaCalDay(dateStr) {
   if (!detail || !title || !apptEl) return;
 
   let dateLabel = '';
-  try { dateLabel = new Date(dateStr).toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); } catch(_) {}
+  try { dateLabel = new Date(dateStr + 'T12:00:00').toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); } catch(_) {}
   title.textContent = dateLabel;
 
-  // Find appointments for this day
-  const patMap = {};
-  _caData.patients.forEach(p => { patMap[p.id] = p.full_name||'Patient'; });
-  const dayAppts = _caData.records.filter(r => {
-    const d = r.next_appointment ? r.next_appointment.slice(0,10) : null;
-    return d === dateStr;
+  const dayAppts = (_caData.records||[]).filter(r => {
+    if (!r.next_appointment) return false;
+    return r.next_appointment.slice(0,10) === dateStr;
   });
-
-  const PROC = { filling:'Dental Filling', rct:'Root Canal (RCT)', extraction:'Extraction', scaling:'Scaling', crown:'Crown', implant:'Implant', other:'Treatment' };
 
   if (!dayAppts.length) {
     apptEl.innerHTML = '<div style="font-size:13px;color:#64748b;text-align:center;padding:8px">No appointments on this day.</div>';
   } else {
+    const dentMap = {};
+    _caData.dentists.filter(d=>d.role==='dentist').forEach(d=>{ dentMap[d.id]=d.full_name||'Dentist'; });
+    const patDentMap = {};
+    _caData.patients.forEach(p => { if (p.assigned_dentist_id) patDentMap[p.id] = dentMap[p.assigned_dentist_id]||''; });
+    const PROC = { filling:'Dental Filling', rct:'Root Canal (RCT)', extraction:'Extraction', scaling:'Scaling', crown:'Crown', implant:'Implant', other:'Treatment' };
     apptEl.innerHTML = dayAppts.map(r => {
-      const pname = patMap[r.patient_id]||'Patient';
-      const proc  = PROC[r.procedure_type]||r.procedure_type||'Visit';
+      const pname  = (_caData.patients.find(p=>p.id===r.patient_id)||{full_name:'Patient'}).full_name||'Patient';
+      const proc   = PROC[r.procedure_type]||r.procedure_type||'Visit';
+      const dname  = patDentMap[r.patient_id] ? `Dr. ${patDentMap[r.patient_id]}` : '';
       return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
         <div style="width:8px;height:8px;border-radius:50%;background:#6366f1;flex-shrink:0"></div>
-        <div><div style="font-size:13px;font-weight:600;color:#e2e8f0">${pname}</div>
-        <div style="font-size:11px;color:#64748b">${proc}</div></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#e2e8f0">${pname}</div>
+          <div style="font-size:11px;color:#64748b">${proc}${dname?' · <span style="color:#99f6e4">'+dname+'</span>':''}</div>
+        </div>
+        <button onclick="openCaPatDocket('${r.patient_id}')" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font)">View</button>
       </div>`;
     }).join('');
   }
