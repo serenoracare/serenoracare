@@ -1727,6 +1727,10 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       </div>
 
       <div style="height:40px"></div>
+      <div style="text-align:center;padding:16px 20px 32px;font-size:11px;color:rgba(255,255,255,.25);line-height:1.8">
+        © 2026 SerenOra Care. All rights reserved.<br>
+        Compassionate dental care, reimagined for India.
+      </div>
     </div>
 
   </div><!-- end home-scroll -->
@@ -1762,7 +1766,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== AGE ===== -->
 <div class="screen" id="screen-age">
-  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><span></span></div>
   <div class="page-content">
     <div class="section-title" id="age-title">Who's this for? 💙</div>
     <div class="section-sub" id="age-sub">We'll personalize your experience based on age.</div>
@@ -1886,7 +1890,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
     <div class="bottom-nav">
     <button class="bnav-item active" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal)">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-games')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
@@ -2040,29 +2045,197 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
 </div>
 
+<!-- ===== DENTAL CARE ROUTINE ===== -->
+<div class="screen" id="screen-dental-care">
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Dental Care</span></div>
+  <div class="page-content">
+
+    <div class="section-title">Your Mouth Deserves Love Too</div>
+    <div class="section-sub">No lectures. No judgement. Just the basics — made actually useful.</div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar" style="margin-bottom:16px">
+      <button class="tab active" onclick="switchDentalTab('routine',this)">Routine</button>
+      <button class="tab" onclick="switchDentalTab('techniques',this)">Techniques</button>
+      <button class="tab" onclick="switchDentalTab('quiz',this)">Quick Quiz</button>
+      <button class="tab" onclick="switchDentalTab('nojudge',this)">No Judgement</button>
+    </div>
+
+    <!-- ROUTINE TAB -->
+    <div id="dc-tab-routine">
+      <div class="card-teal" style="margin-bottom:12px">
+        <div style="font-weight:800;font-size:16px;color:#134e4a;margin-bottom:6px">🌅 Morning (2 min)</div>
+        <div style="font-size:13px;color:#1e7a6a;line-height:1.8">
+          ✅ Brush for 2 full minutes (yes, actually time it)<br>
+          ✅ Use fluoride toothpaste — the cheap stuff works fine<br>
+          ✅ Clean your tongue (the real source of morning breath 💀)<br>
+          ✅ Rinse. Done. You're a hero.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:6px">🌙 Night (the important one)</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          ✅ Brush before bed — non-negotiable<br>
+          ✅ Floss (yes we know, but even once a day helps more than never)<br>
+          ✅ Mouthwash is optional, not mandatory<br>
+          ✅ Don't eat after brushing. Goodbye chai at 11pm 🫖
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;border-left:3px solid #f59e0b">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:6px">⚡ The Bare Minimum (no guilt)</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          If you're exhausted, sick, or just had a rough day —<br>
+          <strong style="color:var(--navy)">one brush at night is infinitely better than zero.</strong><br>
+          Imperfect consistency beats perfect streaks that collapse.
+        </div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#f0f9ff,#ecfdf5);margin-bottom:12px">
+        <div style="font-weight:800;font-size:15px;color:#065f46;margin-bottom:8px">🕐 When to change your toothbrush</div>
+        <div style="font-size:13px;color:#047857;line-height:1.8">
+          Every 3 months — or when the bristles look like they've been through a monsoon 🌧️<br>
+          Also after any illness. Your brush remembers everything.
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNIQUES TAB -->
+    <div id="dc-tab-techniques" style="display:none">
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:8px">🔄 The Modified Bass Technique</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.85">
+          Hold the brush at a <strong style="color:var(--navy)">45° angle</strong> to the gumline.<br>
+          Use small, circular motions — not aggressive scrubbing.<br>
+          Go tooth by tooth. Don't rush the back ones, they do all the real chewing.<br>
+          <span style="color:#f59e0b;font-weight:600">⚡ Pro tip:</span> Brushing too hard causes gum recession. Gentle is better.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:8px">🧵 Flossing (without hating it)</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.85">
+          Use about 40cm of floss — wind most around your middle fingers.<br>
+          Slide gently between teeth in a C-shape around each tooth.<br>
+          Water flossers work too and are less annoying if you hate string floss.<br>
+          <span style="color:var(--teal);font-weight:600">Floss removes 40% of plaque that brushing misses.</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:8px">👅 Tongue Cleaning</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.85">
+          Use a tongue scraper or the back of your brush.<br>
+          Start from the back, go forward — don't gag yourself.<br>
+          Removes bacteria that cause bad breath far better than mouthwash.<br>
+          <span style="color:#f59e0b;font-weight:600">Most bad breath comes from here, not teeth.</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;border-left:3px solid #3b82f6">
+        <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:6px">💧 Mouthwash: Worth it?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.85">
+          Fluoride mouthwash = yes, great for cavity prevention.<br>
+          Antibacterial mouthwash = good for gum health.<br>
+          Random "whitening" mouthwash = marketing mostly 👀<br>
+          Use it <em>after</em> brushing, not instead of it.
+        </div>
+      </div>
+      <div class="card-teal" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;color:#134e4a;margin-bottom:6px">🍎 What actually erodes enamel</div>
+        <div style="font-size:13px;color:#1e7a6a;line-height:1.8">
+          Sodas, energy drinks, citrus juices — not one big villain, just frequent acid exposure.<br>
+          Wait 30 min after acidic food before brushing. Brush immediately and you're scrubbing softened enamel.
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK QUIZ TAB -->
+    <div id="dc-tab-quiz" style="display:none">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Test what you know — no grades, just vibes.</div>
+      <div id="dc-quiz-container"></div>
+      <button onclick="startDentalCareQuiz()" id="dc-quiz-start-btn" class="btn-primary" style="margin-top:12px">Start Quiz →</button>
+    </div>
+
+    <!-- NO JUDGEMENT TAB -->
+    <div id="dc-tab-nojudge" style="display:none">
+      <div style="background:linear-gradient(135deg,#fdf4ff,#f0f9ff);border-radius:18px;padding:20px;margin-bottom:14px;border:1.5px solid #e9d5ff">
+        <div style="font-size:28px;margin-bottom:10px;text-align:center">💜</div>
+        <div style="font-weight:800;font-size:17px;color:#6b21a8;margin-bottom:10px;text-align:center">This is a safe space</div>
+        <div style="font-size:14px;color:#7e22ce;line-height:1.9">
+          If your teeth are not perfect — <strong>you are not alone</strong>.<br><br>
+          In India, for decades, dentistry meant pain, judgment and shame. Children were dragged to clinics they feared. Adults avoided dentists for years because of one bad experience. The phrase "daat nikaalo" was a threat, not a choice.<br><br>
+          <strong>None of that was your fault.</strong>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">🟤 Brown spots on teeth?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          Often staining from tea, coffee, or fluorosis from childhood drinking water — especially in small towns and villages. Not always decay. Not always preventable. <strong style="color:var(--navy)">Not something to be ashamed of.</strong>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">🦷 Gaps between teeth?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          Diastema is incredibly common, partly genetic, and has been considered beautiful in many cultures. It doesn't mean your teeth are "bad." It means you're human.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">😬 Crooked or crowded teeth?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          Often hereditary. Jaw size and tooth size don't always match — that's genetics, not neglect. You didn't fail anyone by having the mouth you were born with.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">😰 Haven't been to a dentist in years?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          The average Indian adult hasn't had a dental check-up in over 3 years. This is systemic. Cost, fear, access, stigma — all real barriers. You're not lazy. You're navigating a system that failed you.
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border-radius:16px;padding:18px;margin-bottom:14px;border:1.5px solid #6ee7b7">
+        <div style="font-weight:800;font-size:15px;color:#065f46;margin-bottom:8px">🌱 SerenOra's promise</div>
+        <div style="font-size:13px;color:#047857;line-height:1.85">
+          Your dentist here <strong>will not judge you</strong> for what your mouth looks like today.<br>
+          Every visit is a starting point, not a report card.<br>
+          Your comfort matters. Your pace matters. You get to go slow.<br><br>
+          <strong>The journal is a place to write all of this down — the fear, the embarrassment, the questions you're afraid to ask out loud. Your dentist reads it and adjusts. No judgment, ever.</strong>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="showScreen('screen-journal')" style="margin-bottom:12px">Open My Journal →</button>
+      <button class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#6b21a8);margin-bottom:20px" onclick="showScreen('screen-story')">Tell My Dental Story →</button>
+    </div>
+
+  </div>
+  <div class="bottom-nav">
+    <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
+    <button class="bnav-item active" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#0d9488" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label" style="color:var(--teal)">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+  </div>
+</div>
+
 <!-- ===== GAMES ===== -->
 <div class="screen" id="screen-games">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Games</span></div>
   <div class="page-content">
     <div class="section-title" id="games-title">Calm Games</div>
-    <div class="section-sub" id="games-sub">Play to shift your focus. All games lower anxiety through flow state.</div>
+    <div class="section-sub" id="games-sub">Play to shift your focus and learn about your teeth along the way.</div>
+    <!-- Kids-only notice if not kids mode -->
+    <div id="games-kids-banner" style="display:none;background:linear-gradient(135deg,#fdf2f8,#eff6ff);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid #fbcfe8">
+      <div style="font-weight:700;font-size:14px;color:#be185d;margin-bottom:4px">👶 Kids games unlocked!</div>
+      <div style="font-size:12px;color:#9d174d">These games are active because a child's age was selected.</div>
+    </div>
     <div class="game-grid">
       <div class="game-card" onclick="showScreen('screen-brush')"><div style="font-size:40px" class="pulse-gentle">🦷</div><div class="g-title">Brush the Tooth</div><div class="g-sub">Tap 8 spots to clean</div><span class="game-badge pill-teal">All Ages</span></div>
-      <div class="game-card" onclick="showScreen('screen-bubble')"><div style="font-size:40px" class="float-anim">🫧</div><div class="g-title">Breathing Bubble</div><div class="g-sub">Guided 4-4-6 cycle</div><span class="game-badge pill-teal">All Ages</span></div>
-      <div class="game-card" onclick="showScreen('screen-quiz')"><div style="font-size:40px" class="pulse-gentle">🧠</div><div class="g-title">Cavity Clues</div><div class="g-sub">Dental knowledge quiz</div><span class="game-badge pill-blue">Teens+</span></div>
-      <div class="game-card" onclick="showScreen('screen-germ')"><div style="font-size:40px" class="sparkle">🦠</div><div class="g-title">Germ Blaster</div><div class="g-sub">Tap to zap sugar germs</div><span class="game-badge pill-amber">8-12 yrs</span></div>
-      <div class="game-card" onclick="showScreen('screen-plantgame')"><div style="font-size:40px" class="float-anim">🌱</div><div class="g-title">Plant the Tooth</div><div class="g-sub">Grow a garden of calm</div><span class="game-badge pill-teal">All Ages</span></div>
-      <div class="game-card" onclick="showScreen('screen-journey')"><div style="font-size:40px" class="pulse-gentle">🗺️</div><div class="g-title">Calm Journey</div><div class="g-sub">Navigate your anxiety path</div><span class="game-badge pill-blue">Adults</span></div>
-      <div class="game-card" onclick="showScreen('screen-pacman')"><div style="font-size:40px" class="sparkle">👾</div><div class="g-title">Germ Chomp!</div><div class="g-sub">Pac-Man style defense</div><span class="game-badge pill-amber">All Ages</span></div>
+      <div class="game-card" onclick="showScreen('screen-quiz')"><div style="font-size:40px" class="pulse-gentle">🧠</div><div class="g-title">Cavity Clues</div><div class="g-sub">Dental knowledge quiz</div><span class="game-badge pill-blue">All Ages</span></div>
+      <div class="game-card" id="game-germ" onclick="showScreen('screen-germ')"><div style="font-size:40px" class="sparkle">🦠</div><div class="g-title">Germ Blaster</div><div class="g-sub">Tap to zap sugar germs</div><span class="game-badge pill-amber">Kids</span></div>
+      <div class="game-card" id="game-plantgame" onclick="showScreen('screen-plantgame')"><div style="font-size:40px" class="float-anim">🌱</div><div class="g-title">Plant the Tooth</div><div class="g-sub">Grow a garden of calm</div><span class="game-badge pill-teal">All Ages</span></div>
+      <div class="game-card" id="game-pacman" onclick="showScreen('screen-pacman')"><div style="font-size:40px" class="sparkle">👾</div><div class="g-title">Germ Chomp!</div><div class="g-sub">Pac-Man style defence</div><span class="game-badge pill-amber">Kids</span></div>
       <div class="game-card" onclick="showScreen('screen-drawtooth')"><div style="font-size:40px" class="float-anim">✏️</div><div class="g-title">Draw-a-Tooth</div><div class="g-sub">Draw & match a tooth shape</div><span class="game-badge pill-teal">All Ages</span></div>
     </div>
     <div style="height:20px"></div>
   </div>
-    <div class="bottom-nav">
-    <button class="bnav-item active" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal)">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-games')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+  <div class="bottom-nav">
+    <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item active" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0d9488" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2471,6 +2644,10 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <div style="font-size:11px;color:#1e7a6a">Your calm companion for dental visits 🌿</div>
       <div style="font-size:11px;color:#1e7a6a;margin-top:2px">Version 2.0</div>
       <button onclick="toggleContactPanel()" style="margin-top:10px;background:var(--teal);color:#fff;border:none;padding:8px 20px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">📞 Contact Us</button>
+      <div style="font-size:10px;color:#94a3b8;margin-top:12px;text-align:center;line-height:1.6">
+        © 2026 SerenOra Care. All rights reserved.<br>
+        Compassionate dental care, reimagined.
+      </div>
     </div>
 
     <!-- Contact Us expandable panel -->
@@ -3958,6 +4135,100 @@ function openSidebar(){document.getElementById('sidebar').classList.add('open');
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
 function goBack(){if(_screenHistory.length>0){const prev=_screenHistory.pop();const tmp=_screenHistory;_screenHistory=[];showScreen(prev);_screenHistory=tmp;}else{showScreen('screen-welcome');}}
 const ageNotes={little:"Little Smiles Mode: Big tap targets, friendly characters, Brush the Tooth game unlocked!",explorer:"Explorer Mode: Points, badges, Germ Blaster game, and comic-style explanations. Let's go!",teen:"Teen Mode: Relaxed check-ins, relatable language. Your dentist isn't judging you, promise.",adult:"Adult Mode: Daily check-ins, procedure explainers, sound desensitization, and all features unlocked.",senior:"Senior Mode: Larger text, simpler navigation, medication tracking front and center.",parent:"Parent Mode: Guidance on talking to your child before and after dental visits."};
+
+// ── DENTAL CARE SCREEN ─────────────────────────────────────────────────────
+function switchDentalTab(tab, btn) {
+  ['routine','techniques','quiz','nojudge'].forEach(t => {
+    const el = document.getElementById('dc-tab-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#screen-dental-care .tab-bar .tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (tab === 'quiz' && !_dcQuizStarted) startDentalCareQuiz();
+}
+
+let _dcQuizStarted = false;
+const DC_QUIZ = [
+  { q: 'How long should you brush your teeth?', a: '2 minutes', opts: ['30 seconds','1 minute','2 minutes','5 minutes'], hint: 'Most people brush for 45 seconds. The 2-minute target makes a real difference for plaque removal.' },
+  { q: 'When is the BEST time to brush?', a: 'Before bed', opts: ['After breakfast','After every meal','Before bed','In the morning only'], hint: 'Nighttime brushing is most important — saliva flow drops during sleep, so bacteria have all night to party 🎉' },
+  { q: 'What does fluoride actually do?', a: 'Strengthens enamel', opts: ['Whitens teeth','Kills all bacteria','Strengthens enamel','Freshens breath'], hint: 'Fluoride remineralises enamel that has been softened by acid. It\'s why fluoride toothpaste is non-negotiable.' },
+  { q: 'How often should you change your toothbrush?', a: 'Every 3 months', opts: ['Every month','Every 3 months','Every 6 months','Once a year'], hint: 'Frayed bristles are 30% less effective at cleaning. Three months is the sweet spot.' },
+  { q: 'What causes most bad breath?', a: 'Bacteria on the tongue', opts: ['Stomach acid','Bacteria on the tongue','Dry mouth only','Cavities'], hint: 'The tongue harbours more bacteria than anywhere else in the mouth. A tongue scraper is your best weapon.' },
+  { q: 'Is flossing actually necessary if you brush well?', a: 'Yes — it cleans where brushes can\'t reach', opts: ['No, brushing is enough','Only if you eat a lot of meat','Yes — it cleans where brushes can\'t reach','Only for people with gaps'], hint: 'Brushes clean surfaces. Floss cleans the contact points between teeth — an entirely different surface that accounts for ~40% of tooth area.' },
+  { q: 'Brown spots on teeth are always cavities. True or false?', a: 'False', opts: ['True','False'], hint: 'Brown staining can come from tea, coffee, tobacco, or fluorosis (especially common in India). A dentist can tell the difference easily.' },
+  { q: 'How soon after eating should you brush?', a: 'Wait 30–60 minutes', opts: ['Immediately','After 5 minutes','Wait 30–60 minutes','Timing doesn\'t matter'], hint: 'Acidic foods temporarily soften enamel. Brushing immediately scrubs softened enamel off. Wait 30–60 min and let saliva neutralise first.' },
+];
+let _dcQuizIdx = 0, _dcScore = 0;
+function startDentalCareQuiz() {
+  _dcQuizStarted = true;
+  _dcQuizIdx = 0; _dcScore = 0;
+  const btn = document.getElementById('dc-quiz-start-btn');
+  if (btn) btn.style.display = 'none';
+  renderDCQuizQuestion();
+}
+function renderDCQuizQuestion() {
+  const c = document.getElementById('dc-quiz-container');
+  if (!c) return;
+  if (_dcQuizIdx >= DC_QUIZ.length) {
+    const pct = Math.round(_dcScore / DC_QUIZ.length * 100);
+    const msg = pct >= 80 ? '🏆 Dental expert!' : pct >= 60 ? '💪 Not bad at all!' : '🌱 You\'re learning — that\'s what counts.';
+    c.innerHTML = `<div style="text-align:center;padding:20px">
+      <div style="font-size:48px;margin-bottom:12px">${pct>=80?'🦷':pct>=60?'😊':'🌱'}</div>
+      <div style="font-weight:800;font-size:22px;color:var(--navy);margin-bottom:6px">${_dcScore} / ${DC_QUIZ.length}</div>
+      <div style="font-size:15px;color:var(--teal);font-weight:600;margin-bottom:16px">${msg}</div>
+      <button onclick="startDentalCareQuiz()" class="btn-primary">Try again →</button>
+    </div>`;
+    return;
+  }
+  const q = DC_QUIZ[_dcQuizIdx];
+  c.innerHTML = `<div style="background:#f8fafc;border-radius:16px;padding:18px;margin-bottom:12px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600">Question ${_dcQuizIdx+1} of ${DC_QUIZ.length}</div>
+    <div style="font-weight:700;font-size:15px;color:var(--navy);line-height:1.5;margin-bottom:14px">${q.q}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${q.opts.map(o=>`<button onclick="answerDCQuiz(this,'${o.replace(/'/g,"&#39;")}')" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;color:var(--navy);text-align:left;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="if(!this.dataset.answered)this.style.borderColor='#e2e8f0'">${o}</button>`).join('')}
+    </div>
+  </div>`;
+}
+function answerDCQuiz(btn, answer) {
+  const q = DC_QUIZ[_dcQuizIdx];
+  const isCorrect = answer === q.a;
+  if (isCorrect) _dcScore++;
+  const parent = btn.closest('div');
+  parent.querySelectorAll('button').forEach(b => {
+    b.disabled = true; b.dataset.answered = '1';
+    if (b.textContent.trim() === q.a) { b.style.background='#dcfce7'; b.style.borderColor='#22c55e'; b.style.color='#166534'; }
+    else if (b === btn && !isCorrect) { b.style.background='#fee2e2'; b.style.borderColor='#ef4444'; b.style.color='#991b1b'; }
+  });
+  const hint = document.createElement('div');
+  hint.style.cssText = 'margin-top:12px;padding:10px 12px;background:#f0f9ff;border-radius:10px;font-size:12px;color:#0369a1;line-height:1.6;border-left:3px solid #38bdf8';
+  hint.innerHTML = `<strong>${isCorrect?'✅ Correct!':'💡 Actually...'}</strong> ${q.hint}`;
+  parent.appendChild(hint);
+  setTimeout(() => { _dcQuizIdx++; renderDCQuizQuestion(); }, 2200);
+}
+
+function openGamesWithAgeCheck() {
+  const kidsAges = ['little', 'explorer'];
+  if (kidsAges.includes(selectedAge || '')) {
+    // Kids age confirmed — show kids banner and open games
+    const banner = document.getElementById('games-kids-banner');
+    if (banner) banner.style.display = 'block';
+    showScreen('screen-games');
+  } else if (!selectedAge) {
+    // No age selected yet — ask them to confirm
+    if (confirm('Are you opening this for a child (under 13)?\n\nTap OK for kids games, or Cancel to go to adult mode.')) {
+      selectedAge = 'explorer';
+      startKidsMode();
+      const banner = document.getElementById('games-kids-banner');
+      if (banner) banner.style.display = 'block';
+    }
+    showScreen('screen-games');
+  } else {
+    // Adult/teen — hide kids banner, show games
+    const banner = document.getElementById('games-kids-banner');
+    if (banner) banner.style.display = 'none';
+    showScreen('screen-games');
+  }
+}
 
 function selectAge(age,el){
   selectedAge=age;
