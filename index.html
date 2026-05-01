@@ -332,6 +332,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);min-height:1
 /* BOTTOM NAV */
 .bottom-nav{position:sticky;bottom:0;background:#fff;border-top:1px solid #f1f5f9;display:flex;padding:8px 0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.06);z-index:50}
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:transparent;font-family:var(--font)}
+.bnav-label{font-size:9px;font-weight:600;color:#94a3b8;letter-spacing:.1px}
 .bnav-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.2px;text-align:center;line-height:1}
 .bnav-item.active .bnav-label{color:var(--teal)}
 
@@ -2201,11 +2202,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     </div>
 
   </div>
-  <div class="bottom-nav">
+    <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
-    <button class="bnav-item active" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#0d9488" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label" style="color:var(--teal)">Dental Care</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2231,11 +2233,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     </div>
     <div style="height:20px"></div>
   </div>
-  <div class="bottom-nav">
+    <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
-    <button class="bnav-item active" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0d9488" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">Games</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2482,11 +2485,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <div id="proc-detail-panel" class="proc-detail"></div>
     <div class="proc-grid" id="proc-grid"></div>
   </div>
-    <div class="bottom-nav">
+      <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-games')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
-    <button class="bnav-item active" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#0d9488" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal)">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2673,12 +2677,13 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     </div>
 
   </div>
-    <div class="bottom-nav">
+      <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-games')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item active" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#0d9488" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">My Space</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2920,10 +2925,11 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     </div>
     <div style="height:80px"></div>
   </div>
-  <div class="bottom-nav">
+    <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-games')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
-    <button class="bnav-item active" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#0d9488" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal)">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
