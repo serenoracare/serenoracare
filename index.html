@@ -133,20 +133,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);min-height:1
 .nav-back{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-family:var(--font)}
 
 /* SIDEBAR */
-.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none}
-.sidebar-overlay.open{display:block}
-.sidebar{position:fixed;right:0;top:0;bottom:0;width:280px;background:#fff;z-index:300;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;overflow-y:auto}
-.sidebar.open{transform:translateX(0)}
-.sidebar-header{background:var(--grad);padding:16px 20px;color:#fff;position:relative}
-.sidebar-header h3{font-family:var(--display);font-size:16px;margin-bottom:2px}
-.sidebar-header p{font-size:11px;opacity:.85}
-.sidebar-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px}
-.sidebar-section{padding:12px 20px;border-bottom:1px solid #f1f5f9}
-.sidebar-section h4{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-.sidebar-btn{width:100%;background:var(--grad);color:#fff;border:none;padding:11px 14px;border-radius:12px;font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;margin-bottom:8px;text-align:left;display:flex;align-items:center;gap:10px}
-.sidebar-btn.outline{background:#fff;color:var(--teal);border:1.5px solid var(--teal)}
-.sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13px;color:var(--slate);cursor:pointer;border-bottom:1px solid #f8fafc}
-.sidebar-link:hover{color:var(--teal)}
+
 .dentist-card{background:linear-gradient(135deg,#e0f2fe,#ccfbf1);border-radius:12px;padding:14px;margin:8px 0}
 .dentist-card .name{font-weight:700;font-size:14px;color:var(--navy)}
 .dentist-card .spec{font-size:12px;color:var(--muted)}
@@ -595,11 +582,7 @@ body.night-mode .section-title{color:#e2e8f0!important}
 body.night-mode .section-sub{color:#94a3b8!important}
 
 /* Sidebar */
-body.night-mode .sidebar{background:#122035!important}
-body.night-mode .sidebar *{color:#e2e8f0!important}
-body.night-mode .sidebar-section{border-bottom-color:#1e3a5f!important}
-body.night-mode .sidebar-link{color:#cbd5e1!important;border-bottom-color:#1e3a5f!important}
-body.night-mode .sidebar-btn.outline{background:#1e2d40!important;color:#99f6e4!important;border-color:#0d9488!important}
+
 body.night-mode .dentist-card{background:linear-gradient(135deg,#0d1f40,#0d3028)!important}
 body.night-mode .dentist-card .name{color:#e2e8f0!important}
 body.night-mode .dentist-card .spec{color:#94a3b8!important}
@@ -1180,7 +1163,7 @@ body.morning-mode #dent-myspace .dent-card{background:rgba(255,120,40,.07)!impor
 .contact-dent-complaints .contact-email{color:#fca5a5}
 .dent-contact-heading{font-family:var(--display);font-weight:700;font-size:16px;color:#e2e8f0;margin:16px 0 12px}
 
-/* ── Night mode (patient + sidebar) ── */
+/* ── Night mode ── */
 body.night-mode .contact-support{background:#1e2d40!important;color:#99f6e4!important;border-color:#0d9488!important}
 body.night-mode .contact-support .contact-role{color:#64748b!important}
 body.night-mode .contact-support .contact-email{color:#99f6e4!important}
@@ -1189,7 +1172,7 @@ body.night-mode .contact-complaints .contact-role{color:#f87171!important}
 body.night-mode .contact-complaints .contact-email{color:#fca5a5!important}
 body.night-mode .contact-heading{color:#e2e8f0!important}
 
-/* ── Morning mode (patient + sidebar) ── */
+/* ── Morning mode ── */
 body.morning-mode .contact-founder{background:linear-gradient(135deg,#7c2d12,#c2410c)!important;box-shadow:0 3px 12px rgba(194,65,12,.35)!important}
 body.morning-mode .contact-support{background:#fffbf5!important;color:#9a3412!important;border-color:#c2410c!important}
 body.morning-mode .contact-support .contact-role{color:#92400e!important}
@@ -1199,7 +1182,7 @@ body.morning-mode .contact-complaints .contact-role{color:#ef4444!important}
 body.morning-mode .contact-complaints .contact-email{color:#b91c1c!important}
 body.morning-mode .contact-heading{color:#7c2d12!important}
 
-/* ── Rainy mode (patient + sidebar) ── */
+/* ── Rainy mode ── */
 body.rainy-mode .contact-support{background:rgba(255,255,255,.96)!important;color:#0d6e61!important;border-color:#0d9488!important}
 body.rainy-mode .contact-support .contact-role{color:#475569!important}
 body.rainy-mode .contact-support .contact-email{color:#0d6e61!important}
@@ -1208,7 +1191,7 @@ body.rainy-mode .contact-complaints .contact-role{color:#ef4444!important}
 body.rainy-mode .contact-complaints .contact-email{color:#b91c1c!important}
 body.rainy-mode .contact-heading{color:#0f172a!important}
 
-/* ── Kids mode (patient + sidebar) ── */
+/* ── Kids mode ── */
 body.kids-mode .contact-founder{background:linear-gradient(135deg,#f472b6,#a855f7)!important}
 body.kids-mode .contact-support{background:#fff!important;color:#7c3aed!important;border-color:#a78bfa!important}
 body.kids-mode .contact-support .contact-role{color:#9d174d!important}
@@ -1794,7 +1777,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MOOD ===== -->
 <div class="screen" id="screen-mood">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title" id="mood-title">How are you feeling?</div>
     <div class="section-sub" id="mood-sub">No judgment. Just pick the face that looks like you right now.</div>
@@ -1816,7 +1799,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== BREATHING ===== -->
 <div class="screen" id="screen-breathing">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-mood')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-mood')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-sub" style="text-align:center">Tap the bubble to begin. 4-4-6 breathing cycle.</div>
     <div class="audio-player">
@@ -1913,7 +1896,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   <div class="nav">
     <button class="nav-back" onclick="showScreen('screen-main')">← Back</button>
     <span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Sound Therapy</span>
-    <button class="nav-menu" onclick="openSidebar()">☰</button>
+    <button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button>
   </div>
   <div class="page-content">
 
@@ -2024,7 +2007,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== CHAIR SIM ===== -->
 <div class="screen" id="screen-chair">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Chair Sim</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Chair Sim</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">Chair Simulation 🪑</div>
     <div class="card-teal"><div style="font-weight:700;font-size:14px;color:#134e4a;margin-bottom:4px">Practice makes calm</div><div style="font-size:12px;color:#1e7a6a;line-height:1.6">Simulate your entire appointment step by step.</div></div>
@@ -2040,7 +2023,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== REFRAME ===== -->
 <div class="screen" id="screen-reframe">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Encouraging Words</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Encouraging Words</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">Encouraging Words 💬</div>
     <div class="section-sub">Tap arrows to cycle through 30 uplifting thoughts.</div>
@@ -2069,6 +2052,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <button class="tab" onclick="switchDentalTab('techniques',this)">Techniques</button>
       <button class="tab" onclick="switchDentalTab('quiz',this)">Quick Quiz</button>
       <button class="tab" onclick="switchDentalTab('nojudge',this)">No Judgement</button>
+      <button class="tab" id="dc-tab-kids-btn" style="display:none" onclick="switchDentalTab('kids',this)">👶 Kids</button>
     </div>
 
     <!-- ROUTINE TAB -->
@@ -2210,6 +2194,110 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <button class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#6b21a8);margin-bottom:20px" onclick="showScreen('screen-story')">Tell My Dental Story →</button>
     </div>
 
+    <!-- KIDS TAB — shown only in kids mode -->
+    <div id="dc-tab-kids" style="display:none">
+      <div style="text-align:center;padding:8px 0 16px">
+        <div style="font-size:36px;margin-bottom:6px">🌈</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px">Little Smiles Guide</div>
+        <div style="font-size:13px;color:var(--muted)">Everything parents and little ones need to know</div>
+      </div>
+
+      <!-- Eruption Chart — Primary Teeth -->
+      <div style="border-radius:20px;padding:18px;margin-bottom:16px;background:linear-gradient(135deg,#fdf4ff,#fce7f3,#ffe4e6,#fff7ed,#fefce8,#f0fdf4,#eff6ff);border:2px solid #e9d5ff">
+        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#6b21a8;margin-bottom:4px;text-align:center">🦷 Primary Teeth Eruption Chart</div>
+        <div style="font-size:12px;color:#7e22ce;text-align:center;margin-bottom:14px">When do baby teeth come in?</div>
+        <!-- Upper Teeth -->
+        <div style="font-size:11px;font-weight:700;color:#9333ea;margin-bottom:6px;text-align:center;letter-spacing:.5px">UPPER TEETH</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+          ${[
+            {name:'Central Incisor',range:'6–10 months',color:'#f0abfc'},
+            {name:'Lateral Incisor',range:'9–13 months',color:'#c084fc'},
+            {name:'Canine (Cuspid)',range:'16–22 months',color:'#818cf8'},
+            {name:'First Molar',range:'13–19 months',color:'#60a5fa'},
+            {name:'Second Molar',range:'25–33 months',color:'#34d399'},
+          ].map(t=>`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px">
+            <div style="width:14px;height:14px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
+            <div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">${t.name}</div>
+            <div style="font-size:12px;color:#64748b;font-weight:500">${t.range}</div>
+          </div>`).join('')}
+        </div>
+        <!-- Lower Teeth -->
+        <div style="font-size:11px;font-weight:700;color:#0891b2;margin-bottom:6px;text-align:center;letter-spacing:.5px">LOWER TEETH</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          ${[
+            {name:'Central Incisor',range:'6–10 months',color:'#67e8f9'},
+            {name:'Lateral Incisor',range:'7–16 months',color:'#6ee7b7'},
+            {name:'Canine (Cuspid)',range:'17–23 months',color:'#86efac'},
+            {name:'First Molar',range:'12–18 months',color:'#fde68a'},
+            {name:'Second Molar',range:'23–31 months',color:'#fca5a5'},
+          ].map(t=>`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px">
+            <div style="width:14px;height:14px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
+            <div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">${t.name}</div>
+            <div style="font-size:12px;color:#64748b;font-weight:500">${t.range}</div>
+          </div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:10px;text-align:center">All 20 primary teeth usually present by age 3. Ranges are normal — every child is different!</div>
+      </div>
+
+      <!-- Permanent Teeth Chart -->
+      <div style="border-radius:20px;padding:18px;margin-bottom:16px;background:linear-gradient(135deg,#f0fdf4,#eff6ff,#fef9c3);border:2px solid #86efac">
+        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#065f46;margin-bottom:4px;text-align:center">🌟 Permanent Teeth Eruption</div>
+        <div style="font-size:12px;color:#047857;text-align:center;margin-bottom:14px">When do adult teeth come in?</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          ${[
+            {name:'First Molars ("6-year molars")',range:'6–7 years',color:'#4ade80',note:'First permanent teeth — crucial, never replaced!'},
+            {name:'Central Incisors',range:'6–8 years',color:'#34d399',note:'Front teeth, upper then lower'},
+            {name:'Lateral Incisors',range:'7–9 years',color:'#60a5fa',note:'Beside the front teeth'},
+            {name:'Canines',range:'9–12 years',color:'#818cf8',note:'The pointed ones — often the last to settle in'},
+            {name:'Premolars',range:'10–12 years',color:'#f472b6',note:'Replace the primary molars'},
+            {name:'Second Molars',range:'11–13 years',color:'#fb923c',note:'"12-year molars"'},
+            {name:'Third Molars (Wisdom)',range:'17–25 years',color:'#fbbf24',note:'Often need removal — not everyone gets them'},
+          ].map(t=>`<div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px;margin-bottom:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+              <div style="width:12px;height:12px;border-radius:3px;background:${t.color};flex-shrink:0"></div>
+              <div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">${t.name}</div>
+              <div style="font-size:12px;color:#0d9488;font-weight:700">${t.range}</div>
+            </div>
+            <div style="font-size:11px;color:#64748b;padding-left:20px">${t.note}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Care tips for deciduous teeth -->
+      <div style="font-family:var(--display);font-weight:800;font-size:16px;color:var(--navy);margin-bottom:10px">🪥 Caring for Baby Teeth</div>
+
+      <div style="background:linear-gradient(135deg,#fdf4ff,#fce7f3);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #f0abfc">
+        <div style="font-weight:700;font-size:14px;color:#6b21a8;margin-bottom:6px">🍼 Before teeth appear (0–6 months)</div>
+        <div style="font-size:13px;color:#7e22ce;line-height:1.8">Wipe gums with a clean damp cloth after feeding. Gets the baby used to oral hygiene before teeth arrive. Start early — the habit forms before resistance does.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #93c5fd">
+        <div style="font-weight:700;font-size:14px;color:#1d4ed8;margin-bottom:6px">🪥 First tooth → start brushing</div>
+        <div style="font-size:13px;color:#1e40af;line-height:1.8">Use a soft infant brush. Under 2: just water. Ages 2–6: a tiny smear of fluoride toothpaste (rice grain size). Over 6: pea-sized amount. Brush for them until they can tie their own shoelaces — that's the coordination level needed.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #86efac">
+        <div style="font-weight:700;font-size:14px;color:#166534;margin-bottom:6px">⚠️ Baby teeth matter — they're not "throwaway"</div>
+        <div style="font-size:13px;color:#15803d;line-height:1.8">Baby teeth hold space for permanent teeth. If lost early to decay, the permanent teeth can drift out of position, causing crowding. Decay can also affect the developing permanent tooth below. A cavity in a baby tooth needs treatment.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#fff7ed,#fef3c7);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #fde68a">
+        <div style="font-weight:700;font-size:14px;color:#92400e;margin-bottom:6px">🍬 Avoid "nursing bottle caries"</div>
+        <div style="font-size:13px;color:#78350f;line-height:1.8">Never put a baby to sleep with a bottle of milk, formula, or juice. The sugar pools around the teeth for hours, causing rapid decay of the front teeth — a pattern called "baby bottle tooth decay." Water is the only safe bedtime bottle.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#fdf4ff,#ede9fe);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #c4b5fd">
+        <div style="font-weight:700;font-size:14px;color:#5b21b6;margin-bottom:6px">📅 First dentist visit</div>
+        <div style="font-size:13px;color:#4c1d95;line-height:1.8">By the first birthday or within 6 months of the first tooth — whichever comes first. Early visits are brief, gentle, and get the child comfortable with the environment before any problems exist. Prevention is always easier than treatment.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#fce7f3,#ffe4e6);border-radius:14px;padding:14px;margin-bottom:16px;border:1.5px solid #fca5a5">
+        <div style="font-weight:700;font-size:14px;color:#9f1239;margin-bottom:6px">🦷 Wobbly tooth tips</div>
+        <div style="font-size:13px;color:#881337;line-height:1.8">Let baby teeth fall out on their own — wiggling gently is fine, forcing is not. The permanent tooth pushes from below and the root dissolves naturally. If a tooth seems stuck or the adult tooth is erupting without the baby tooth falling, see a dentist.</div>
+      </div>
+
+    </div>
+
   </div>
     <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
@@ -2223,29 +2311,66 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== GAMES ===== -->
 <div class="screen" id="screen-games">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Games</span></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Calm Games</span></div>
   <div class="page-content">
-    <div class="section-title" id="games-title">Calm Games</div>
-    <div class="section-sub" id="games-sub">Play to shift your focus and learn about your teeth along the way.</div>
-    <!-- Kids-only notice if not kids mode -->
-    <div id="games-kids-banner" style="display:none;background:linear-gradient(135deg,#fdf2f8,#eff6ff);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid #fbcfe8">
-      <div style="font-weight:700;font-size:14px;color:#be185d;margin-bottom:4px">👶 Kids games unlocked!</div>
-      <div style="font-size:12px;color:#9d174d">These games are active because a child's age was selected.</div>
+
+    <!-- ADULT GAMES — shown by default -->
+    <div id="games-adult-section">
+      <div class="section-title" id="games-title">Mind Games</div>
+      <div class="section-sub" id="games-sub">Evidence-based interactive exercises that rewire how your brain responds to dental anxiety.</div>
+      <div style="background:linear-gradient(135deg,#eff6ff,#f0fdfa);border-radius:14px;padding:12px 16px;margin-bottom:16px;border:1.5px solid rgba(13,148,136,.2)">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px">🔬 Research-designed</div>
+        <div style="font-size:12px;color:var(--slate);line-height:1.5">Each game targets a specific anxiety mechanism: exposure, reframing, psychoeducation, or controlled breathing.</div>
+      </div>
+      <div class="game-grid">
+        <div class="game-card" onclick="showScreen('screen-diagnosis')">
+          <div style="font-size:36px" class="pulse-gentle">🦷</div>
+          <div class="g-title">Tooth Life Skills</div>
+          <div class="g-sub">Real scenarios — knocked-out tooth, sensitivity, cracked tooth. Know what to do when it happens.</div>
+          <span class="game-badge pill-blue">Life Skills</span>
+        </div>
+        <div class="game-card" onclick="showScreen('screen-mindvmouth')">
+          <div style="font-size:36px" class="pulse-gentle">🧩</div>
+          <div class="g-title">Mind vs Mouth</div>
+          <div class="g-sub">Catastrophic thought slides in — you pick the calm counter. Cognitive reframing, gamified.</div>
+          <span class="game-badge pill-teal">CBT Reframing</span>
+        </div>
+        <div class="game-card" onclick="showScreen('screen-apptmap')">
+          <div style="font-size:36px" class="float-anim">🗺️</div>
+          <div class="g-title">The Appointment Map</div>
+          <div class="g-sub">Walk through your visit step by step. Rate what feels manageable. Watch your fear shrink.</div>
+          <span class="game-badge pill-teal">Exposure Therapy</span>
+        </div>
+        <div class="game-card" onclick="showScreen('screen-rhythmbreathe')">
+          <div style="font-size:36px" class="float-anim">🌊</div>
+          <div class="g-title">Rhythm Breath</div>
+          <div class="g-sub">Tap in sync with the wave. Master the 4-4-6 technique through rhythm and score.</div>
+          <span class="game-badge pill-teal">Breathing Control</span>
+        </div>
+      </div>
     </div>
-    <div class="game-grid">
-      <div class="game-card" onclick="showScreen('screen-brush')"><div style="font-size:40px" class="pulse-gentle">🦷</div><div class="g-title">Brush the Tooth</div><div class="g-sub">Tap 8 spots to clean</div><span class="game-badge pill-teal">All Ages</span></div>
-      <div class="game-card" onclick="showScreen('screen-quiz')"><div style="font-size:40px" class="pulse-gentle">🧠</div><div class="g-title">Cavity Clues</div><div class="g-sub">Dental knowledge quiz</div><span class="game-badge pill-blue">All Ages</span></div>
-      <div class="game-card" id="game-germ" onclick="showScreen('screen-germ')"><div style="font-size:40px" class="sparkle">🦠</div><div class="g-title">Germ Blaster</div><div class="g-sub">Tap to zap sugar germs</div><span class="game-badge pill-amber">Kids</span></div>
-      <div class="game-card" id="game-plantgame" onclick="showScreen('screen-plantgame')"><div style="font-size:40px" class="float-anim">🌱</div><div class="g-title">Plant the Tooth</div><div class="g-sub">Grow a garden of calm</div><span class="game-badge pill-teal">All Ages</span></div>
-      <div class="game-card" id="game-pacman" onclick="showScreen('screen-pacman')"><div style="font-size:40px" class="sparkle">👾</div><div class="g-title">Germ Chomp!</div><div class="g-sub">Pac-Man style defence</div><span class="game-badge pill-amber">Kids</span></div>
-      <div class="game-card" onclick="showScreen('screen-drawtooth')"><div style="font-size:40px" class="float-anim">✏️</div><div class="g-title">Draw-a-Tooth</div><div class="g-sub">Draw & match a tooth shape</div><span class="game-badge pill-teal">All Ages</span></div>
+
+    <!-- KIDS GAMES — shown only in kids mode -->
+    <div id="games-kids-section" style="display:none">
+      <div id="games-kids-banner" style="background:linear-gradient(135deg,#fdf2f8,#eff6ff);border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid #fbcfe8">
+        <div style="font-weight:700;font-size:14px;color:#be185d;margin-bottom:4px">👶 Kids Games</div>
+        <div style="font-size:12px;color:#9d174d">Fun, gentle games designed for younger patients.</div>
+      </div>
+      <div class="game-grid">
+        <div class="game-card" onclick="showScreen('screen-brush')"><div style="font-size:36px" class="pulse-gentle">🦷</div><div class="g-title">Brush the Tooth</div><div class="g-sub">Tap 8 spots to clean</div><span class="game-badge pill-teal">All Ages</span></div>
+        <div class="game-card" onclick="showScreen('screen-quiz')"><div style="font-size:36px" class="pulse-gentle">🧠</div><div class="g-title">Cavity Clues</div><div class="g-sub">Dental knowledge quiz</div><span class="game-badge pill-blue">All Ages</span></div>
+        <div class="game-card" id="game-germ" onclick="showScreen('screen-germ')"><div style="font-size:36px" class="sparkle">🦠</div><div class="g-title">Germ Blaster</div><div class="g-sub">Tap to zap sugar germs</div><span class="game-badge pill-amber">Kids</span></div>
+        <div class="game-card" id="game-plantgame" onclick="showScreen('screen-plantgame')"><div style="font-size:36px" class="float-anim">🌱</div><div class="g-title">Plant the Tooth</div><div class="g-sub">Grow a garden of calm</div><span class="game-badge pill-teal">Kids</span></div>
+        <div class="game-card" id="game-pacman" onclick="showScreen('screen-pacman')"><div style="font-size:36px" class="sparkle">👾</div><div class="g-title">Germ Chomp!</div><div class="g-sub">Pac-Man style defence</div><span class="game-badge pill-amber">Kids</span></div>
+        <div class="game-card" onclick="showScreen('screen-drawtooth')"><div style="font-size:36px" class="float-anim">✏️</div><div class="g-title">Draw-a-Tooth</div><div class="g-sub">Draw & match a tooth shape</div><span class="game-badge pill-teal">Kids</span></div>
+      </div>
     </div>
     <div style="height:20px"></div>
   </div>
-    <div class="bottom-nav">
+  <div class="bottom-nav">
     <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
     <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
-    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item active" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0d9488" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
@@ -2456,6 +2581,38 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
 </div>
 
+<!-- ===== DIAGNOSIS ROOM ===== -->
+<div class="screen" id="screen-diagnosis">
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">🦷 Tooth Life Skills</span></div>
+  <div class="page-content">
+    <div id="diag-container"></div>
+  </div>
+</div>
+
+<!-- ===== MIND VS MOUTH ===== -->
+<div class="screen" id="screen-mindvmouth">
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">🧩 Mind vs Mouth</span></div>
+  <div class="page-content">
+    <div id="mvm-container"></div>
+  </div>
+</div>
+
+<!-- ===== APPOINTMENT MAP ===== -->
+<div class="screen" id="screen-apptmap">
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">🗺️ The Appointment Map</span></div>
+  <div class="page-content">
+    <div id="apptmap-container"></div>
+  </div>
+</div>
+
+<!-- ===== RHYTHM BREATH ===== -->
+<div class="screen" id="screen-rhythmbreathe">
+  <div class="nav"><button class="nav-back" onclick="stopRhythmBreath();showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">🌊 Rhythm Breath</span></div>
+  <div class="page-content" style="display:flex;flex-direction:column;align-items:center">
+    <div id="rb-container" style="width:100%;max-width:400px"></div>
+  </div>
+</div>
+
 <!-- ===== PROCEDURES ===== -->
 <div class="screen" id="screen-procedures">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Procedures</span></div>
@@ -2512,7 +2669,6 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           <div style="grid-column:1/-1"><div style="opacity:.7;margin-bottom:2px">Patient ID</div><div style="font-weight:600;font-family:monospace;font-size:11px;word-break:break-all" id="dash-uuid">—</div></div>
         </div>
         <button onclick="openProfileEdit()" style="width:100%;margin-top:10px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">✏️ Edit Profile</button>
-        <button onclick="loadPatientDashboard()" style="width:100%;margin-top:8px;background:rgba(255,255,255,.9);border:none;color:var(--teal);padding:10px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📋 View My Records →</button>
       </div>
       <!-- Logged out state -->
       <div id="dash-logged-out">
@@ -2526,6 +2682,18 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ── MY RECORDS FOLDER ────────────────────── -->
+    <div id="dash-my-records-folder" onclick="showScreen('screen-patient-account')" style="background:linear-gradient(135deg,#0d9488,#0f766e);border-radius:18px;padding:16px 20px;margin-bottom:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(13,148,136,.25)">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-family:var(--display);font-size:16px;font-weight:800;color:#fff">My Records</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:2px">Bills · Prescriptions · Visit history · MDAS</div>
+        </div>
+      </div>
+      <div style="color:rgba(255,255,255,.7);font-size:20px">›</div>
     </div>
 
     <!-- ── BRAVERY STREAK ───────────────────────── -->
@@ -2566,12 +2734,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <!-- Theme -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🎨</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Theme</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">Visual mode for the app</div></div></div>
-        <button id="pref-theme-label" onclick="openPickerModal('theme')" style="background:var(--mint);color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 26px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌿 Default <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px">▼</span></button>
+        <button id="pref-theme-label" onclick="openPickerModal('theme')" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 28px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌿 Default <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--teal)">▼</span></button>
       </div>
       <!-- Language -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🌐</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Language</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">App display language</div></div></div>
-        <button id="pref-lang-label" onclick="openPickerModal('lang')" style="background:var(--mint);color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 26px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌐 English <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px">▼</span></button>
+        <button id="pref-lang-label" onclick="openPickerModal('lang')" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 28px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌐 English <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--teal)">▼</span></button>
       </div>
       <!-- Audio -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
@@ -2592,17 +2760,6 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       </div>
     </div>
 
-    <!-- ── FROM YOUR DENTIST ─────────────────────── -->
-    <div style="font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);margin:18px 0 10px">📁 From Your Dentist</div>
-    <div id="pat-dentist-folder" class="card" style="padding:0;overflow:hidden">
-      <div id="pat-dentist-folder-list" style="padding:8px 0">
-        <div style="text-align:center;padding:24px 16px;color:var(--muted)">
-          <div style="font-size:36px;margin-bottom:8px">📋</div>
-          <div style="font-size:13px;line-height:1.6">Sign in and link your clinic to see OP sheets uploaded by your dentist.</div>
-        </div>
-      </div>
-    </div>
-
     <!-- ── QUICK LINKS ────────────────────────────── -->
     <div style="font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);margin-bottom:10px">🔗 Quick Links</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
@@ -2618,7 +2775,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
         <div style="text-align:center;padding:20px 16px;color:var(--muted)">
           <div style="font-size:32px;margin-bottom:8px">💬</div>
           <div style="font-size:13px;line-height:1.6;margin-bottom:14px">Sign in to message your dentist directly from the app.</div>
-          <button onclick="(function(){const l=document.getElementById('sidebar-dentist-list');if(l){l.innerHTML='<div style=\'font-size:12px;color:var(--muted);padding:8px 0\'>⏳ Loading…</div>';loadSidebarDentists();}openSidebar();})()" style="background:var(--grad);color:#fff;border:none;padding:10px 22px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Find My Dentist →</button>
+          <button onclick="openPortalAs('patient','login')" style="background:var(--grad);color:#fff;border:none;padding:10px 22px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Sign In to Message →</button>
         </div>
       </div>
     </div>
@@ -2670,7 +2827,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== DENTAL STORY ===== -->
 <div class="screen" id="screen-story">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="color:#fff;font-weight:700">My Dental Story</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="color:#fff;font-weight:700">My Dental Story</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">My Dental Story</div>
     <div class="section-sub">Your fears are valid. Log them — we'll create a summary for your dentist.</div>
@@ -2690,7 +2847,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== JOURNAL ===== -->
 <div class="screen" id="screen-journal">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="color:#fff;font-weight:700">Tooth Journal</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="color:#fff;font-weight:700">Tooth Journal</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">Tooth Journal</div>
     <div class="section-sub">Daily reflections. Tracking is healing.</div>
@@ -2704,7 +2861,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== PARENT MODE ===== -->
 <div class="screen" id="screen-parent">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="color:#fff;font-weight:700">Parent Mode</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="color:#fff;font-weight:700">Parent Mode</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">Parent Mode</div>
     <div class="tip-card"><div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;margin-bottom:6px">Do say</div><div style="font-size:14px;color:var(--slate);line-height:1.6">"The dentist is going to help keep your teeth strong and healthy."</div></div>
@@ -2787,7 +2944,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MDAS PRE-SESSION ANXIETY SCALE ===== -->
 <div class="screen mdas-screen" id="screen-mdas-pre">
-  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Anxiety Check</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Anxiety Check</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="card-teal" style="margin-bottom:16px">
       <div style="font-weight:700;font-size:15px;color:#134e4a;margin-bottom:4px">📊 MDAS — Modified Dental Anxiety Scale</div>
@@ -2800,13 +2957,13 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MDAS RESULT ===== -->
 <div class="screen" id="screen-mdas-result">
-  <div class="nav"><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Your Result</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Your Result</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content" id="mdas-result-content"></div>
 </div>
 
 <!-- ===== POST-APPOINTMENT DEBRIEF ===== -->
 <div class="screen" id="screen-debrief">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Post-Visit Check-In</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Post-Visit Check-In</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">How did your visit go? 🌿</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:20px">3 quick questions. Your feedback builds longitudinal proof of what works.</div>
@@ -2850,7 +3007,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== OFFLINE MODE ===== -->
 <div class="screen" id="screen-offline">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Offline Mode</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Offline Mode</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">Offline Mode 📡</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:16px">No internet? No problem. Core modules are cached for use anywhere — critical for Tier 2/3 cities.</div>
@@ -2930,6 +3087,16 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <div class="tab-bar" style="margin-top:20px">
       <button class="tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Sign In</button>
       <button class="tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+
+    <!-- Already signed in notice — shown when user opens login while already authenticated -->
+    <div id="auth-already-signed-in" style="display:none;background:#f0fdfa;border:1.5px solid #0d9488;border-radius:14px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-weight:700;font-size:13px;color:#134e4a;margin-bottom:6px">✅ Already signed in</div>
+      <div style="font-size:12px;color:#1e7a6a;margin-bottom:10px" id="auth-already-msg">You're signed in. Go to your portal or sign out to switch accounts.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="auth-already-goto-btn" onclick="routeAfterAuth()" style="flex:1;background:#0d9488;color:#fff;border:none;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Go to My Portal →</button>
+        <button onclick="supabaseSignOut()" style="flex:1;background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Sign Out</button>
+      </div>
     </div>
 
     <!-- Sign In panel -->
@@ -3409,7 +3576,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== PATIENT ACCOUNT DASHBOARD (SUPABASE LIVE) ===== -->
 <div class="screen" id="screen-patient-account">
-  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">My Records</span><button class="nav-menu" onclick="openSidebar()">☰</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-dashboard')">← My Space</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">My Records</span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <!-- Profile header -->
     <div style="background:var(--grad);border-radius:20px;padding:20px;margin-bottom:16px;color:#fff">
@@ -3435,7 +3602,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           <div id="pat-clinic-code-row" style="display:none;margin-top:3px;font-size:11px">Join Code: <span id="pat-clinic-code-display" style="font-weight:700;font-family:monospace;letter-spacing:1px">—</span></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <span id="pat-med-history-badge" style="display:none;background:#ef4444;color:#fff;border-radius:50%;width:20px;height:20px;font-size:13px;font-weight:800;align-items:center;justify-content:center;flex-shrink:0" title="Medical history on file">!</span>
+          <span id="pat-med-history-badge" style="display:none;background:rgba(13,148,136,.2);color:#0d9488;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0" title="Medical history on file">🩺 Medical info saved</span>
           <button onclick="openProfileEdit()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font)">✏️ Edit Profile</button>
         </div>
       </div>
@@ -3602,80 +3769,6 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 </div>
 
 <!-- ===== SIDEBAR ===== -->
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-<div class="sidebar" id="sidebar">
-  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
-  <div class="sidebar-header">
-    <h3>SerenOra</h3>
-    <p>Your calm dental companion 🌿</p>
-  </div>
-
-  <!-- Connect with dentist -->
-  <div class="sidebar-section">
-    <h4>Dentists</h4>
-    <button class="sidebar-btn" onclick="(function(){const l=document.getElementById('sidebar-dentist-list');l.innerHTML='<div style=\'font-size:12px;color:var(--muted);padding:8px 0\'>⏳ Loading dentists…</div>';loadSidebarDentists();})()">🦷 Find a Dentist</button>
-    <div id="sidebar-dentist-list"></div>
-  </div>
-
-  <!-- Quick links -->
-  <div class="sidebar-section">
-    <h4>Quick Access</h4>
-    <div class="sidebar-link" onclick="closeSidebar();showScreen('screen-mdas-pre')">📊 Anxiety Check (MDAS)</div>
-    <div class="sidebar-link" onclick="closeSidebar();showScreen('screen-reminders')">🔔 My Reminders</div>
-    <div class="sidebar-link" onclick="closeSidebar();showScreen('screen-debrief')">🌟 Post-Visit Debrief</div>
-    <div class="sidebar-link" onclick="closeSidebar();showScreen('screen-journal')">📝 Tooth Journal</div>
-  </div>
-
-  <!-- Portals -->
-  <div class="sidebar-section">
-    <h4>Portals</h4>
-    <div class="sidebar-link" onclick="closeSidebar();openPortalAs('patient')">👤 Patient Account</div>
-    <div class="sidebar-link" onclick="closeSidebar();openPortalAs('dentist')">🦷 Dentist Portal</div>
-    <div class="sidebar-link" onclick="closeSidebar();openPortalAs('clinic_admin')">🏥 Clinic Admin Portal</div>
-  </div>
-
-  <!-- About Us -->
-  <div class="sidebar-section">
-    <h4>About Us</h4>
-    <div style="background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:14px;padding:14px;margin-bottom:10px">
-      <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px">🌿 Our Mission</div>
-      <div style="font-size:12px;color:var(--slate);line-height:1.7">SerenOra Care exists to make dental visits feel safe, calm, and manageable for everyone — especially those living with dental anxiety. We believe fear should never be a barrier to good oral health.</div>
-    </div>
-    <div style="background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-radius:14px;padding:14px">
-      <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px">💙 Who We Are</div>
-      <div style="font-size:12px;color:var(--slate);line-height:1.7">Built by a team passionate about mental health and dentistry, SerenOra bridges the gap between patients and their care teams — with tools for breathing, sound desensitization, cognitive reframing, and real dentist connection.</div>
-    </div>
-  </div>
-
-  <!-- Contact -->
-  <div class="sidebar-section">
-    <h4>Contact Us</h4>
-    <div class="contact-list">
-      <a href="mailto:akshita@serenoracare.com" class="contact-row contact-founder">
-        <span class="contact-icon">👤</span>
-        <div><div class="contact-role">Founder</div><div class="contact-email">akshita@serenoracare.com</div></div>
-      </a>
-      <a href="mailto:techsupport@serenoracare.com" class="contact-row contact-support">
-        <span class="contact-icon">🛟</span>
-        <div><div class="contact-role">Tech Support</div><div class="contact-email">techsupport@serenoracare.com</div></div>
-      </a>
-      <a href="mailto:customercare@serenoracare.com" class="contact-row contact-support">
-        <span class="contact-icon">💬</span>
-        <div><div class="contact-role">Customer Care</div><div class="contact-email">customercare@serenoracare.com</div></div>
-      </a>
-      <a href="mailto:complaints@serenoracare.com" class="contact-row contact-complaints">
-        <span class="contact-icon">📋</span>
-        <div><div class="contact-role">Complaints</div><div class="contact-email">complaints@serenoracare.com</div></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Sign Out -->
-  <div class="sidebar-section" id="sidebar-signout-section" style="display:none">
-    <h4>Account</h4>
-    <button class="sidebar-btn outline" onclick="closeSidebar();supaSignOut()">🚪 Sign Out</button>
-  </div>
-</div>
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────────────────────
@@ -4086,14 +4179,75 @@ Rules:
 }
 
 // ── SMART MY SPACE NAV ────────────────────────────────────────────────────────
-// If patient is signed in → go to their records screen.
-// If not signed in → go to screen-dashboard (has sign-in prompt).
+// My Space (screen-dashboard) = profile, settings, MDAS progress, contact us.
+// My Records (screen-patient-account) = clinical records, bills, prescriptions.
+// Signed-in patients can reach My Records via the "View My Records" button.
 function openMySpace() {
-  if (currentUser && currentProfile && currentProfile.role !== 'dentist' && currentProfile.role !== 'clinic_admin') {
-    loadPatientDashboard();
-  } else {
-    showScreen('screen-dashboard');
+  showScreen('screen-dashboard');
+}
+
+// ── GAME RESEARCH BANNERS ─────────────────────────────────────────────────────
+// Each game maps to its clinical rationale, shown as a collapsible banner
+const GAME_RESEARCH = {
+  'screen-brush': {
+    technique: 'Attentional Distraction',
+    why: 'Dental anxiety peaks when patients fixate on anticipated pain. Rhythmic tapping tasks engage the motor cortex and shift attentional resources away from threat cues — a technique validated in CBT for procedural anxiety (Eccleston & Crombez, 1999). Each tap you make is literally re-routing your brain\'s focus.',
+    stat: 'Studies show distraction tasks reduce perceived pain intensity by up to 40% during procedures.'
+  },
+  'screen-quiz': {
+    technique: 'Psychoeducation',
+    why: 'Fear of the unknown is the strongest predictor of dental anxiety (Locker et al., 2001). When you know exactly what a procedure involves — the tools, sensations, and steps — the brain\'s threat-detection system (amygdala) downregulates. Knowing = calm.',
+    stat: 'Patients who received pre-procedure education reported 35% lower anxiety scores (JADA, 2018).'
+  },
+  'screen-germ': {
+    technique: 'Agency & Control Training',
+    why: 'A core component of dental phobia is perceived lack of control. Games where you actively destroy threats restore the brain\'s sense of agency. This mirrors "stop signal" techniques used in exposure therapy — you learn your actions have predictable, safe outcomes.',
+    stat: 'Perceived control is the single strongest moderator of procedural anxiety in dental settings.'
+  },
+  'screen-plantgame': {
+    technique: 'Progressive Muscle Relaxation (PMR)',
+    why: 'Gentle, repetitive tapping at a slow pace activates the parasympathetic nervous system — your "rest and digest" response. Jacobson\'s PMR (1938) showed that deliberate rhythmic muscle engagement followed by passive observation reduces physiological arousal. Watching the plant grow adds a reward signal that reinforces calm.',
+    stat: 'PMR reduces salivary cortisol (stress hormone) by an average of 23% in 10 minutes.'
+  },
+  'screen-pacman': {
+    technique: 'Gamified Systematic Desensitisation',
+    why: 'Systematic desensitisation (Wolpe, 1958) involves repeatedly encountering a feared stimulus in a safe context until the fear response extinguishes. Facing cartoon germs in a game format creates mild arousal and safe resolution — your nervous system learns: "I can handle this." Each session builds tolerance.',
+    stat: 'Repeated low-stakes exposure reduces amygdala activation to fear stimuli by up to 60% (fMRI studies).'
+  },
+  'screen-drawtooth': {
+    technique: 'Art Therapy & Cognitive Reframing',
+    why: 'Drawing a feared object (like a tooth or dental tool) externalises the fear and puts you in the creative role rather than the passive victim role. Art therapy research (Malchiodi, 2011) shows that representing feared objects through drawing reduces their emotional charge by creating psychological distance — you become the artist, not the anxious patient.',
+    stat: 'Art-based interventions reduce self-reported dental fear scores by 28% in paediatric and adult patients.'
   }
+};
+
+function injectGameResearch(screenId) {
+  const r = GAME_RESEARCH[screenId];
+  if (!r) return;
+  const screen = document.getElementById(screenId);
+  if (!screen) return;
+  const existing = screen.querySelector('.game-research-banner');
+  if (existing) return; // already injected
+  const pc = screen.querySelector('.page-content');
+  if (!pc) return;
+  const banner = document.createElement('div');
+  banner.className = 'game-research-banner';
+  banner.style.cssText = 'margin-bottom:14px';
+  banner.innerHTML = `<div onclick="this.parentElement.querySelector('.grb-body').style.display=this.parentElement.querySelector('.grb-body').style.display==='none'?'block':'none';this.querySelector('.grb-arrow').textContent=this.parentElement.querySelector('.grb-body').style.display==='block'?'▲':'▼'" style="background:linear-gradient(135deg,#eff6ff,#f0fdfa);border:1.5px solid rgba(13,148,136,.25);border-radius:14px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🔬</span>
+      <div>
+        <div style="font-weight:700;font-size:13px;color:var(--navy)">Why this helps: <span style="color:var(--teal)">${r.technique}</span></div>
+        <div style="font-size:11px;color:var(--muted)">Tap to read the research</div>
+      </div>
+    </div>
+    <span class="grb-arrow" style="color:var(--teal);font-size:11px;flex-shrink:0">▼</span>
+  </div>
+  <div class="grb-body" style="display:none;background:linear-gradient(135deg,#f8fafc,#f0fdfa);border:1.5px solid rgba(13,148,136,.2);border-top:none;border-radius:0 0 14px 14px;padding:14px 16px">
+    <div style="font-size:13px;color:var(--slate);line-height:1.7;margin-bottom:10px">${r.why}</div>
+    <div style="background:rgba(13,148,136,.1);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--teal-dark);font-weight:600">📊 ${r.stat}</div>
+  </div>`;
+  pc.insertBefore(banner, pc.firstChild);
 }
 
 // ── CORE NAV ──────────────────────────────────────────────────────────────────
@@ -4112,18 +4266,17 @@ function showScreen(id){
   const el=document.getElementById(id);if(el)el.classList.add('active');
   window.scrollTo(0,0);
   if(id==='screen-quiz')initQuiz();
+  if(id==='screen-diagnosis')initDiagnosis();
+  if(id==='screen-mindvmouth')initMVM();
+  if(id==='screen-apptmap')initApptMap();
+  if(id==='screen-rhythmbreathe')initRhythmBreath();
+  // Inject research banner into kids game screens on first visit
+  if(['screen-brush','screen-quiz','screen-germ','screen-pacman','screen-plantgame','screen-drawtooth'].includes(id))injectGameResearch(id);
   if(id==='screen-reframe')renderReframe();
   if(id==='screen-plantgame'){initPlantCanvas();if(typeof restorePlantState==='function')restorePlantState();}
   if(id==='screen-journal'&&typeof renderJournal==='function')renderJournal();
-  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatDentistFolder==='function')loadPatDentistFolder();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();}
-  if(id==='screen-patient-account'){
-    if(!currentUser){ openPortalAs('patient','login'); return; }
-    // Use a flag to prevent re-entrant loadPatientDashboard calls from showScreen
-    if(!window._patDashLoading && typeof loadPatientDashboard==='function'){
-      window._patDashLoading = true;
-      loadPatientDashboard().finally(()=>{ window._patDashLoading=false; });
-    }
-  }
+  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();}
+  if(id==='screen-patient-account'&&currentUser&&typeof populatePatientRecordsScreen==='function')populatePatientRecordsScreen();
   if(id==='screen-main')initAfterChecks();
   if(id==='screen-procedures')renderProcGrid();
   if(id==='screen-drawtooth')initDrawTooth();
@@ -4148,6 +4301,7 @@ function showScreen(id){
     'screen-main':0, 'screen-mood':0, 'screen-breathing':0,
     'screen-dental-care':1, 'screen-sound':1, 'screen-chair':1, 'screen-reframe':1, 'screen-story':1, 'screen-journal':1,
     'screen-games':2, 'screen-quiz':2, 'screen-germ':2, 'screen-pacman':2, 'screen-plantgame':2, 'screen-drawtooth':2, 'screen-brush':2,
+    'screen-diagnosis':2, 'screen-mindvmouth':2, 'screen-apptmap':2, 'screen-rhythmbreathe':2,
     'screen-reminders':3,
     'screen-procedures':4,
     'screen-dashboard':5, 'screen-patient-account':5
@@ -4175,14 +4329,14 @@ function showScreen(id){
   }
 }
 
-function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-overlay').classList.add('open');const soSec=document.getElementById('sidebar-signout-section');if(soSec)soSec.style.display=currentUser?'block':'none';}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
+function openSidebar(){}
+function closeSidebar(){}
 function goBack(){if(_screenHistory.length>0){const prev=_screenHistory.pop();const tmp=_screenHistory;_screenHistory=[];showScreen(prev);_screenHistory=tmp;}else{showScreen('screen-welcome');}}
 const ageNotes={little:"Little Smiles Mode: Big tap targets, friendly characters, Brush the Tooth game unlocked!",explorer:"Explorer Mode: Points, badges, Germ Blaster game, and comic-style explanations. Let's go!",teen:"Teen Mode: Relaxed check-ins, relatable language. Your dentist isn't judging you, promise.",adult:"Adult Mode: Daily check-ins, procedure explainers, sound desensitization, and all features unlocked.",senior:"Senior Mode: Larger text, simpler navigation, medication tracking front and center.",parent:"Parent Mode: Guidance on talking to your child before and after dental visits."};
 
 // ── DENTAL CARE SCREEN ─────────────────────────────────────────────────────
 function switchDentalTab(tab, btn) {
-  ['routine','techniques','quiz','nojudge'].forEach(t => {
+  ['routine','techniques','quiz','nojudge','kids'].forEach(t => {
     const el = document.getElementById('dc-tab-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
@@ -4252,26 +4406,12 @@ function answerDCQuiz(btn, answer) {
 
 function openGamesWithAgeCheck() {
   const kidsAges = ['little', 'explorer'];
-  if (kidsAges.includes(selectedAge || '')) {
-    // Kids age confirmed — show kids banner and open games
-    const banner = document.getElementById('games-kids-banner');
-    if (banner) banner.style.display = 'block';
-    showScreen('screen-games');
-  } else if (!selectedAge) {
-    // No age selected yet — ask them to confirm
-    if (confirm('Are you opening this for a child (under 13)?\n\nTap OK for kids games, or Cancel to go to adult mode.')) {
-      selectedAge = 'explorer';
-      startKidsMode();
-      const banner = document.getElementById('games-kids-banner');
-      if (banner) banner.style.display = 'block';
-    }
-    showScreen('screen-games');
-  } else {
-    // Adult/teen — hide kids banner, show games
-    const banner = document.getElementById('games-kids-banner');
-    if (banner) banner.style.display = 'none';
-    showScreen('screen-games');
-  }
+  const isKids = kidsAges.includes(selectedAge || '') || document.body.classList.contains('kids-mode');
+  const adultSec = document.getElementById('games-adult-section');
+  const kidsSec  = document.getElementById('games-kids-section');
+  if (adultSec) adultSec.style.display = isKids ? 'none' : 'block';
+  if (kidsSec)  kidsSec.style.display  = isKids ? 'block' : 'none';
+  showScreen('screen-games');
 }
 
 function selectAge(age,el){
@@ -4469,6 +4609,544 @@ function answerQuiz(idx){
   document.getElementById('quiz-container').appendChild(btn);
 }
 
+// ══════════════════════════════════════════════════════════
+// ADULT GAMES
+// ══════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════
+// ADULT GAMES
+// ══════════════════════════════════════════════════════════
+
+// ── TOOTH LIFE SKILLS (Patient Diagnosis Room) ────────────
+// Practical scenarios patients actually face — what to do, how to handle it
+const TOOTH_SKILLS = [
+  {
+    icon: '🦷💥',
+    title: 'A tooth just got knocked out',
+    scenario: 'You\'re playing sport, eating, or you\'ve had a fall. A tooth comes out completely — root and all. You have it in your hand. What do you do in the next 30 seconds?',
+    options: [
+      'Rinse it under the tap and put it in a cup of water',
+      'Hold it by the crown, rinse gently in milk or saliva, and push it back into the socket immediately',
+      'Wrap it in tissue and rush to A&E',
+      'Put it in a glass of warm water with salt'
+    ],
+    correct: 1,
+    verdict: '✅ The tooth can be saved — if you act fast',
+    explanation: 'An avulsed (knocked-out) tooth has a survival window of 30–60 minutes. The periodontal ligament cells on the root die quickly when dry. The correct protocol: hold by the crown only (never the root), do NOT scrub, rinse gently in milk or your own saliva, and replant it immediately if you can. If you can\'t replant, keep it in milk or hold it in your cheek (adults only — children might swallow it). Get to a dentist within an hour.',
+    hack: '🥛 No milk? Use saline solution, or tuck it between your cheek and gum to keep it moist in saliva. Water is the last resort — it damages cells.'
+  },
+  {
+    icon: '🥶',
+    title: 'Your tooth is screaming at cold water',
+    scenario: 'Every time you drink cold water or breathe cold air, one tooth sends a sharp electric shock. It lasts 1–3 seconds. No swelling, no constant ache. Just that instant zap.',
+    options: [
+      'Ignore it — sensitivity is normal and will go away on its own',
+      'Start using a sensitivity toothpaste and get it checked if it persists beyond 2 weeks',
+      'Avoid cold drinks entirely for the rest of your life',
+      'It\'s definitely a root canal — book one immediately'
+    ],
+    correct: 1,
+    verdict: '✅ Probably manageable — but worth knowing the cause',
+    explanation: 'Brief cold sensitivity (1–3 seconds) is usually dentine hypersensitivity — exposed dentine tubules transmitting temperature signals to the nerve. Causes include enamel erosion, gum recession, brushing too hard, or whitening. Sensitivity toothpastes (look for potassium nitrate or stannous fluoride) block the tubules. If the pain lingers longer than a few seconds, spreads, or becomes spontaneous, it signals pulpitis — then it needs a dentist.',
+    hack: '🪥 Rub sensitivity toothpaste directly onto the tooth with your finger and leave it — don\'t rinse. This concentrates the active ingredient exactly where needed.'
+  },
+  {
+    icon: '🩸',
+    title: 'Your gums bleed every time you brush',
+    scenario: 'You\'ve noticed pink in the sink for months. The gums look fine — no pain, no swelling you can feel. You\'ve assumed you\'re just brushing too hard. Is that it?',
+    options: [
+      'It\'s definitely brushing too hard — use a softer brush and be gentler',
+      'Bleeding on brushing is almost always a sign of gum inflammation — it needs to be investigated',
+      'Bleeding gums are normal, everyone gets them',
+      'Skip the area that bleeds so it can heal'
+    ],
+    correct: 1,
+    verdict: '⚠️ This is your gums asking for help, not telling you to back off',
+    explanation: 'Healthy gums do not bleed when brushed gently. Consistent bleeding indicates gingivitis — bacterial plaque causing inflammation. The counterintuitive truth: you need to brush AND floss that area more, not avoid it. Plaque removal reduces inflammation and the bleeding stops, usually within 2 weeks of improved oral hygiene. If it persists, periodontitis may have developed and needs professional scaling. Bleeding is also caused by some medications (blood thinners) and vitamin C deficiency.',
+    hack: '🩺 If your gums bleed, don\'t back off — brush and floss thoroughly. It feels wrong but it works. If bleeding hasn\'t reduced in 2 weeks of good care, see a dentist.'
+  },
+  {
+    icon: '😬',
+    title: 'You crack a tooth on something hard',
+    scenario: 'You bite into something — a seed, an olive stone, a piece of ice — and feel a sharp crack inside your mouth. There\'s immediate pain. You look in the mirror: no obvious piece missing. The tooth hurts when you bite on it.',
+    options: [
+      'Wait and see if the pain goes away in a few days',
+      'See a dentist within 24–48 hours — a cracked tooth left untreated can split completely',
+      'Use clove oil for the pain and monitor it at home',
+      'Avoid eating on that side and it will heal on its own'
+    ],
+    correct: 1,
+    verdict: '⏱️ Time matters — cracks don\'t heal, they only grow',
+    explanation: 'Unlike bone, teeth cannot heal fractures. A cracked tooth left alone progresses — from a hairline crack to a cusp fracture to a complete split. Pain on biting (especially on release) is classic cracked tooth syndrome. Within 24–48 hours a dentist can bond or crown it. A split tooth reaching below the gumline may require extraction. Clove oil provides temporary relief but doesn\'t stop the crack propagating.',
+    hack: '🧊 For immediate pain: bite gently on a damp cold cloth or take ibuprofen. Avoid temperature extremes, sticky food, and chewing on that side until you\'re seen.'
+  },
+  {
+    icon: '🦴',
+    title: 'Food keeps getting stuck in one spot',
+    scenario: 'There\'s a specific gap where food packs itself in after every meal. You need a toothpick every time. It\'s been happening for months. No pain, just annoying.',
+    options: [
+      'It\'s normal — some gaps are just bigger and you need to be more diligent with flossing',
+      'Food packing consistently in one location usually signals a cavity, broken filling, or gum recession — get it checked',
+      'Use a toothpick aggressively to keep the area clear',
+      'Switch to a water flosser and the problem will resolve'
+    ],
+    correct: 1,
+    verdict: '🔍 A food trap is usually a sign of a problem, not just an anatomy quirk',
+    explanation: 'Persistent food trapping in a specific spot usually means: a cavity opening up between teeth, a broken or ill-fitting filling/crown, a widening gap from bone loss, or gum recession creating a pocket. These won\'t resolve themselves — the underlying cause needs addressing. Aggressive toothpicking can damage the gum papilla (the triangular gum between teeth) making the problem worse.',
+    hack: '🧵 Use the floss like a shovel, not a saw — wrap it around each tooth in a C-shape and move it up and down the tooth surface, going just below the gumline.'
+  },
+  {
+    icon: '😤',
+    title: 'You have terrible breath and can\'t figure out why',
+    scenario: 'You brush twice a day, sometimes use mouthwash. But people have hinted. A close friend confirmed it. You can\'t smell it yourself. It\'s affecting your confidence.',
+    options: [
+      'Use more mouthwash — the bacteria are on your tongue and between teeth',
+      'Clean your tongue, floss daily, and check for a dental or systemic cause if it persists',
+      'It\'s just your diet — cut garlic and onions',
+      'Breathe through your mouth less'
+    ],
+    correct: 1,
+    verdict: '🔬 Usually fixable — if you know where to look',
+    explanation: 'Over 90% of bad breath (halitosis) originates in the mouth. The primary culprits: the tongue dorsum (back of tongue — most people never clean this), interdental spaces with old food debris, and gum disease or deep pockets. Mouthwash masks smell for 30 minutes without treating the cause. Tongue scraping, daily flossing, and treating any gum disease eliminates most cases. Persistent halitosis despite perfect oral hygiene can indicate tonsil stones, acid reflux, or systemic conditions — worth a GP visit.',
+    hack: '👅 Buy a tongue scraper (costs ₹50–150). Use it every morning before brushing. It removes the volatile sulphur compound-producing bacteria that cause most bad breath. This single habit makes more difference than any mouthwash.'
+  }
+];
+
+let _skillIdx = 0, _skillAnswered = false;
+
+function initDiagnosis() {
+  _skillIdx = 0; _skillAnswered = false;
+  renderToothSkill();
+}
+
+function renderToothSkill() {
+  const c = document.getElementById('diag-container');
+  if (!c) return;
+  const sk = TOOTH_SKILLS[_skillIdx];
+  _skillAnswered = false;
+
+  c.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px">Skill ${_skillIdx+1} of ${TOOTH_SKILLS.length}</div>
+      <div style="display:flex;gap:4px">${TOOTH_SKILLS.map((_,i)=>`<div style="width:20px;height:4px;border-radius:2px;background:${i<=_skillIdx?'var(--teal)':'#e2e8f0'}"></div>`).join('')}</div>
+    </div>
+    <div style="text-align:center;padding:16px 0 8px">
+      <div style="font-size:48px;margin-bottom:8px">${sk.icon}</div>
+      <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--navy);margin-bottom:10px">${sk.title}</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#f8fafc,#f0fdfa);border-radius:14px;padding:14px 16px;margin-bottom:16px;border:1px solid #e2e8f0">
+      <div style="font-size:13px;color:var(--slate);line-height:1.7">${sk.scenario}</div>
+    </div>
+    <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">What's the right move?</div>
+    <div id="skill-options">
+      ${sk.options.map((o,i)=>`<button onclick="skillAnswer(${i})" style="width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:8px;font-size:13px;text-align:left;cursor:pointer;font-family:var(--font);line-height:1.5;color:var(--navy);transition:border-color .15s" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="if(!this.disabled)this.style.borderColor='#e2e8f0'">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div id="skill-result" style="display:none"></div>`;
+}
+
+function skillAnswer(idx) {
+  if (_skillAnswered) return;
+  _skillAnswered = true;
+  const sk = TOOTH_SKILLS[_skillIdx];
+  const correct = idx === sk.correct;
+
+  document.querySelectorAll('#skill-options button').forEach((btn,i) => {
+    btn.disabled = true; btn.style.cursor = 'default';
+    if (i === sk.correct) { btn.style.background='#f0fdf4'; btn.style.borderColor='#22c55e'; btn.style.color='#15803d'; btn.style.fontWeight='700'; }
+    else if (i === idx && !correct) { btn.style.background='#fff1f2'; btn.style.borderColor='#ef4444'; btn.style.color='#b91c1c'; }
+  });
+
+  const res = document.getElementById('skill-result');
+  const isLast = _skillIdx >= TOOTH_SKILLS.length - 1;
+  res.style.display = 'block';
+  res.innerHTML = `
+    <div style="background:${correct?'linear-gradient(135deg,#f0fdf4,#ecfdf5)':'linear-gradient(135deg,#fff7ed,#fffbeb)'};border-radius:14px;padding:16px;margin-top:4px;border:1.5px solid ${correct?'#86efac':'#fde68a'}">
+      <div style="font-weight:800;font-size:14px;color:${correct?'#15803d':'#92400e'};margin-bottom:6px">${sk.verdict}</div>
+      <div style="font-size:13px;color:var(--slate);line-height:1.7;margin-bottom:12px">${sk.explanation}</div>
+      <div style="background:rgba(13,148,136,.1);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--teal-dark);line-height:1.5;margin-bottom:12px">${sk.hack}</div>
+      ${isLast
+        ? `<div style="text-align:center">
+            <div style="font-size:32px;margin-bottom:8px">🦷</div>
+            <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:4px">All 6 skills unlocked!</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:12px">These are real situations. Now you know what to do when they happen.</div>
+            <button onclick="initDiagnosis()" style="background:var(--grad);color:#fff;border:none;padding:10px 24px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Go Again</button>
+          </div>`
+        : `<button onclick="_skillIdx++;renderToothSkill()" style="width:100%;background:var(--grad);color:#fff;border:none;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Next Skill →</button>`
+      }
+    </div>`;
+  if (correct) completeTask('Learned a tooth life skill');
+}
+  {
+    title: 'Case 1: The Silent Ache',
+    scenario: 'A 34-year-old patient arrives complaining of a dull, persistent ache in their upper-right jaw for 3 weeks. The pain worsens slightly when they drink cold water. There is no visible swelling. They mention they had a filling in that area two years ago.',
+    clues: ['Pain triggered by cold', 'Dull ache, not sharp', 'Previously filled tooth', 'No swelling or fever', 'Localised to one area'],
+    options: ['Dental abscess', 'Cracked tooth syndrome', 'Recurrent decay under filling', 'Gum disease (periodontitis)'],
+    answer: 2,
+    explanation: 'Recurrent decay under a filling is the most likely diagnosis. Cold sensitivity + dull ache + a tooth with existing restoration are classic signs. The filling may have developed microleakage over time, allowing bacteria to reach the dentine. No fever or swelling makes abscess less likely. A new X-ray would confirm.',
+    resolution: 'Your dentist removes the old filling, clears the new decay, and places a fresh composite or crown. You\'ll be numb throughout — no pain.'
+  },
+  {
+    title: 'Case 2: Night Terror',
+    scenario: 'A 28-year-old patient reports waking up with jaw pain and frequent headaches. Their partner says they can hear grinding sounds at night. The patient\'s enamel on the biting surfaces looks worn and flat. They\'ve been under significant work stress.',
+    clues: ['Jaw pain on waking', 'Headaches, especially temples', 'Worn flat enamel on molars', 'Grinding sounds at night', 'High stress period'],
+    options: ['Dental abscess', 'Temporomandibular disorder (TMD)', 'Bruxism (tooth grinding)', 'Fractured molar'],
+    answer: 2,
+    explanation: 'This is classic Bruxism — involuntary grinding or clenching, usually during sleep and often stress-triggered. The worn enamel, morning jaw pain, temporal headaches, and partner\'s observation all point to it. TMD can be a consequence of untreated bruxism but isn\'t the primary diagnosis here.',
+    resolution: 'A custom-fitted night guard protects enamel and jaw joints. Stress management techniques, like the exercises in this app, can significantly reduce grinding frequency.'
+  },
+  {
+    title: 'Case 3: The Creeping Gum',
+    scenario: 'A 52-year-old patient notices their teeth "look longer" than before. Their gums bleed when brushing, and they have persistent bad breath despite regular brushing. A few teeth feel slightly loose. They haven\'t seen a dentist in 8 years.',
+    clues: ['Teeth appear longer (gum recession)', 'Bleeding on brushing', 'Persistent halitosis', 'Slightly mobile teeth', 'No dental check-ups in 8 years'],
+    options: ['Aggressive brushing damage', 'Vitamin C deficiency (scurvy)', 'Periodontitis (advanced gum disease)', 'Oral cancer'],
+    answer: 2,
+    explanation: 'Advanced periodontitis. The hallmarks are all present: gum recession exposing more tooth, bleeding, mobility, and halitosis from bacterial toxins. Eight years without professional cleaning allows tartar to build up below the gumline, causing irreversible bone and tissue loss. Aggressive brushing can cause recession but doesn\'t cause mobility or that level of bleeding.',
+    resolution: 'Deep cleaning (scaling and root planing) removes subgingival tartar. Regular 3-month maintenance appointments can halt progression. Caught now, most teeth can still be saved.'
+  },
+  {
+    title: 'Case 4: The Sharp Surprise',
+    scenario: 'A 41-year-old bites into an apple and feels a sudden sharp crack and intense pain. The pain is severe for a few minutes, then settles to a dull throb. Looking in the mirror, they can see what appears to be a large piece of enamel missing from a back tooth.',
+    clues: ['Sudden onset after eating', 'Cracking sound heard', 'Visible fracture in mirror', 'Initial intense pain settling to throb', 'Intact tooth before this moment'],
+    options: ['Cracked cusp fracture', 'Dental abscess bursting', 'Enamel hypoplasia', 'Root resorption'],
+    answer: 0,
+    explanation: 'A cracked cusp — a piece of the tooth has physically fractured away from the crown. The cracking sound, immediate sharp pain, visible missing enamel, and sudden onset are definitive. This is one of the most common dental emergencies. Whether the pulp (nerve) is involved determines whether a crown alone suffices or a root canal is needed first.',
+    resolution: 'See a dentist within 24–48 hours. Keep the area clean, avoid chewing on that side. A crown will restore the tooth completely. The procedure is done under local anaesthetic — you\'ll feel pressure, not pain.'
+  },
+  {
+    title: 'Case 5: The Phantom',
+    scenario: 'A 67-year-old patient reports severe, shooting pain in their upper jaw that comes in electric bursts lasting seconds. The pain can be triggered by a light touch on the cheek, eating, or even a gentle breeze. Between episodes, there is no pain at all. Dental examination shows no obvious decay or gum disease.',
+    clues: ['Electric shock-like pain', 'Triggered by light touch or air', 'Pain-free between episodes', 'No visible dental cause found', 'Older patient, upper jaw'],
+    options: ['Atypical facial pain (psychosomatic)', 'Trigeminal neuralgia', 'Severe tooth abscess', 'Temporomandibular disorder'],
+    answer: 1,
+    explanation: 'Trigeminal neuralgia — often called "the suicide disease" due to its intensity. The defining features are electric shooting pain in the trigeminal nerve distribution (face/jaw), triggered by light stimuli, completely pain-free between attacks, and no dental cause. This is a neurological condition, not a dental one, and requires neurologist referral. It\'s often misdiagnosed for years.',
+    resolution: 'Anticonvulsant medications like carbamazepine provide significant relief for most patients. Surgical options exist for refractory cases. Importantly, this is treatable — and not dangerous to your teeth.'
+  }
+];
+
+// ── MIND VS MOUTH ─────────────────────────────────────────
+const MVM_THOUGHTS = [
+  { fear: '"The drill is going to hit a nerve and I\'ll scream in pain."', reframes: ['Modern drills never reach the nerve — local anaesthetic blocks all pain signals first.', 'I can\'t control what happens so I should just accept suffering.', 'If I think positive thoughts the pain won\'t exist.'], correct: 0, why: 'Local anaesthetic fully blocks nerve conduction. The drill sensation you feel is vibration and pressure — not pain. Studies show >95% of patients rate dental injections as mild discomfort at most.' },
+  { fear: '"If I show fear, the dentist will judge me as weak or difficult."', reframes: ['Every dental professional trains specifically in anxiety management — your fear is their specialty.', 'I should hide my anxiety completely so they respect me.', 'Dentists prefer patients who stay silent and don\'t react.'], correct: 0, why: 'Dentists and hygienists are trained to work with anxious patients. Research shows they prefer knowing — it lets them adjust technique, pace, and communication. Telling them makes the experience better for both of you.' },
+  { fear: '"Something will go wrong and I\'ll end up worse than before."', reframes: ['Going in makes things worse — better to wait and see if it heals.', 'Dental complications are extremely rare and dentists are trained to handle anything unexpected.', 'I should worry about everything that could go wrong to stay prepared.'], correct: 1, why: 'Serious complications in routine dental work affect less than 1% of procedures. Dental teams have protocols for every scenario. Delaying treatment, however, consistently worsens conditions and increases both cost and complexity.' },
+  { fear: '"I won\'t be able to breathe properly with hands and instruments in my mouth."', reframes: ['Modern dental procedures are designed to maintain clear airway access at all times — you\'ll always be able to breathe.', 'I should resist treatment if I feel like I can\'t breathe.', 'The dentist doesn\'t think about my breathing at all.'], correct: 0, why: 'Dentists are trained in airway management. Suction keeps the mouth clear. You breathe through your nose throughout. Many anxious patients benefit from nasal breathing practice beforehand — try 4 counts in, 6 counts out.' },
+  { fear: '"The injection will be the most painful thing I\'ve ever felt."', reframes: ['Anticipation of dental injections is consistently rated as worse than the actual injection in clinical studies.', 'Injections should be avoided at all costs — ask for treatment without anaesthetic.', 'The pain is real and I won\'t be able to handle it.'], correct: 0, why: 'In surveys, patients rate dental injection anticipation 6/10 on anxiety but the actual injection 2/10 on pain. Topical anaesthetic is applied first. The needle is fine-gauge. The experience is brief. Your expectation is the hardest part.' },
+  { fear: '"I\'ll have a panic attack in the chair and completely embarrass myself."', reframes: ['I should white-knuckle through it alone and hope the panic doesn\'t show.', 'Tell the dentist in advance — they can agree a stop signal, take breaks, and adjust the pace completely around you.', 'Panic attacks during dental treatment mean I should never go to the dentist.'], correct: 1, why: 'Panic attacks are manageable events, not emergencies. Dentists encounter them regularly. A pre-agreed hand signal lets you stop everything instantly — you\'re always in control. Knowing you can stop is often what prevents the panic from escalating.' },
+  { fear: '"My teeth are so bad the dentist will be shocked and disgusted."', reframes: ['I should keep avoiding appointments until my teeth look better.', 'Dentists see significant dental disease every single day — your condition is far more common than you think, and their only goal is to help.', 'I need to apologise extensively before they start.'], correct: 1, why: 'Dental professionals choose this career specifically to help people with dental problems. They have no emotional reaction to the condition of teeth — only clinical assessment. The patients who feel most ashamed often have the most normal presentations.' }
+];
+
+let _mvmQ = 0, _mvmScore = 0, _mvmAnswered = false;
+
+function initMVM() {
+  _mvmQ = 0; _mvmScore = 0; _mvmAnswered = false;
+  const shuffled = [...MVM_THOUGHTS].sort(() => Math.random() - 0.5);
+  window._mvmShuffled = shuffled;
+  renderMVM();
+}
+
+function renderMVM() {
+  const c = document.getElementById('mvm-container');
+  if (!c) return;
+  if (!window._mvmShuffled) window._mvmShuffled = [...MVM_THOUGHTS].sort(() => Math.random() - 0.5);
+  const q = window._mvmShuffled[_mvmQ % window._mvmShuffled.length];
+  _mvmAnswered = false;
+
+  c.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:12px;color:var(--muted)">Round ${(_mvmQ % window._mvmShuffled.length) + 1} of ${window._mvmShuffled.length}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--teal)">Score: ${_mvmScore}</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#fff1f2,#fef2f2);border:1.5px solid #fca5a5;border-radius:14px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">💭 Anxious thought:</div>
+      <div style="font-size:15px;color:#7f1d1d;font-style:italic;line-height:1.6;font-weight:500">${q.fear}</div>
+    </div>
+    <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">Pick the most evidence-based response:</div>
+    <div id="mvm-options">
+      ${q.reframes.map((r,i)=>`<button onclick="mvmAnswer(${i})" style="width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:8px;font-size:13px;text-align:left;cursor:pointer;font-family:var(--font);line-height:1.5;color:var(--navy);transition:border-color .15s" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="if(!this.disabled)this.style.borderColor='#e2e8f0'">${r}</button>`).join('')}
+    </div>
+    <div id="mvm-result" style="display:none"></div>`;
+}
+
+function mvmAnswer(idx) {
+  if (_mvmAnswered) return;
+  _mvmAnswered = true;
+  const q = window._mvmShuffled[_mvmQ % window._mvmShuffled.length];
+  const correct = idx === q.correct;
+  if (correct) _mvmScore++;
+
+  document.querySelectorAll('#mvm-options button').forEach((btn,i) => {
+    btn.disabled = true; btn.style.cursor = 'default';
+    if (i === q.correct) { btn.style.background='#f0fdf4'; btn.style.borderColor='#22c55e'; btn.style.color='#15803d'; btn.style.fontWeight='700'; }
+    else if (i === idx && !correct) { btn.style.background='#fff1f2'; btn.style.borderColor='#ef4444'; btn.style.color='#b91c1c'; }
+  });
+
+  const res = document.getElementById('mvm-result');
+  const isLast = (_mvmQ + 1) >= window._mvmShuffled.length;
+  res.style.display = 'block';
+  res.innerHTML = `
+    <div style="background:${correct?'#f0fdf4':'#fefce8'};border-radius:12px;padding:14px;margin-top:4px;border:1px solid ${correct?'#86efac':'#fde68a'}">
+      <div style="font-weight:700;font-size:13px;color:${correct?'#15803d':'#92400e'};margin-bottom:6px">${correct?'✅ That\'s the evidence-based response.':'🔶 Close — here\'s the research:'}</div>
+      <div style="font-size:12px;color:var(--slate);line-height:1.6;margin-bottom:10px">${q.why}</div>
+      ${isLast
+        ? `<div style="text-align:center;padding:8px 0 4px">
+            <div style="font-size:28px;margin-bottom:6px">🧠</div>
+            <div style="font-weight:800;font-size:15px;color:var(--navy);margin-bottom:4px">Session complete — ${_mvmScore}/${window._mvmShuffled.length} correct</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Each reframe you practise rewires the neural pathway. The more you play, the calmer the real thing feels.</div>
+            <button onclick="initMVM()" style="background:var(--grad);color:#fff;border:none;padding:10px 24px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Play Again</button>
+          </div>`
+        : `<button onclick="_mvmQ++;renderMVM()" style="width:100%;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Next →</button>`
+      }
+    </div>`;
+  if (correct) completeTask('Practised cognitive reframing');
+}
+
+// ── APPOINTMENT MAP ───────────────────────────────────────
+const APPT_STEPS = [
+  { label: 'Booking the appointment', icon: '📅', desc: 'You pick up the phone or open the app to book. This is often where avoidance kicks in hardest — the anticipatory anxiety is at its peak.', tip: 'Anxiety peaks before experiences, not during them. The moment you call, it drops.' },
+  { label: 'Walking into the clinic', icon: '🚶', desc: 'You enter the waiting room. You can smell the clinical scent, hear distant sounds. The brain is scanning for threats.', tip: 'This is the amygdala doing its job. Slow your walk, look around deliberately — you are safe here.' },
+  { label: 'Sitting in the waiting room', icon: '🪑', desc: 'You wait. Time feels slower. You might rehearse worst-case scenarios. This is peak anticipatory anxiety.', tip: 'Distraction works here. Bring headphones. Slow breathing: 4 in, 6 out. Your cortisol will drop in 3 minutes.' },
+  { label: 'Meeting the dentist', icon: '🦷', desc: 'They greet you, review your notes. You might feel the urge to apologise for your teeth or minimise your anxiety.', tip: 'Tell them your anxiety level honestly (1–10). It lets them adapt completely to your needs.' },
+  { label: 'Getting into the chair', icon: '💺', desc: 'You recline. This is a physically vulnerable position — it triggers the threat response even without any procedure happening.', tip: 'Clench and release your fists deliberately. This activates and then releases the parasympathetic system.' },
+  { label: 'The examination', icon: '🔦', desc: 'The dentist checks your teeth — mirror, probe. You feel tools in your mouth. There is no pain, just sensation and sounds.', tip: 'Focus on your breathing. Each exhale is longer than your inhale — this activates your rest response.' },
+  { label: 'The local anaesthetic injection', icon: '💉', desc: 'Topical gel is applied first. Then a fine needle delivers the anaesthetic. Brief pressure, then numbness spreads within 2–3 minutes.', tip: 'The anticipation is always worse than the injection. In clinical surveys, patients rate it 2/10 pain on average.' },
+  { label: 'The procedure itself', icon: '⚙️', desc: 'You\'re numb. The dentist works — you feel vibration, pressure, and hear sounds but not pain. You can raise your hand any time to pause.', tip: 'Control is yours. Your hand signal stops everything. The dentist wants you to use it whenever you need.' },
+  { label: 'Finishing and leaving', icon: '✅', desc: 'It\'s done. You feel the anaesthetic wearing off over the next hour. You completed something that felt impossible.', tip: 'This feeling — genuine completion of something feared — is the most powerful anxiety reducer that exists. Note it.' }
+];
+
+let _apptStep = 0, _apptRatings = [], _apptComplete = false;
+
+function initApptMap() {
+  _apptStep = 0; _apptRatings = []; _apptComplete = false;
+  renderApptMap();
+}
+
+function renderApptMap() {
+  const c = document.getElementById('apptmap-container');
+  if (!c) return;
+
+  if (_apptStep >= APPT_STEPS.length) {
+    const avg = (_apptRatings.reduce((a,b)=>a+b,0) / _apptRatings.length).toFixed(1);
+    const peak = Math.max(..._apptRatings);
+    const peakStep = APPT_STEPS[_apptRatings.indexOf(peak)];
+    c.innerHTML = `
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:40px;margin-bottom:8px">🗺️</div>
+        <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--navy);margin-bottom:4px">Your Anxiety Map</div>
+        <div style="font-size:13px;color:var(--muted)">Across all 9 steps of your appointment</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:14px;padding:16px;margin-bottom:16px">
+        <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:8px">
+          ${_apptRatings.map((r,i)=>`<div style="flex:1;background:${r<=3?'#22c55e':r<=6?'#f59e0b':'#ef4444'};border-radius:4px 4px 0 0;height:${r*8}px;min-height:4px" title="${APPT_STEPS[i].label}: ${r}/10"></div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted)">${APPT_STEPS.map(s=>`<div style="flex:1;text-align:center;overflow:hidden">${s.icon}</div>`).join('')}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div style="background:#f0fdf4;border-radius:12px;padding:12px;text-align:center;border:1px solid #86efac">
+          <div style="font-size:22px;font-weight:800;color:#15803d">${avg}</div>
+          <div style="font-size:11px;color:#166534">avg anxiety /10</div>
+        </div>
+        <div style="background:#fff1f2;border-radius:12px;padding:12px;text-align:center;border:1px solid #fca5a5">
+          <div style="font-size:14px;font-weight:800;color:#b91c1c">${peakStep.icon}</div>
+          <div style="font-size:11px;color:#991b1b">${peakStep.label.split(' ').slice(0,3).join(' ')}…</div>
+          <div style="font-size:10px;color:#b91c1c;margin-top:2px">Peak point</div>
+        </div>
+      </div>
+      <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid #e2e8f0">
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px">🧠 What your map tells you</div>
+        <div style="font-size:12px;color:var(--slate);line-height:1.6">Your peak anxiety is at <b>${peakStep.label.toLowerCase()}</b>. Research shows that repeated mental walkthroughs of high-anxiety moments reduce their peak rating by an average of 40% over 3 sessions. Play this again before your next appointment — your numbers will drop.</div>
+      </div>
+      <button onclick="initApptMap()" style="width:100%;background:var(--grad);color:#fff;border:none;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Map it Again</button>`;
+    completeTask('Mapped your appointment anxiety');
+    return;
+  }
+
+  const step = APPT_STEPS[_apptStep];
+  c.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px">Step ${_apptStep+1} of ${APPT_STEPS.length}</div>
+      <div style="display:flex;gap:3px">${APPT_STEPS.map((_,i)=>`<div style="width:16px;height:4px;border-radius:2px;background:${i<_apptStep?'var(--teal)':i===_apptStep?'var(--teal)':'#e2e8f0'}"></div>`).join('')}</div>
+    </div>
+    <div style="text-align:center;padding:20px 0 12px">
+      <div style="font-size:52px;margin-bottom:8px">${step.icon}</div>
+      <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px">${step.label}</div>
+      <div style="font-size:13px;color:var(--slate);line-height:1.6;max-width:320px;margin:0 auto">${step.desc}</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:12px;padding:12px 16px;margin-bottom:20px;border:1px solid rgba(13,148,136,.2)">
+      <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:4px">💡 Calm tip</div>
+      <div style="font-size:12px;color:var(--slate);line-height:1.5">${step.tip}</div>
+    </div>
+    <div style="font-weight:700;font-size:14px;color:var(--navy);text-align:center;margin-bottom:14px">How anxious does this step make you feel right now?</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px">
+      ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button onclick="apptRate(${n})" style="background:${n<=3?'#dcfce7':n<=6?'#fef9c3':'#fee2e2'};border:2px solid ${n<=3?'#86efac':n<=6?'#fde68a':'#fca5a5'};border-radius:10px;padding:10px 0;font-size:15px;font-weight:800;color:${n<=3?'#15803d':n<=6?'#92400e':'#b91c1c'};cursor:pointer;font-family:var(--font)">${n}</button>`).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:0 4px"><span>😌 Calm</span><span>😰 Very anxious</span></div>`;
+}
+
+function apptRate(n) {
+  _apptRatings.push(n);
+  _apptStep++;
+  renderApptMap();
+}
+
+// ── RHYTHM BREATH ─────────────────────────────────────────
+let _rbActive = false, _rbPhase = 'idle', _rbStart = 0, _rbScore = 0, _rbRound = 0;
+let _rbAnim = null, _rbCtx = null, _rbCanvas = null;
+const RB_PHASES = [
+  { name: 'Inhale', dur: 4000, color: '#0d9488', targetSize: 1.0 },
+  { name: 'Hold', dur: 4000, color: '#3b82f6', targetSize: 1.0 },
+  { name: 'Exhale', dur: 6000, color: '#8b5cf6', targetSize: 0.0 }
+];
+let _rbPhaseIdx = 0, _rbPhaseStart = 0, _rbTaps = [], _rbPhaseScores = [];
+
+function initRhythmBreath() {
+  const c = document.getElementById('rb-container');
+  if (!c) return;
+  _rbActive = false; _rbScore = 0; _rbRound = 0; _rbPhaseIdx = 0; _rbTaps = []; _rbPhaseScores = [];
+
+  c.innerHTML = `
+    <div style="text-align:center;padding:16px 0 8px">
+      <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px">Rhythm Breath</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">Tap the circle in sync with the wave.<br>4 counts inhale · 4 hold · 6 exhale.</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <canvas id="rb-canvas" width="280" height="280" style="border-radius:50%;touch-action:none"></canvas>
+    </div>
+    <div style="text-align:center;margin-bottom:8px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Phase: <span id="rb-phase-label" style="font-weight:700;color:var(--teal)">—</span></div>
+      <div style="font-size:12px;color:var(--muted)">Sync score: <span id="rb-score-display" style="font-weight:700;color:var(--navy)">—</span></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:8px">
+      <button id="rb-start-btn" onclick="startRhythmBreath()" style="background:var(--grad);color:#fff;border:none;padding:12px 28px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Start</button>
+      <button id="rb-stop-btn" onclick="stopRhythmBreath()" style="display:none;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:12px 28px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Stop</button>
+    </div>
+    <div id="rb-result" style="display:none"></div>`;
+
+  _rbCanvas = document.getElementById('rb-canvas');
+  _rbCtx = _rbCanvas.getContext('2d');
+  drawRhythmIdle();
+  _rbCanvas.addEventListener('click', rbTap);
+  _rbCanvas.addEventListener('touchstart', e => { e.preventDefault(); rbTap(); }, { passive: false });
+}
+
+function drawRhythmIdle() {
+  if (!_rbCtx) return;
+  const cx = 140, cy = 140, r = 100;
+  _rbCtx.clearRect(0,0,280,280);
+  _rbCtx.beginPath(); _rbCtx.arc(cx,cy,r,0,Math.PI*2);
+  _rbCtx.fillStyle = 'rgba(13,148,136,.1)'; _rbCtx.fill();
+  _rbCtx.strokeStyle = '#0d9488'; _rbCtx.lineWidth = 3; _rbCtx.stroke();
+  _rbCtx.fillStyle = '#0d9488'; _rbCtx.font = 'bold 16px sans-serif';
+  _rbCtx.textAlign = 'center'; _rbCtx.textBaseline = 'middle';
+  _rbCtx.fillText('Tap to breathe', cx, cy);
+}
+
+function startRhythmBreath() {
+  _rbActive = true; _rbPhaseIdx = 0; _rbPhaseStart = performance.now();
+  _rbTaps = []; _rbPhaseScores = []; _rbScore = 0; _rbRound = 0;
+  document.getElementById('rb-start-btn').style.display = 'none';
+  document.getElementById('rb-stop-btn').style.display = 'inline-block';
+  document.getElementById('rb-result').style.display = 'none';
+  animateRhythm(performance.now());
+}
+
+function stopRhythmBreath() {
+  _rbActive = false;
+  if (_rbAnim) { cancelAnimationFrame(_rbAnim); _rbAnim = null; }
+  drawRhythmIdle();
+  const startBtn = document.getElementById('rb-start-btn');
+  const stopBtn = document.getElementById('rb-stop-btn');
+  if (startBtn) startBtn.style.display = 'inline-block';
+  if (stopBtn) stopBtn.style.display = 'none';
+  document.getElementById('rb-phase-label') && (document.getElementById('rb-phase-label').textContent = '—');
+  document.getElementById('rb-score-display') && (document.getElementById('rb-score-display').textContent = '—');
+}
+
+function animateRhythm(ts) {
+  if (!_rbActive) return;
+  const phase = RB_PHASES[_rbPhaseIdx];
+  const elapsed = ts - _rbPhaseStart;
+  const progress = Math.min(elapsed / phase.dur, 1);
+
+  // Size: inhale = 0→1, hold = 1, exhale = 1→0
+  let size;
+  if (_rbPhaseIdx === 0) size = progress;
+  else if (_rbPhaseIdx === 1) size = 1;
+  else size = 1 - progress;
+
+  const cx=140, cy=140, baseR=60, maxR=110;
+  const r = baseR + (maxR - baseR) * size;
+
+  _rbCtx.clearRect(0,0,280,280);
+  // Outer glow
+  const grad = _rbCtx.createRadialGradient(cx,cy,r*0.5,cx,cy,r);
+  grad.addColorStop(0, phase.color + '33');
+  grad.addColorStop(1, phase.color + '08');
+  _rbCtx.beginPath(); _rbCtx.arc(cx,cy,r+18,0,Math.PI*2);
+  _rbCtx.fillStyle = grad; _rbCtx.fill();
+  // Main circle
+  _rbCtx.beginPath(); _rbCtx.arc(cx,cy,r,0,Math.PI*2);
+  _rbCtx.fillStyle = phase.color + '28'; _rbCtx.fill();
+  _rbCtx.strokeStyle = phase.color; _rbCtx.lineWidth = 3; _rbCtx.stroke();
+  // Phase label inside
+  _rbCtx.fillStyle = phase.color; _rbCtx.font = 'bold 18px sans-serif';
+  _rbCtx.textAlign = 'center'; _rbCtx.textBaseline = 'middle';
+  _rbCtx.fillText(phase.name, cx, cy - 10);
+  const secLeft = Math.ceil((phase.dur - elapsed) / 1000);
+  _rbCtx.font = '28px sans-serif'; _rbCtx.fillStyle = '#1e293b';
+  _rbCtx.fillText(secLeft > 0 ? secLeft : '', cx, cy + 18);
+
+  const phaseLabel = document.getElementById('rb-phase-label');
+  if (phaseLabel) phaseLabel.textContent = phase.name;
+
+  if (progress >= 1) {
+    // Score this phase: did they tap at the right moments?
+    const phaseTaps = _rbTaps.filter(t => t >= _rbPhaseStart && t <= ts);
+    let phaseScore = 0;
+    if (_rbPhaseIdx === 0 && phaseTaps.length >= 1) phaseScore = 100; // any tap during inhale
+    if (_rbPhaseIdx === 2 && phaseTaps.length >= 1) phaseScore = 100; // any tap during exhale
+    if (_rbPhaseIdx === 1 && phaseTaps.length === 0) phaseScore = 100; // NO tap during hold = perfect
+    _rbPhaseScores.push(phaseScore);
+
+    _rbPhaseIdx = (_rbPhaseIdx + 1) % RB_PHASES.length;
+    _rbPhaseStart = ts;
+    if (_rbPhaseIdx === 0) {
+      _rbRound++;
+      if (_rbRound >= 3) {
+        _rbActive = false;
+        const totalScore = Math.round(_rbPhaseScores.reduce((a,b)=>a+b,0) / _rbPhaseScores.length);
+        showRhythmResult(totalScore);
+        return;
+      }
+    }
+  }
+
+  _rbAnim = requestAnimationFrame(animateRhythm);
+}
+
+function rbTap() {
+  if (!_rbActive) return;
+  _rbTaps.push(performance.now());
+}
+
+function showRhythmResult(score) {
+  stopRhythmBreath();
+  const res = document.getElementById('rb-result');
+  if (!res) return;
+  res.style.display = 'block';
+  const msg = score >= 80 ? 'Excellent sync! Your nervous system is actively calming.' : score >= 50 ? 'Good rhythm. Each practice session deepens the response.' : 'Keep going — it takes a few tries to find the rhythm.';
+  res.innerHTML = `
+    <div style="background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:14px;padding:16px;margin-top:4px;border:1.5px solid rgba(13,148,136,.25);text-align:center">
+      <div style="font-size:40px;margin-bottom:8px">${score>=80?'🌊':score>=50?'💙':'🌱'}</div>
+      <div style="font-family:var(--display);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px">${score}% sync</div>
+      <div style="font-size:13px;color:var(--slate);margin-bottom:14px;line-height:1.5">${msg}</div>
+      <div style="background:rgba(13,148,136,.1);border-radius:10px;padding:10px;font-size:12px;color:var(--teal-dark);margin-bottom:14px;line-height:1.5">
+        The 4-4-6 pattern activates your vagus nerve, triggering the parasympathetic response. Heart rate variability increases. Cortisol drops. Practice this for 3 minutes before your next appointment — it works within one cycle.
+      </div>
+      <button onclick="initRhythmBreath()" style="background:var(--grad);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Go Again</button>
+    </div>`;
+  completeTask('Completed a breathing session');
+}
+
+// ── GAME SCREEN INITS ─────────────────────────────────────
 // ── GERM BLASTER ───────────────────────────────────────────────────────────────
 function startGermGame(){document.getElementById('germ-start').style.display='none';document.getElementById('germ-result').style.display='none';germScore=0;germTimer=30;germs=[];document.getElementById('germ-score').textContent='0';document.getElementById('germ-timer').textContent='30';const canvas=document.getElementById('germ-canvas');canvas.onclick=handleGermClick;germInterval=setInterval(()=>{addGerm();drawGerms(canvas);},300);germTimerInterval=setInterval(()=>{germTimer--;document.getElementById('germ-timer').textContent=germTimer;if(germTimer<=0)endGermGame();},1000);}
 function addGerm(){if(germs.length>12)germs.shift();germs.push({x:30+Math.random()*280,y:30+Math.random()*220,r:15+Math.random()*12});}
@@ -5531,10 +6209,12 @@ window.addEventListener('resize',()=>{
 
 function startKidsMode(){
   document.body.classList.add('kids-mode');
-  // Rebuild rainbow immediately and again after screen transition
   buildRainbow();
   setTimeout(buildRainbow, 120);
   setTimeout(buildRainbow, 600);
+  // Show kids dental care tab
+  const kBtn = document.getElementById('dc-tab-kids-btn');
+  if (kBtn) kBtn.style.display = 'inline-block';
 }
 function stopKidsMode(){
   document.body.classList.remove('kids-mode');
@@ -5543,6 +6223,9 @@ function stopKidsMode(){
     arc.style.opacity='0';
     setTimeout(()=>{arc.innerHTML='';arc.style.height='0';},400);
   }
+  // Hide kids dental care tab
+  const kBtn = document.getElementById('dc-tab-kids-btn');
+  if (kBtn) kBtn.style.display = 'none';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -6061,6 +6744,21 @@ function openPortalAs(role, tab) {
 
   switchAuthTab(tab);
   showScreen('screen-portal-login');
+
+  // Show "already signed in" notice if user already has an active session
+  const alreadyBanner = document.getElementById('auth-already-signed-in');
+  const alreadyMsg = document.getElementById('auth-already-msg');
+  if (alreadyBanner) {
+    if (currentUser && currentProfile) {
+      const roleLabel = currentProfile.role === 'dentist' ? 'Dentist' :
+                        currentProfile.role === 'clinic_admin' ? 'Clinic Admin' : 'Patient';
+      const email = currentUser.email || '';
+      if (alreadyMsg) alreadyMsg.textContent = `Signed in as ${roleLabel} (${email}). Go to your portal or sign out to switch.`;
+      alreadyBanner.style.display = 'block';
+    } else {
+      alreadyBanner.style.display = 'none';
+    }
+  }
 }
 
 function switchAuthTab(tab) {
@@ -7327,18 +8025,23 @@ async function loadPatientDashboard() {
     return;
   }
 
-  // Show the patient records portal (My Records screen)
-  window._patDashLoading = true; // prevent showScreen handler from re-entering
-  showScreen('screen-patient-account');
-  window._patDashLoading = false;
+  // Show My Space — the home for everything patient-related.
+  // My Records folder card inside My Space navigates to screen-patient-account.
+  showScreen('screen-dashboard');
 
-  // Load MDAS history from Supabase (persists across logins)
+  // Load background data (MDAS, journal)
   loadMdasHistoryFromDB();
-  // Load journal entries from Supabase
   loadJournalEntriesFromDB();
+  syncAppProgressToAccount();
+  restorePlantState();
+  renderJournal();
+}
+
+// Populates screen-patient-account with live data — called when user taps the My Records folder.
+async function populatePatientRecordsScreen() {
+  if (!currentUser) return;
   const email       = currentUser && currentUser.email ? String(currentUser.email) : '';
   const userId      = currentUser && currentUser.id    ? String(currentUser.id)    : '';
-  // Prefer full_name from profile; fall back to email prefix
   const storedName  = currentProfile && currentProfile.full_name ? String(currentProfile.full_name) : null;
   const namePart    = storedName || (email.split('@')[0] || 'Patient');
   const displayName = storedName ? namePart : (namePart.charAt(0).toUpperCase() + namePart.slice(1));
@@ -7359,7 +8062,6 @@ async function loadPatientDashboard() {
   const fidEl = document.getElementById('pat-friendly-id');
   if (fidEl) fidEl.textContent = (currentProfile && currentProfile.friendly_id) ? currentProfile.friendly_id : (userId ? userId.slice(0,8).toUpperCase() : '—');
 
-  // Populate age, sex, address
   const ageEl  = document.getElementById('pat-age-display');
   const sexEl  = document.getElementById('pat-sex-display');
   const addrEl = document.getElementById('pat-address-display');
@@ -7367,7 +8069,6 @@ async function loadPatientDashboard() {
   if (sexEl)  sexEl.textContent  = (currentProfile && currentProfile.sex)     ? (currentProfile.sex.charAt(0).toUpperCase() + currentProfile.sex.slice(1)) : '—';
   if (addrEl) addrEl.textContent = (currentProfile && currentProfile.address) ? (String(currentProfile.address) + (currentProfile.city ? ', ' + currentProfile.city : '')) : '—';
 
-  // Use only the plain string already stored in currentProfile
   const clinicName = currentProfile && currentProfile.clinics ? String(currentProfile.clinics.name || '—') : '—';
   const clinicCode = currentProfile && currentProfile.clinics ? String(currentProfile.clinics.join_code || '') : '';
   document.getElementById('pat-clinic-name').textContent = clinicName;
@@ -7378,7 +8079,6 @@ async function loadPatientDashboard() {
     else { codeRow.style.display = 'none'; }
   }
 
-  // Show/hide the red medical history badge
   const mhBadge = document.getElementById('pat-med-history-badge');
   if (mhBadge) {
     const mh = currentProfile && currentProfile.medical_history;
@@ -7390,7 +8090,6 @@ async function loadPatientDashboard() {
     mhBadge.style.display = hasMedHistory ? 'inline-flex' : 'none';
   }
 
-  // Show join clinic card if no clinic linked
   const joinCard = document.getElementById('pat-join-clinic-card');
   if (joinCard) {
     joinCard.style.display = (currentProfile && currentProfile.clinic_id) ? 'none' : 'block';
@@ -7398,7 +8097,6 @@ async function loadPatientDashboard() {
 
   const listEl = document.getElementById('pat-records-list');
 
-  // Fetch records — extract only plain scalar fields
   let records = [];
   try {
     const { data, error } = await db
@@ -7407,7 +8105,6 @@ async function loadPatientDashboard() {
       .eq('patient_id', userId)
       .order('created_at', { ascending: false });
     if (error) throw new Error(safeMsg(error, 'Failed to load records'));
-    // Map to plain objects — never store the raw response rows
     records = (data || []).map(r => ({
       id:                   String(r.id || ''),
       created_at:           r.created_at           ? String(r.created_at)           : null,
@@ -7416,10 +8113,11 @@ async function loadPatientDashboard() {
       next_appointment:     r.next_appointment     ? String(r.next_appointment)     : null
     }));
   } catch (e) {
-    listEl.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:12px">Error loading records: ' + safeMsg(e) + '</div>';
+    if (listEl) listEl.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:12px">Error loading records: ' + safeMsg(e) + '</div>';
     return;
   }
 
+  if (!listEl) return;
   if (records.length === 0) {
     listEl.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">
       <div style="font-size:36px;margin-bottom:10px">🏥</div>
@@ -7429,30 +8127,21 @@ async function loadPatientDashboard() {
     return;
   }
 
-  // Show soonest upcoming appointment using only the plain date strings
-  const upcoming = records
-    .filter(r => r.next_appointment)
-    .map(r => r.next_appointment)
-    .sort()[0];
+  const upcoming = records.filter(r => r.next_appointment).map(r => r.next_appointment).sort()[0];
   if (upcoming) {
     const banner = document.getElementById('pat-appt-banner');
-    banner.style.display = 'block';
+    if (banner) banner.style.display = 'block';
     try {
       const d = new Date(upcoming);
-      document.getElementById('pat-appt-date').textContent =
-        d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    } catch(_) {
-      document.getElementById('pat-appt-date').textContent = upcoming;
-    }
+      document.getElementById('pat-appt-date').textContent = d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    } catch(_) { document.getElementById('pat-appt-date').textContent = upcoming; }
   }
 
-  // Render records from plain objects only
   listEl.innerHTML = records.map(r => {
     let dateStr = '—';
     try { if (r.created_at) dateStr = new Date(r.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }); } catch(_) {}
     let apptStr = '';
     try { if (r.next_appointment) apptStr = '📅 Next: ' + new Date(r.next_appointment).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }); } catch(_) {}
-
     return `<div class="card" style="border-left:4px solid var(--teal);margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
         <div style="font-weight:700;font-size:14px;color:var(--navy)">Visit Summary</div>
@@ -7464,12 +8153,6 @@ async function loadPatientDashboard() {
       ${apptStr                ? `<div style="font-size:12px;font-weight:600;color:var(--teal)">${apptStr}</div>` : ''}
     </div>`;
   }).join('');
-
-  // Migrate guest data → user-keyed storage, reload progress
-  syncAppProgressToAccount();
-  // Restore per-user plant state and journal when patient dashboard loads
-  restorePlantState();
-  renderJournal();
 }
 
 async function patientJoinClinic() {
@@ -8153,67 +8836,6 @@ showScreen = function(id) {
 
 
 // ══════════════════════════════════════════════════════════
-async function loadSidebarDentists() {
-  const list = document.getElementById('sidebar-dentist-list');
-  if (!list) return;
-  list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0">⏳ Loading dentists…</div>';
-
-  // Wait up to 3s for db
-  if (!db) {
-    await new Promise(resolve => {
-      const t = setTimeout(resolve, 3000);
-      const iv = setInterval(() => { if (db) { clearInterval(iv); clearTimeout(t); resolve(); } }, 200);
-    });
-  }
-
-  if (!db) {
-    list.innerHTML = '<div style="font-size:12px;color:#ef4444;padding:8px 0">⚠️ Not connected. Please sign in to see dentists.</div>';
-    return;
-  }
-
-  try {
-    const { data, error } = await db
-      .from('profiles')
-      .select('id, full_name, clinic_id, clinics(name)')
-      .eq('role', 'dentist');
-
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      list.innerHTML = `<div style="text-align:center;padding:16px 8px">
-        <div style="font-size:28px;margin-bottom:8px">🦷</div>
-        <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px">No dentists registered yet</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.5">Once a dentist joins SerenOra and sets up their profile, they'll appear here for you to message.</div>
-        <button onclick="closeSidebar();openPortalAs('dentist')" style="margin-top:12px;background:var(--grad);color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);font-weight:600">Register as Dentist →</button>
-      </div>`;
-      return;
-    }
-
-    list.innerHTML = data.map(d => {
-      const dentistId = String(d.id);
-      const rawName   = d.full_name ? String(d.full_name) : 'Dentist';
-      const name      = /^dr\.?\s/i.test(rawName) ? rawName : 'Dr. ' + rawName;
-      const clinic    = d.clinics ? String(d.clinics.name || '') : '';
-      const initials  = rawName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-      return `<div class="dentist-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">${initials}</div>
-          <div>
-            <div class="name">${name}</div>
-            ${clinic ? `<div class="spec">🏥 ${clinic}</div>` : '<div class="spec">Independent Dentist</div>'}
-          </div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="book-btn" style="flex:1;text-align:center" onclick="closeSidebar();openRealDentistChat('${dentistId}','${name.replace(/'/g,"\\'")}','${clinic.replace(/'/g,"\\'")}')">💬 Message</button>
-        </div>
-      </div>`;
-    }).join('');
-
-  } catch(e) {
-    list.innerHTML = `<div style="font-size:12px;color:#ef4444;padding:8px 0">Could not load dentists: ${safeMsg(e)}</div>`;
-  }
-}
-
 // ── REAL PATIENT ↔ DENTIST MESSAGING ─────────────────────────────────────────
 let _activeDentistId   = null;
 let _activeDentistName = '';
@@ -9231,6 +9853,15 @@ function stopAmbient(){
   ambientNodes=[];currentAmbient=null;
   document.querySelectorAll('.ambient-btn').forEach(b=>b.classList.remove('active'));
   const panel=document.getElementById('ambient-now-playing');if(panel)panel.style.display='none';
+  // Also clear dentist portal wind-down track UI
+  document.querySelectorAll('#dent-winddown .wind-down-track').forEach(t=>{
+    t.classList.remove('playing');
+    const icon=t.querySelector('.dent-play-icon');
+    if(icon){icon.textContent='▶';icon.style.color='#64748b';}
+  });
+  const dentPanel=document.getElementById('dent-ambient-playing');
+  if(dentPanel)dentPanel.style.display='none';
+  if(typeof _currentDentAmbient!=='undefined')_currentDentAmbient=null;
 }
 
 // ── THEME AMBIENT SOUNDS ───────────────────────────────────────────────────────
@@ -11592,22 +12223,21 @@ function openDentInboxReply(patientId, patientName) {
   showScreen('screen-dentist-messages');
   loadDentistMessages();
 
-  // Fix 14: Mark all messages from this patient as read
+  // Mark all messages from this patient as read, then refresh inbox
   const activeDb = db || window.__supaDb;
   const activeProfile = currentProfile;
   if (activeDb && activeProfile && activeProfile.clinic_id) {
-    // Mark patient_messages as read
     activeDb.from('patient_messages')
       .update({ read: true })
       .eq('patient_id', String(patientId))
       .eq('clinic_id', String(activeProfile.clinic_id))
       .eq('read', false)
       .then(() => {
-        // Refresh badge after marking read
-        if (typeof loadDentInboxBadge === 'function') loadDentInboxBadge();
+        loadDentInboxBadge();
+        // Re-render the inbox list so the unread dot disappears immediately
+        if (typeof loadDentistInbox === 'function') loadDentistInbox();
       })
       .catch(() => {});
-    // Also mark messages table entries as read
     activeDb.from('messages')
       .update({ read: true })
       .eq('sender_id', String(patientId))
@@ -13619,64 +14249,6 @@ function showVisitSummaryModal(id, proc, dateStr, recObj) {
   modal.classList.add('open');
 }
 function closeVisitSummary() { document.getElementById('visit-summary-overlay').classList.remove('open'); }
-
-// ── PATIENT MY SPACE: "From Your Dentist" folder ────────────────────────────
-async function loadPatDentistFolder() {
-  const listEl = document.getElementById('pat-dentist-folder-list');
-  if (!listEl) return;
-  // Use both window.currentUser and the global currentUser — whichever is set
-  const activeUser = window.currentUser || currentUser;
-  const activeDb   = window.__supaDb   || db;
-  if (!activeDb || !activeUser) {
-    listEl.innerHTML = '<div style="text-align:center;padding:24px 16px;color:var(--muted);font-size:13px">Sign in and link your clinic to see OP sheets from your dentist.</div>';
-    return;
-  }
-  listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">⏳ Loading…</div>';
-  try {
-    const { data, error } = await activeDb.from('medical_records')
-      .select('id, created_at, procedure_type, treatment_summary, prescription_details, next_appointment, cs_data')
-      .eq('patient_id', String(activeUser.id))
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    if (!data || data.length === 0) {
-      listEl.innerHTML = '<div style="text-align:center;padding:24px 16px;color:var(--muted)"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;line-height:1.6">No records from your dentist yet. They will appear here after each visit.</div></div>';
-      return;
-    }
-    const PROC_LABELS_PAT = {
-      filling:'🦷 Dental Filling', amalgam:'🦷 Dental Filling (Amalgam)',
-      rootcanal:'🔩 Root Canal Treatment (RCT)', rct:'🔩 Root Canal Treatment (RCT)',
-      extraction:'🪥 Tooth Extraction', surgical_ext:'🪥 Surgical Extraction',
-      scaling:'✨ Scaling & Polishing', crown:'👑 Crown', crown_prep:'👑 Crown Prep',
-      implant:'🔧 Dental Implant', whitening:'⭐ Whitening',
-      ortho:'📐 Orthodontics', denture:'🦷 Denture',
-      pulpotomy:'💉 Pulpotomy', abscess_drain:'🔴 Abscess Drainage',
-      flouride:'✨ Fluoride', sealant:'✨ Pit & Fissure Sealant',
-      xray_consult:'📷 Consultation', other:'📋 Treatment'
-    };
-    listEl.innerHTML = data.map(r => {
-      let dateStr = '—'; try { dateStr = new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch(_){}
-      const proc = PROC_LABELS_PAT[r.procedure_type] || r.procedure_type || '📋 Dental Visit';
-      const safeRec = JSON.stringify({
-        id:r.id, created_at:r.created_at, procedure_type:r.procedure_type,
-        treatment_summary:r.treatment_summary, prescription_details:r.prescription_details,
-        next_appointment:r.next_appointment, cs_data:r.cs_data
-      }).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f1f5f9">
-        <div onclick='showPatientVisitSummary(JSON.parse(this.closest("[data-rec]").getAttribute("data-rec")))' style="display:flex;align-items:center;gap:12px;flex:1;cursor:pointer" data-rec="${safeRec}">
-          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ccfbf1,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📄</div>
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proc}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px">${dateStr}</div>
-          </div>
-        </div>
-        <button onclick="downloadOPSummary('${r.id}','${String(activeUser.id)}')" style="background:rgba(13,148,136,.1);color:var(--teal);border:1.5px solid var(--teal);padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);flex-shrink:0">📋 PDF</button>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Could not load records. Please check your connection.</div>';
-    console.error('[SerenOra] loadPatDentistFolder error:', e);
-  }
-}
 
 // ── PATIENT MY SPACE: "Contact My Dentist" ────────────────────────────────────
 async function loadPatContactDentistList() {
