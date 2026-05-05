@@ -329,12 +329,20 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);min-height:1
 .celebrate-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;padding:14px 28px;border-radius:20px;font-weight:700;font-size:16px;z-index:502;pointer-events:none;animation:toastPop .5s ease forwards;white-space:nowrap;max-width:90vw;text-align:center}
 @keyframes toastPop{from{transform:translateX(-50%) scale(.7);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
 
+/* SKELETON LOADING */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px;margin-bottom:8px}
+.skeleton-line{height:10px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.13) 50%,rgba(255,255,255,.06) 75%);background-size:400px 100%;animation:shimmer 1.4s ease infinite;margin-bottom:8px}
+.skeleton-line.w-60{width:60%}.skeleton-line.w-80{width:80%}.skeleton-line.w-40{width:40%}.skeleton-line.short{height:8px}
+
 /* BOTTOM NAV */
 .bottom-nav{position:sticky;bottom:0;background:#fff;border-top:1px solid #f1f5f9;display:flex;padding:8px 0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.06);z-index:50}
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:transparent;font-family:var(--font)}
 .bnav-label{font-size:9px;font-weight:600;color:#94a3b8;letter-spacing:.1px}
 .bnav-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.2px;text-align:center;line-height:1}
 .bnav-item.active .bnav-label{color:var(--teal)}
+.bnav-item svg path,.bnav-item svg rect,.bnav-item svg circle{transition:stroke .2s}
+.bnav-item.active svg path,.bnav-item.active svg rect,.bnav-item.active svg circle{stroke:#0d9488!important}
 
 /* SOUND WAVES */
 .sw{width:3px;border-radius:2px;background:var(--teal);animation:sw 1.2s ease infinite}
@@ -1528,8 +1536,9 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <!-- ===== WELCOME ===== -->
 <div class="screen active" id="screen-welcome" style="background:#0f172a">
 
-  <!-- Language + Theme bars — above the blue hero -->
-  <div id="lang-bar-global">
+  <!-- Language bar hidden: only 3 strings (heroSub, whyTitle, whyBody) are translated.
+       Full multi-language support is coming soon. Re-enable by removing display:none. -->
+  <div id="lang-bar-global" style="display:none">
     <div class="lang-bar" id="lang-bar-el">
       <span class="lang-chip active" onclick="setLang('en',this)">EN</span>
       <span class="lang-chip" onclick="setLang('hi',this)">हिंदी</span>
@@ -1895,7 +1904,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2208,7 +2217,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2239,7 +2248,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2381,24 +2390,6 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
 </div>
 
-<!-- ===== BREATHING BUBBLE ===== -->
-<div class="screen" id="screen-bubble">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">Breathing Bubble</span></div>
-  <div class="page-content">
-    <div class="section-sub" style="text-align:center">Watch the bubble and breathe with it. 3 full cycles.</div>
-    <div class="breath-container">
-      <div class="breath-circle" id="bubble-circle" onclick="startBubble()" style="width:160px;height:160px;font-size:14px">🫧</div>
-      <div class="breath-phase" id="bubble-phase">—</div>
-      <div style="text-align:center;font-size:14px;color:var(--teal);margin-top:8px" id="bubble-text">Tap the bubble to begin</div>
-    </div>
-    <div id="bubble-complete" style="display:none;text-align:center;padding:20px;background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:16px;margin-top:16px">
-      <div style="font-size:48px">🌟</div>
-      <div style="font-weight:800;font-size:18px;color:var(--teal);margin-bottom:8px">Well done!</div>
-      <div style="font-size:13px;color:var(--slate)">3 breathing cycles complete. Your nervous system is calmer now.</div>
-    </div>
-  </div>
-</div>
-
 <!-- ===== QUIZ ===== -->
 <div class="screen" id="screen-quiz">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">Cavity Clues</span></div>
@@ -2465,17 +2456,6 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
 </div>
 
-<!-- ===== CALM JOURNEY ===== -->
-<div class="screen" id="screen-journey">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-games')">← Back</button><span style="color:#fff;font-weight:700">Calm Journey</span></div>
-  <div class="page-content">
-    <div class="section-title">Calm Journey</div>
-    <div class="section-sub">Navigate your anxiety path by answering how you feel at each milestone.</div>
-    <div id="journey-steps"></div>
-    <button class="btn-small" onclick="initJourney()" style="width:100%;margin-top:10px">Restart Journey</button>
-  </div>
-</div>
-
 <!-- ===== PROCEDURES ===== -->
 <div class="screen" id="screen-procedures">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Procedures</span></div>
@@ -2491,7 +2471,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2532,6 +2512,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           <div style="grid-column:1/-1"><div style="opacity:.7;margin-bottom:2px">Patient ID</div><div style="font-weight:600;font-family:monospace;font-size:11px;word-break:break-all" id="dash-uuid">—</div></div>
         </div>
         <button onclick="openProfileEdit()" style="width:100%;margin-top:10px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">✏️ Edit Profile</button>
+        <button onclick="loadPatientDashboard()" style="width:100%;margin-top:8px;background:rgba(255,255,255,.9);border:none;color:var(--teal);padding:10px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📋 View My Records →</button>
       </div>
       <!-- Logged out state -->
       <div id="dash-logged-out">
@@ -2683,7 +2664,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -2931,7 +2912,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
 
@@ -3500,7 +3481,10 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       </div>
       <div id="pat-tab-records" style="display:none"></div><!-- handled above -->
       <div id="pat-tab-bills" style="display:none;padding-top:12px">
-        <div style="font-weight:700;font-size:16px;color:var(--navy);margin-bottom:4px">💳 My Bills</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-weight:700;font-size:16px;color:var(--navy)">💳 My Bills</div>
+          <button onclick="loadPatBills()" style="background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:#0d9488;padding:5px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">↻ Refresh</button>
+        </div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Bills from your clinic. Tap any bill to view details or download a receipt.</div>
         <div id="pat-bills-list"><div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">⏳ Loading bills…</div></div>
       </div>
@@ -3558,9 +3542,15 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
     <div style="height:30px"></div>
   </div>
+  <div class="bottom-nav">
+    <button class="bnav-item" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Dashboard</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item active" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#0d9488" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">My Space</span></button>
+  </div>
 </div>
-
-<!-- ===== SERENA AI CHAT ===== -->
 <button class="serena-btn" id="serena-btn" style="display:flex">
   <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
     <rect x="15" y="1" width="8" height="5" rx="2" fill="#3b82f6"/>
@@ -3690,7 +3680,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <script>
 // ── STATE ──────────────────────────────────────────────────────────────────────
 let selectedAge='adult', brushCount=0, cleanedSpots=new Set();
-let breathingActive=false, bubbleActive=false, bubCycleCount=0;
+let breathingActive=false;
 let currentReframe=0, quizQ=0, quizScore=0;
 let germScore=0, germTimer=30, germInterval=null, germTimerInterval=null, germs=[];
 let chairStep=1, currentSound=null;
@@ -3752,6 +3742,18 @@ let mdasHistory = loadMdasHistory();
 // ── DEBRIEF STATE ──────────────────────────────────────────
 let debriefStarRating=0;
 let debriefDuringAnxiety=5;
+
+// ── XSS SANITISATION ───────────────────────────────────────────────────────────
+// Apply to every DB-sourced string before insertion into innerHTML
+function safeHtml(str){
+  if(str==null)return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;');
+}
 
 // ── TRANSLATIONS ───────────────────────────────────────────────────────────────
 const LANGS={en:{heroSub:"Your calm companion for dental visits. You've got this.",whyTitle:"Why SerenOra?",whyBody:"We address the root of dental anxiety — not just the symptoms."},hi:{heroSub:"दंत चिकित्सा के लिए आपका शांत साथी।",whyTitle:"SerenOra क्यों?",whyBody:"हम दंत चिंता की जड़ को दूर करते हैं।"},fr:{heroSub:"Votre compagnon calme pour les visites dentaires.",whyTitle:"Pourquoi SerenOra?",whyBody:"Nous traitons la racine de l'anxiété dentaire."},es:{heroSub:"Tu compañero tranquilo para las visitas dentales.",whyTitle:"¿Por qué SerenOra?",whyBody:"Abordamos la raíz de la ansiedad dental."},ur:{heroSub:"دانتوں کے دوروں کے لیے آپ کا پُرسکون ساتھی۔",whyTitle:"SerenOra کیوں؟",whyBody:"ہم دانتوں کی بے چینی کی جڑ کو دور کرتے ہیں۔"},mr:{heroSub:"दंत भेटींसाठी तुमचा शांत साथी.",whyTitle:"SerenOra का?",whyBody:"आम्ही दंत चिंतेच्या मुळाशी जातो."},gu:{heroSub:"દાંતની મુલાકાત માટે તમારો શાંત સાથી.",whyTitle:"SerenOra શા માટે?",whyBody:"અमे दांतनी चिंताना मूळने संबोधित करीए छीए।"},te:{heroSub:"దంత సందర్శనలకు మీ ప్రశాంత సహచరుడు.",whyTitle:"SerenOra ఎందుకు?",whyBody:"మేము దంత ఆందోళన యొక్క మూలాన్ని పరిష్కరిస్తాము."},kn:{heroSub:"ದಂತ ಭೇಟಿಗಳಿಗಾಗಿ ನಿಮ್ಮ ಶಾಂತ ಸಂಗಾತಿ.",whyTitle:"SerenOra ಏಕೆ?",whyBody:"ನಾವು ದಂತ ಆತಂಕದ ಮೂಲವನ್ನು ಪರಿಹರಿಸುತ್ತೇವೆ."},ml:{heroSub:"ദന്ത സന്ദർശനങ്ങൾക്ക് നിങ്ങളുടെ ശാന്ത സഹചാരി.",whyTitle:"SerenOra എന്തുകൊണ്ട്?",whyBody:"ഞങ്ങൾ ദന്ത ഉത്കണ്ഠയുടെ മൂലകാരണം പരിഹരിക്കുന്നു."},ta:{heroSub:"பல் வருகைகளுக்கான உங்கள் அமைதியான தோழன்.",whyTitle:"SerenOra ஏன்?",whyBody:"நாங்கள் பல் பதட்டத்தின் மூலத்தை நிவர்த்தி செய்கிறோம்."},zh:{heroSub:"您的牙科就诊平静伴侣。",whyTitle:"为什么选择SerenOra?",whyBody:"我们解决牙科焦虑的根源。"},ja:{heroSub:"歯科受診のための心の平和なパートナー。",whyTitle:"SerenOraを選ぶ理由",whyBody:"症状だけでなく、歯科不安の根本を解消します。"}};
@@ -4083,6 +4085,17 @@ Rules:
   }
 }
 
+// ── SMART MY SPACE NAV ────────────────────────────────────────────────────────
+// If patient is signed in → go to their records screen.
+// If not signed in → go to screen-dashboard (has sign-in prompt).
+function openMySpace() {
+  if (currentUser && currentProfile && currentProfile.role !== 'dentist' && currentProfile.role !== 'clinic_admin') {
+    loadPatientDashboard();
+  } else {
+    showScreen('screen-dashboard');
+  }
+}
+
 // ── CORE NAV ──────────────────────────────────────────────────────────────────
 let _screenHistory = [];
 
@@ -4101,9 +4114,16 @@ function showScreen(id){
   if(id==='screen-quiz')initQuiz();
   if(id==='screen-reframe')renderReframe();
   if(id==='screen-plantgame'){initPlantCanvas();if(typeof restorePlantState==='function')restorePlantState();}
-  if(id==='screen-journey')initJourney();
   if(id==='screen-journal'&&typeof renderJournal==='function')renderJournal();
   if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatDentistFolder==='function')loadPatDentistFolder();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();}
+  if(id==='screen-patient-account'){
+    if(!currentUser){ openPortalAs('patient','login'); return; }
+    // Use a flag to prevent re-entrant loadPatientDashboard calls from showScreen
+    if(!window._patDashLoading && typeof loadPatientDashboard==='function'){
+      window._patDashLoading = true;
+      loadPatientDashboard().finally(()=>{ window._patDashLoading=false; });
+    }
+  }
   if(id==='screen-main')initAfterChecks();
   if(id==='screen-procedures')renderProcGrid();
   if(id==='screen-drawtooth')initDrawTooth();
@@ -4123,6 +4143,24 @@ function showScreen(id){
     window._dentistReplyMode = false;
   }
   if(id!=='screen-pacman')stopPacman();
+  // Sync patient portal bottom-nav active state
+  const _bnavMap = {
+    'screen-main':0, 'screen-mood':0, 'screen-breathing':0,
+    'screen-dental-care':1, 'screen-sound':1, 'screen-chair':1, 'screen-reframe':1, 'screen-story':1, 'screen-journal':1,
+    'screen-games':2, 'screen-quiz':2, 'screen-germ':2, 'screen-pacman':2, 'screen-plantgame':2, 'screen-drawtooth':2, 'screen-brush':2,
+    'screen-reminders':3,
+    'screen-procedures':4,
+    'screen-dashboard':5, 'screen-patient-account':5
+  };
+  const _bnavIdx = _bnavMap[id];
+  if (_bnavIdx !== undefined) {
+    document.querySelectorAll('.bottom-nav').forEach(nav => {
+      const btns = nav.querySelectorAll('.bnav-item');
+      btns.forEach((btn, i) => {
+        btn.classList.toggle('active', i === _bnavIdx);
+      });
+    });
+  }
   // Dispatch event so home hero scroll state resets when navigating back
   document.dispatchEvent(new CustomEvent('screenChanged', { detail: id }));
   // Rebuild rainbow on each screen change in kids mode (fixed position, always visible)
@@ -4278,19 +4316,6 @@ function runBS(step,cid,pid,tid){
   setTimeout(()=>runBS(step+1,cid,pid,tid),s.dur);
 }
 
-function startBubble(){if(bubbleActive)return;bubbleActive=true;bubCycleCount=0;runBubble(0);}
-function runBubble(step){
-  const s=breathSteps[step%3];
-  const c=document.getElementById('bubble-circle');const p=document.getElementById('bubble-phase');const t=document.getElementById('bubble-text');
-  if(!c)return;
-  c.style.transform=s.scale;c.style.transition=`transform ${s.dur/1000}s ease-in-out`;
-  c.innerHTML=`<div style="font-size:13px;color:#fff">${s.label}</div>`;
-  if(p)p.textContent=s.label;
-  if(t)t.textContent=['Breathe in slowly...','Hold steady...','Let it all out...'][step%3];
-  if(step%3===0&&step>0)bubCycleCount++;
-  if(bubCycleCount>=3){setTimeout(()=>{const d=document.getElementById('bubble-complete');if(d)d.style.display='block';bubbleActive=false;completeTask('Completed breathing bubble');},s.dur);return;}
-  setTimeout(()=>runBubble(step+1),s.dur);
-}
 
 // ── TABS ───────────────────────────────────────────────────────────────────────
 function switchJourneyTab(tab,el){
@@ -4898,66 +4923,6 @@ function saveJournalEntry(){
   input.value = '';
   completeTask('Wrote in tooth journal');
 }
-
-// ── CALM JOURNEY (Anxiety Mapping) ────────────────────────────────────────────
-const journeyMilestones=[
-  {title:'How anxious are you right now?',opts:['Very anxious','Somewhat nervous','Mild worry','Calm'],responses:["That's completely understandable. Let's breathe through this together.",'Nervousness shows you care. We\'ll reduce this step by step.','Mild worry is normal and manageable. You\'re doing great.','Brilliant! Let\'s keep that calm going all the way through.']},
-  {title:'What worries you most?',opts:['The sounds','The pain','Not being in control','The unknown'],responses:['We have a Sound Desensitization session designed exactly for this.','Modern dental care is far more gentle than most people expect.','Remember: your raised hand stops everything. You always have control.','The Chair Simulation shows you every step — nothing will surprise you.']},
-  {title:'What helps you feel calm?',opts:['Breathing','Music','Knowing what to expect','Talking to someone'],responses:['The Breathing Bubble game is waiting for you — it really works.','During your appointment, bring headphones and your favourite playlist.','The Chair Simulation will walk you through everything, step by step.','Dr. Akshita is always available to chat before your visit.']}
-];
-let journeyStep=0;
-
-function getJourneyKey(){ return currentUser ? 'serenora_journey_'+currentUser.id : 'serenora_journey_guest'; }
-function loadJourneyState(){ try{ return JSON.parse(localStorage.getItem(getJourneyKey()))||{answers:[],completed:false}; }catch(e){ return {answers:[],completed:false}; } }
-function saveJourneyState(s){ try{ localStorage.setItem(getJourneyKey(),JSON.stringify(s)); }catch(e){} }
-
-function initJourney(){
-  const saved=loadJourneyState();
-  const c=document.getElementById('journey-steps');if(!c)return;
-  c.innerHTML='';
-  if(saved.completed){ renderJourneyComplete(saved.answers||[],false); return; }
-  journeyStep=saved.answers?saved.answers.length:0;
-  // Replay previous answers
-  (saved.answers||[]).forEach((ans,i)=>{
-    const m=journeyMilestones[i];
-    const d=document.createElement('div');d.className='card';d.style.opacity='0.85';
-    d.innerHTML=`<div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:6px">Step ${i+1}: ${m.title}</div><div style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:4px">✓ ${m.opts[ans]}</div><div class="mood-response" style="display:block;font-size:12px">${m.responses[ans]}</div>`;
-    c.appendChild(d);
-  });
-  renderJourneyStep();
-}
-function renderJourneyStep(){
-  const c=document.getElementById('journey-steps');if(!c)return;
-  if(journeyStep>=journeyMilestones.length){ const s=loadJourneyState(); renderJourneyComplete(s.answers||[],true); return; }
-  const m=journeyMilestones[journeyStep];
-  const d=document.createElement('div');d.className='card';
-  d.innerHTML=`<div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:12px">Step ${journeyStep+1}: ${m.title}</div>${m.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerJourney(${i})">${o}</button>`).join('')}`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-function answerJourney(idx){
-  const m=journeyMilestones[journeyStep];const c=document.getElementById('journey-steps');
-  const cards=c.querySelectorAll('.card');const last=cards[cards.length-1];
-  if(last){ last.style.opacity='0.85'; last.innerHTML=`<div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:6px">Step ${journeyStep+1}: ${m.title}</div><div style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:4px">✓ ${m.opts[idx]}</div><div class="mood-response" style="display:block;font-size:12px">${m.responses[idx]}</div>`; }
-  const s=loadJourneyState();s.answers=s.answers||[];s.answers[journeyStep]=idx;saveJourneyState(s);
-  journeyStep++;setTimeout(()=>renderJourneyStep(),300);
-}
-function renderJourneyComplete(answers,isNew){
-  const c=document.getElementById('journey-steps');if(!c)return;
-  const s=loadJourneyState();s.completed=true;saveJourneyState(s);
-  if(isNew)completeTask('Mapped your anxiety journey!');
-  const aLabel=answers[0]!=null?journeyMilestones[0].opts[answers[0]]:'—';
-  const fLabel=answers[1]!=null?journeyMilestones[1].opts[answers[1]]:'—';
-  const cLabel=answers[2]!=null?journeyMilestones[2].opts[answers[2]]:'—';
-  const d=document.createElement('div');d.className='card-teal';d.style.marginTop='12px';
-  d.innerHTML=`<div style="font-weight:700;font-size:15px;color:#134e4a;margin-bottom:10px">✅ Your Anxiety Map</div><div style="font-size:13px;color:#1e3a5f;line-height:1.9"><div>😰 <b>Current anxiety:</b> ${aLabel}</div><div>⚡ <b>Biggest worry:</b> ${fLabel}</div><div>🌿 <b>What helps you:</b> ${cLabel}</div></div><div style="font-size:12px;color:#1e7a6a;margin-top:10px;line-height:1.6">Your map is saved. Serena and your dentist can use this to personalise your care. 💙</div><button class="btn-small" style="margin-top:12px;width:100%" onclick="restartJourney()">🔄 Re-map my anxiety</button>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-function restartJourney(){
-  try{ localStorage.removeItem(getJourneyKey()); }catch(e){}
-  journeyStep=0;const c=document.getElementById('journey-steps');if(c)c.innerHTML='';
-  renderJourneyStep();
-}
-
 
 // ── CALMING AUDIO PLAYER (breathing screen) ───────────────────────────────────
 let breathAudioCtx=null, breathAudioNodes=[], breathAudioRunning={};
@@ -6236,11 +6201,13 @@ async function supaSignUp() {
   if (roleSnapshot === 'dentist' && _dentistMode === 'create') {
     pendingClinicName = document.getElementById('auth-clinic-name').value.trim();
     if (!pendingClinicName) { setAuthError('auth-signup-error', 'Please enter your clinic name.'); return; }
+    if (pendingClinicName.length < 3) { setAuthError('auth-signup-error', 'Clinic name must be at least 3 characters.'); return; }
   }
   if (roleSnapshot === 'clinic_admin') {
     if (_caAdminMode === 'create') {
       pendingClinicName = (document.getElementById('auth-admin-clinic-name')||{}).value?.trim() || '';
       if (!pendingClinicName) { setAuthError('auth-signup-error', 'Please enter your clinic name.'); return; }
+      if (pendingClinicName.length < 3) { setAuthError('auth-signup-error', 'Clinic name must be at least 3 characters.'); return; }
     } else {
       // Join mode — validate join code present
       const rawAdminCode = (document.getElementById('auth-admin-join-code')||{}).value?.trim().toUpperCase() || '';
@@ -7309,7 +7276,7 @@ async function loadPatientMedHistory(patientId) {
     if (error) throw error;
 
     const fid        = (data && data.friendly_id) ? data.friendly_id : patientId.slice(0,8).toUpperCase();
-    const patLabel   = (data && data.full_name) ? `${data.full_name} <span style="font-size:11px;font-weight:400;color:#b91c1c;margin-left:6px">ID: ${fid}</span>` : `Unnamed Patient — ID: ${fid}`;
+    const patLabel   = (data && data.full_name) ? `${safeHtml(data.full_name)} <span style="font-size:11px;font-weight:400;color:#b91c1c;margin-left:6px">ID: ${safeHtml(fid)}</span>` : `Unnamed Patient — ID: ${safeHtml(fid)}`;
     const titleEl    = panel.querySelector('span[style*="font-weight:700"]');
     if (titleEl) titleEl.innerHTML = `Patient Medical History &nbsp;·&nbsp; ${patLabel}`;
 
@@ -7360,7 +7327,10 @@ async function loadPatientDashboard() {
     return;
   }
 
-  showScreen('screen-dashboard');
+  // Show the patient records portal (My Records screen)
+  window._patDashLoading = true; // prevent showScreen handler from re-entering
+  showScreen('screen-patient-account');
+  window._patDashLoading = false;
 
   // Load MDAS history from Supabase (persists across logins)
   loadMdasHistoryFromDB();
@@ -7824,7 +7794,6 @@ function copyPatientUUID() {
 function patientGoogleSignIn() { showScreen('screen-portal-login'); switchAuthTab('signup'); }
 function patientIdSignIn() { showScreen('screen-portal-login'); switchAuthTab('login'); }
 function showPatientAccount() { if (currentProfile) loadPatientDashboard(); }
-function copyPatientId() { showToast('Sign in with your account to see your Patient ID'); }
 
 // ══════════════════════════════════════════════════════════
 // DENTIST PORTAL (legacy demo stub — replaced by Supabase)
@@ -8352,7 +8321,7 @@ function renderDentistMessages(messages, patientId) {
       timeStr = new Date(m.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     } catch(_) {}
     return `<div style="display:flex;flex-direction:column;align-items:${fromMe ? 'flex-end' : 'flex-start'};gap:3px">
-      <div style="max-width:78%;background:${fromMe ? 'var(--grad)' : '#fff'};color:${fromMe ? '#fff' : 'var(--navy)'};padding:10px 14px;border-radius:${fromMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};font-size:14px;line-height:1.5;box-shadow:0 1px 4px rgba(0,0,0,.08)">${m.content}</div>
+      <div style="max-width:78%;background:${fromMe ? 'var(--grad)' : '#fff'};color:${fromMe ? '#fff' : 'var(--navy)'};padding:10px 14px;border-radius:${fromMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};font-size:14px;line-height:1.5;box-shadow:0 1px 4px rgba(0,0,0,.08)">${safeHtml(m.content)}</div>
       <div style="font-size:10px;color:var(--muted);padding:0 4px">${timeStr}</div>
     </div>`;
   }).join('');
@@ -8421,8 +8390,9 @@ async function sendDentistMessage() {
       } else {
         await loadDentistMessages();
       }
-    } catch(_) {
-      // stays in local cache
+    } catch(e) {
+      showToast('Could not send message — check your connection');
+      if (typeof window._registerFailedWrite === 'function') window._registerFailedWrite(() => sendDentistMessage());
     }
   }
 }
@@ -11546,7 +11516,7 @@ async function loadDentMySpaceInbox() {
     // patient_messages: messages sent by patients to the clinic
     try {
       const { data } = await activeDb.from('patient_messages')
-        .select('id, message, created_at, patient_id')
+        .select('id, message, created_at, patient_id, read')
         .eq('clinic_id', clinicId).eq('sender_role', 'patient')
         .order('created_at', { ascending: false }).limit(50);
       pmRows = data || [];
@@ -11565,10 +11535,12 @@ async function loadDentMySpaceInbox() {
 
     // Merge: one thread per patient, latest message wins
     const threadMap = {};
+    const unreadMap = {}; // track unread per patient
     for (const m of pmRows) {
       const pid = String(m.patient_id);
       if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at))
         threadMap[pid] = { pid, content: m.message, created_at: m.created_at };
+      if (m.read === false) unreadMap[pid] = true;
     }
     for (const m of peerRows) {
       const pid = String(m.sender_id);
@@ -11592,12 +11564,13 @@ async function loadDentMySpaceInbox() {
       let dateStr = '';
       try { dateStr = new Date(m.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short'}); } catch(_) {}
       const preview = (m.content||'').length>55 ? m.content.slice(0,55)+'…' : (m.content||'');
-      return `<div class="dent-message-row" style="cursor:pointer" onclick="openDentInboxReply('${m.pid}','${name.replace(/'/g,"\\'")}')">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-weight:700;font-size:13px;color:#e2e8f0">${name}</span>
+      const unreadDot = unreadMap[m.pid] ? '<span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;margin-left:6px;flex-shrink:0" title="Unread"></span>' : '';
+      return `<div class="dent-message-row" style="cursor:pointer${unreadMap[m.pid]?';background:rgba(239,68,68,.05)':''}" onclick="openDentInboxReply('${m.pid}','${name.replace(/'/g,"\\'")}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-weight:700;font-size:13px;color:#e2e8f0;display:flex;align-items:center">${safeHtml(name)}${unreadDot}</span>
           <span style="font-size:11px;color:#64748b">${dateStr}</span>
         </div>
-        <div style="font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${preview}</div>
+        <div style="font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${safeHtml(preview)}</div>
       </div>`;
     }).join('');
   } catch(e) {
@@ -11618,6 +11591,30 @@ function openDentInboxReply(patientId, patientName) {
   if (clinicEl) clinicEl.textContent = 'Patient message thread';
   showScreen('screen-dentist-messages');
   loadDentistMessages();
+
+  // Fix 14: Mark all messages from this patient as read
+  const activeDb = db || window.__supaDb;
+  const activeProfile = currentProfile;
+  if (activeDb && activeProfile && activeProfile.clinic_id) {
+    // Mark patient_messages as read
+    activeDb.from('patient_messages')
+      .update({ read: true })
+      .eq('patient_id', String(patientId))
+      .eq('clinic_id', String(activeProfile.clinic_id))
+      .eq('read', false)
+      .then(() => {
+        // Refresh badge after marking read
+        if (typeof loadDentInboxBadge === 'function') loadDentInboxBadge();
+      })
+      .catch(() => {});
+    // Also mark messages table entries as read
+    activeDb.from('messages')
+      .update({ read: true })
+      .eq('sender_id', String(patientId))
+      .eq('read', false)
+      .then(() => {})
+      .catch(() => {});
+  }
 }
 
 async function loadDentInboxBadge() {
@@ -11761,11 +11758,9 @@ async function loadDentPatientList() {
 
     if (typeof renderDentActivePatientsList === 'function') {
       const cached = Object.values(window._dentPatientData);
-      if (cached.length > 0) {
-        if (typeof _dentPatListAll !== 'undefined') _dentPatListAll = cached;
-        renderDentActivePatientsList(cached);
-        if (typeof syncDentPatDropdown === 'function') syncDentPatDropdown(cached);
-      }
+      if (typeof _dentPatListAll !== 'undefined') _dentPatListAll = cached;
+      renderDentActivePatientsList(cached);
+      if (cached.length > 0 && typeof syncDentPatDropdown === 'function') syncDentPatDropdown(cached);
     }
   } catch(e) {}
 }
@@ -11850,7 +11845,7 @@ async function loadDentPatientMessages(patientId) {
       return `<div style="display:flex;${m.isDentist?'justify-content:flex-end':''};margin-bottom:8px">
         <div style="max-width:80%;background:${m.isDentist?'rgba(13,148,136,.25)':'rgba(255,255,255,.08)'};border-radius:12px;padding:8px 12px">
           <div style="font-size:11px;color:#64748b;margin-bottom:3px">${m.isDentist?'You':'Patient'} · ${d}</div>
-          <div style="font-size:13px;color:#e2e8f0">${m.content}</div>
+          <div style="font-size:13px;color:#e2e8f0">${safeHtml(m.content)}</div>
         </div></div>`;
     }).join('');
     // Scroll to bottom
@@ -12553,7 +12548,13 @@ async function loadDocketPatientInfo(patientId) {
 async function loadDocketVisits(patientId) {
   const listEl = document.getElementById('docket-visits-list');
   if (!listEl || !db) return;
-  listEl.innerHTML = '<div style="font-size:12px;color:#64748b;text-align:center;padding:12px">Loading…</div>';
+  // Show skeleton loading state while Supabase queries run
+  listEl.innerHTML = [1,2,3].map(()=>`
+    <div class="skeleton-card">
+      <div class="skeleton-line w-40"></div>
+      <div class="skeleton-line w-80"></div>
+      <div class="skeleton-line w-60 short"></div>
+    </div>`).join('');
   try {
     const [recRes, storyRes] = await Promise.all([
       db.from('medical_records')
@@ -12582,9 +12583,9 @@ async function loadDocketVisits(patientId) {
       const mdasLabel = !latestMdas ? '—' : latestMdas <= 10 ? 'Low' : latestMdas <= 18 ? 'Moderate' : latestMdas <= 24 ? 'High' : 'Severe';
       storyHtml = `<div style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:14px;padding:14px;margin-bottom:12px">
         <div style="font-weight:700;font-size:13px;color:#a5b4fc;margin-bottom:8px">📖 Patient's Dental Story</div>
-        ${story.fears ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:4px"><span style="color:#c7d2fe;font-weight:600">Fears:</span> ${story.fears}</div>` : ''}
-        ${story.past_experience ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:4px"><span style="color:#c7d2fe;font-weight:600">Past experience:</span> ${story.past_experience}</div>` : ''}
-        ${story.summary ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:6px">${story.summary}</div>` : ''}
+        ${story.fears ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:4px"><span style="color:#c7d2fe;font-weight:600">Fears:</span> ${safeHtml(story.fears)}</div>` : ''}
+        ${story.past_experience ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:4px"><span style="color:#c7d2fe;font-weight:600">Past experience:</span> ${safeHtml(story.past_experience)}</div>` : ''}
+        ${story.summary ? `<div style="font-size:12px;color:#94a3b8;margin-bottom:6px">${safeHtml(story.summary)}</div>` : ''}
         ${latestMdas ? `<div style="display:inline-flex;align-items:center;gap:6px;background:${mdasColor}18;border:1px solid ${mdasColor}44;border-radius:8px;padding:4px 10px">
           <span style="font-size:13px;font-weight:900;color:${mdasColor}">${latestMdas}/25</span>
           <span style="font-size:11px;color:${mdasColor};font-weight:600">MDAS — ${mdasLabel} Anxiety</span>
@@ -13242,6 +13243,12 @@ async function saveCasesheetRecord() {
   // Collect all procedures from multi-row selects
   const allPerformed = getAllPerformedProcedures();
   const allAdvised   = getAllAdvisedProcedures();
+  // Validation: require at least one procedure (performed or advised)
+  if (!allPerformed.length && !allAdvised.length && !procedure && !procedureAdvised) {
+    if (statusEl) { statusEl.textContent = '⚠️ Please select at least one procedure before saving.'; statusEl.style.color = '#f59e0b'; statusEl.style.display = 'block'; }
+    showToast('Select a procedure first');
+    return;
+  }
   const csData = {
     complaint, duration: g('cs-complaint-duration-val')+' '+g('cs-complaint-duration-unit'),
     history: g('cs-history-notes'), familyHistory: g('cs-family-history'),
@@ -13990,6 +13997,12 @@ function closePickerModal() {
 .ca-badge-red{background:rgba(239,68,68,.2);color:#f87171}
 .ca-badge-blue{background:rgba(59,130,246,.2);color:#93c5fd}
 .ca-badge-gray{background:rgba(100,116,139,.2);color:#94a3b8}
+/* ── Utility classes replacing common repeated inline styles ─────────────── */
+.dark-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px}
+.badge-teal{background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.badge-danger{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.meta-muted{font-size:12px;color:#64748b}
+.mono-label{font-family:monospace;font-size:10px;letter-spacing:2px;color:#0d9488;text-transform:uppercase;font-weight:700}
 .ca-input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#e2e8f0;font-family:var(--font);font-size:13px;outline:none;margin-bottom:8px;box-sizing:border-box}
 .ca-input:focus{border-color:#0d9488}
 .ca-select{width:100%;background:#1e2d40;border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#e2e8f0;font-family:var(--font);font-size:13px;outline:none;margin-bottom:8px;box-sizing:border-box}
@@ -14665,7 +14678,10 @@ async function setCaAttendance(dentistId, status) {
       } else {
         await activeDb.from('attendance_logs').insert({ dentist_id: dentistId, clinic_id: _caData.clinicId, date: today, status });
       }
-    } catch(e) { console.warn('[SerenOra] Attendance DB save failed:', e&&e.message?e.message:e); }
+    } catch(e) {
+      console.warn('[SerenOra] Attendance DB save failed:', e&&e.message?e.message:e);
+      showToast('Could not save attendance to server — check your connection');
+    }
   }
 }
 
@@ -14714,10 +14730,6 @@ async function loadCaAttendanceFromDB() {
     renderCaDentistList();
     renderCaAttendanceSummary();
   } catch(e) { console.warn('[SerenOra] Attendance DB load failed:', e&&e.message?e.message:e); }
-}
-
-function getCaAttStatus(dentistId) {
-  try { return localStorage.getItem(getCaAttKey(dentistId)) || ''; } catch(_) { return ''; }
 }
 
 async function caApproveDentist(dentistId) {
@@ -14833,7 +14845,7 @@ async function openCaPatDocket(patientId) {
       </div>
     </div>
     ${medAlert}
-    <div id="ca-pat-anxiety-block" style="margin-bottom:12px"></div>
+    <div id="ca-pat-anxiety-block" style="margin-bottom:12px"><div class="skeleton-card"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60 short"></div></div></div>
     <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Visit History (${recs.length})</div>
     ${!recs.length ? '<div style="color:#64748b;font-size:13px;text-align:center;padding:16px">No visits on record yet.</div>' :
       recs.map(r => {
@@ -14886,8 +14898,8 @@ async function openCaPatDocket(patientId) {
             ${trend ? `<div style="font-size:12px;color:#94a3b8">${trend} from last assessment</div>` : ''}
             ${mdasArr.length > 1 ? `<div style="font-size:11px;color:#64748b">${mdasArr.length} assessments taken</div>` : ''}
           </div>
-          ${story.fears ? `<div style="font-size:11px;color:#94a3b8;margin-top:8px"><span style="color:#c7d2fe;font-weight:600">Fears:</span> ${story.fears}</div>` : ''}
-          ${story.past_experience ? `<div style="font-size:11px;color:#94a3b8;margin-top:3px"><span style="color:#c7d2fe;font-weight:600">Past experience:</span> ${story.past_experience.slice(0,100)}</div>` : ''}
+          ${story.fears ? `<div style="font-size:11px;color:#94a3b8;margin-top:8px"><span style="color:#c7d2fe;font-weight:600">Fears:</span> ${safeHtml(story.fears)}</div>` : ''}
+          ${story.past_experience ? `<div style="font-size:11px;color:#94a3b8;margin-top:3px"><span style="color:#c7d2fe;font-weight:600">Past experience:</span> ${safeHtml(story.past_experience.slice(0,100))}</div>` : ''}
         </div>`;
       }
     } catch(_) {}
@@ -15016,7 +15028,7 @@ function renderCaAttendanceSummary() {
   el.innerHTML = `
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
       <input type="date" id="${selId}" value="${selVal}" max="${today}"
-        onchange="renderCaAttendanceSummary()"
+        onchange="renderCaAttendanceSummary();if(this.value!=='${today}')loadCaAttendanceForDate(this.value)"
         style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#e2e8f0;font-family:var(--font);font-size:12px;padding:6px 10px">
       <button onclick="downloadMonthlyAttendance()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);flex-shrink:0">📊 Monthly PDF</button>
     </div>
@@ -15043,6 +15055,29 @@ function getCaAttStatusForDate(dentistId, date) {
     if (date === new Date().toISOString().slice(0,10)) return getCaAttStatus(dentistId);
     return null;
   } catch(_) { return null; }
+}
+
+// Fix 15: Load attendance for a specific historical date from Supabase
+// Caches results in localStorage so getCaAttStatusForDate can find them synchronously
+async function loadCaAttendanceForDate(date) {
+  const activeDb = db || window.__supaDb;
+  if (!activeDb || !_caData.clinicId) return;
+  const today = new Date().toISOString().slice(0,10);
+  if (date === today) return; // today is handled by loadCaAttendanceFromDB
+  try {
+    const { data } = await activeDb.from('attendance_logs')
+      .select('dentist_id, status')
+      .eq('clinic_id', _caData.clinicId)
+      .eq('date', date);
+    if (data) {
+      data.forEach(row => {
+        const key = 'serenora_att_' + _caData.clinicId + '_' + row.dentist_id + '_' + date;
+        try { localStorage.setItem(key, row.status); } catch(_) {}
+      });
+    }
+    // Re-render now that cache is warm
+    renderCaAttendanceSummary();
+  } catch(e) { console.warn('[SerenOra] Historical attendance load failed:', e&&e.message?e.message:e); }
 }
 
 async function downloadMonthlyAttendance() {
@@ -15311,7 +15346,11 @@ async function createCaBill() {
         amount: amt, due_date: due||null, status: 'pending',
         patient_name: bill.patient_name, created_at: bill.created_at
       });
-    } catch(e) { console.warn('[SerenOra] Bill DB save failed:', e&&e.message?e.message:e); }
+    } catch(e) {
+      console.warn('[SerenOra] Bill DB save failed:', e&&e.message?e.message:e);
+      showToast('Could not save bill to server — check your connection');
+      if (typeof window._registerFailedWrite === 'function') window._registerFailedWrite(() => createCaBill());
+    }
   }
 }
 
@@ -16031,6 +16070,62 @@ _caLoadAll = async function() {
   // Pre-populate dentist dropdowns
   populateCaDentDropdowns();
 };
+
+// ── FIX 7: KEYBOARD ACCESSIBILITY — Escape closes overlays ────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  // Casesheet (full-screen)
+  const cs = document.getElementById('cs-screen');
+  if (cs && cs.classList.contains('open')) { closeCasesheet(); return; }
+  // Docket overlay
+  const docket = document.getElementById('docket-overlay');
+  if (docket && docket.classList.contains('open')) { closeDocket(); return; }
+  // CA patient sheet
+  const caPat = document.getElementById('ca-pat-overlay');
+  if (caPat && caPat.classList.contains('open')) { closeCaOverlay('ca-pat-overlay'); return; }
+  // CA dentist sheet
+  const caDent = document.getElementById('ca-dent-overlay');
+  if (caDent && caDent.classList.contains('open')) { closeCaOverlay('ca-dent-overlay'); return; }
+  // Visit summary modal
+  const vsm = document.getElementById('visit-summary-overlay');
+  if (vsm && vsm.style.display !== 'none' && vsm.classList.contains('open')) {
+    vsm.classList.remove('open'); return;
+  }
+  // Sidebar
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar && sidebar.classList.contains('open')) { closeSidebar(); return; }
+});
+
+// ── FIX 10: OFFLINE / ONLINE DETECTION ────────────────────────────────────────
+(function() {
+  let _offlineBanner = null;
+  let _lastFailedWrite = null;
+
+  function showOfflineBanner() {
+    if (_offlineBanner) return;
+    _offlineBanner = document.createElement('div');
+    _offlineBanner.id = 'offline-banner';
+    _offlineBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1e293b;border-bottom:2px solid #f59e0b;color:#fbbf24;font-size:13px;font-weight:600;font-family:var(--font,sans-serif);padding:10px 16px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px';
+    _offlineBanner.innerHTML = '📡 You\'re offline — changes will sync when reconnected.';
+    document.body.prepend(_offlineBanner);
+  }
+
+  function hideOfflineBanner() {
+    if (_offlineBanner) { _offlineBanner.remove(); _offlineBanner = null; }
+    // Retry last failed write if one exists
+    if (typeof _lastFailedWrite === 'function') {
+      try { _lastFailedWrite(); } catch(_) {}
+      _lastFailedWrite = null;
+    }
+    if (typeof showToast === 'function') showToast('Back online ✓');
+  }
+
+  window.addEventListener('offline', showOfflineBanner);
+  window.addEventListener('online', hideOfflineBanner);
+
+  // Expose so catch blocks can register a retry
+  window._registerFailedWrite = function(fn) { _lastFailedWrite = fn; };
+})();
 
 </script>
 
