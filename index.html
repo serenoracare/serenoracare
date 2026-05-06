@@ -2202,98 +2202,71 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
         <div style="font-size:13px;color:var(--muted)">Everything parents and little ones need to know</div>
       </div>
 
-      <!-- Eruption Chart — Primary Teeth -->
+      <!-- Primary Teeth Eruption Chart -->
       <div style="border-radius:20px;padding:18px;margin-bottom:16px;background:linear-gradient(135deg,#fdf4ff,#fce7f3,#ffe4e6,#fff7ed,#fefce8,#f0fdf4,#eff6ff);border:2px solid #e9d5ff">
-        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#6b21a8;margin-bottom:4px;text-align:center">🦷 Primary Teeth Eruption Chart</div>
-        <div style="font-size:12px;color:#7e22ce;text-align:center;margin-bottom:14px">When do baby teeth come in?</div>
-        <!-- Upper Teeth -->
-        <div style="font-size:11px;font-weight:700;color:#9333ea;margin-bottom:6px;text-align:center;letter-spacing:.5px">UPPER TEETH</div>
-        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
-          ${[
-            {name:'Central Incisor',range:'6–10 months',color:'#f0abfc'},
-            {name:'Lateral Incisor',range:'9–13 months',color:'#c084fc'},
-            {name:'Canine (Cuspid)',range:'16–22 months',color:'#818cf8'},
-            {name:'First Molar',range:'13–19 months',color:'#60a5fa'},
-            {name:'Second Molar',range:'25–33 months',color:'#34d399'},
-          ].map(t=>`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px">
-            <div style="width:14px;height:14px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
-            <div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">${t.name}</div>
-            <div style="font-size:12px;color:#64748b;font-weight:500">${t.range}</div>
-          </div>`).join('')}
+        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#6b21a8;margin-bottom:4px;text-align:center">🦷 Baby Teeth — When They Arrive</div>
+        <div style="font-size:12px;color:#7e22ce;text-align:center;margin-bottom:14px">Primary (deciduous) teeth eruption ages</div>
+
+        <div style="font-size:11px;font-weight:700;color:#9333ea;margin-bottom:8px;text-align:center;letter-spacing:.5px">UPPER TEETH</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#f0abfc;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Central Incisor</div><div style="font-size:12px;color:#64748b;font-weight:500">6–10 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#c084fc;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Lateral Incisor</div><div style="font-size:12px;color:#64748b;font-weight:500">9–13 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#818cf8;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Canine (Cuspid)</div><div style="font-size:12px;color:#64748b;font-weight:500">16–22 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#60a5fa;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">First Molar</div><div style="font-size:12px;color:#64748b;font-weight:500">13–19 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#34d399;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Second Molar</div><div style="font-size:12px;color:#64748b;font-weight:500">25–33 months</div></div>
         </div>
-        <!-- Lower Teeth -->
-        <div style="font-size:11px;font-weight:700;color:#0891b2;margin-bottom:6px;text-align:center;letter-spacing:.5px">LOWER TEETH</div>
+
+        <div style="font-size:11px;font-weight:700;color:#0891b2;margin-bottom:8px;text-align:center;letter-spacing:.5px">LOWER TEETH</div>
         <div style="display:flex;flex-direction:column;gap:4px">
-          ${[
-            {name:'Central Incisor',range:'6–10 months',color:'#67e8f9'},
-            {name:'Lateral Incisor',range:'7–16 months',color:'#6ee7b7'},
-            {name:'Canine (Cuspid)',range:'17–23 months',color:'#86efac'},
-            {name:'First Molar',range:'12–18 months',color:'#fde68a'},
-            {name:'Second Molar',range:'23–31 months',color:'#fca5a5'},
-          ].map(t=>`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px">
-            <div style="width:14px;height:14px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
-            <div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">${t.name}</div>
-            <div style="font-size:12px;color:#64748b;font-weight:500">${t.range}</div>
-          </div>`).join('')}
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#67e8f9;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Central Incisor</div><div style="font-size:12px;color:#64748b;font-weight:500">6–10 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#6ee7b7;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Lateral Incisor</div><div style="font-size:12px;color:#64748b;font-weight:500">7–16 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#86efac;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Canine (Cuspid)</div><div style="font-size:12px;color:#64748b;font-weight:500">17–23 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#fde68a;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">First Molar</div><div style="font-size:12px;color:#64748b;font-weight:500">12–18 months</div></div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:7px 12px"><div style="width:14px;height:14px;border-radius:50%;background:#fca5a5;flex-shrink:0"></div><div style="flex:1;font-size:12px;font-weight:600;color:#1e293b">Second Molar</div><div style="font-size:12px;color:#64748b;font-weight:500">23–31 months</div></div>
         </div>
         <div style="font-size:11px;color:#94a3b8;margin-top:10px;text-align:center">All 20 primary teeth usually present by age 3. Ranges are normal — every child is different!</div>
       </div>
 
       <!-- Permanent Teeth Chart -->
       <div style="border-radius:20px;padding:18px;margin-bottom:16px;background:linear-gradient(135deg,#f0fdf4,#eff6ff,#fef9c3);border:2px solid #86efac">
-        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#065f46;margin-bottom:4px;text-align:center">🌟 Permanent Teeth Eruption</div>
-        <div style="font-size:12px;color:#047857;text-align:center;margin-bottom:14px">When do adult teeth come in?</div>
-        <div style="display:flex;flex-direction:column;gap:4px">
-          ${[
-            {name:'First Molars ("6-year molars")',range:'6–7 years',color:'#4ade80',note:'First permanent teeth — crucial, never replaced!'},
-            {name:'Central Incisors',range:'6–8 years',color:'#34d399',note:'Front teeth, upper then lower'},
-            {name:'Lateral Incisors',range:'7–9 years',color:'#60a5fa',note:'Beside the front teeth'},
-            {name:'Canines',range:'9–12 years',color:'#818cf8',note:'The pointed ones — often the last to settle in'},
-            {name:'Premolars',range:'10–12 years',color:'#f472b6',note:'Replace the primary molars'},
-            {name:'Second Molars',range:'11–13 years',color:'#fb923c',note:'"12-year molars"'},
-            {name:'Third Molars (Wisdom)',range:'17–25 years',color:'#fbbf24',note:'Often need removal — not everyone gets them'},
-          ].map(t=>`<div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px;margin-bottom:0">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
-              <div style="width:12px;height:12px;border-radius:3px;background:${t.color};flex-shrink:0"></div>
-              <div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">${t.name}</div>
-              <div style="font-size:12px;color:#0d9488;font-weight:700">${t.range}</div>
-            </div>
-            <div style="font-size:11px;color:#64748b;padding-left:20px">${t.note}</div>
-          </div>`).join('')}
+        <div style="font-family:var(--display);font-weight:800;font-size:16px;color:#065f46;margin-bottom:4px;text-align:center">🌟 Adult Teeth — When They Replace Baby Teeth</div>
+        <div style="font-size:12px;color:#047857;text-align:center;margin-bottom:14px">Permanent teeth eruption ages</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#4ade80;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">First Molars <span style="font-weight:400;color:#64748b">("6-year molars")</span></div><div style="font-size:12px;color:#0d9488;font-weight:700">6–7 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">First permanent teeth — crucial, never replaced!</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#34d399;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Central Incisors</div><div style="font-size:12px;color:#0d9488;font-weight:700">6–8 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">Front teeth, upper then lower</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#60a5fa;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Lateral Incisors</div><div style="font-size:12px;color:#0d9488;font-weight:700">7–9 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">Beside the front teeth</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#818cf8;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Canines</div><div style="font-size:12px;color:#0d9488;font-weight:700">9–12 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">The pointed ones — often last to settle in</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#f472b6;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Premolars</div><div style="font-size:12px;color:#0d9488;font-weight:700">10–12 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">Replace the primary molars</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#fb923c;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Second Molars</div><div style="font-size:12px;color:#0d9488;font-weight:700">11–13 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">"12-year molars"</div></div>
+          <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:9px 12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="width:12px;height:12px;border-radius:3px;background:#fbbf24;flex-shrink:0"></div><div style="font-size:12px;font-weight:700;color:#1e293b;flex:1">Wisdom Teeth</div><div style="font-size:12px;color:#0d9488;font-weight:700">17–25 yrs</div></div><div style="font-size:11px;color:#64748b;padding-left:20px">Often need removal — not everyone gets all 4</div></div>
         </div>
       </div>
 
-      <!-- Care tips for deciduous teeth -->
+      <!-- Care tips -->
       <div style="font-family:var(--display);font-weight:800;font-size:16px;color:var(--navy);margin-bottom:10px">🪥 Caring for Baby Teeth</div>
-
       <div style="background:linear-gradient(135deg,#fdf4ff,#fce7f3);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #f0abfc">
         <div style="font-weight:700;font-size:14px;color:#6b21a8;margin-bottom:6px">🍼 Before teeth appear (0–6 months)</div>
         <div style="font-size:13px;color:#7e22ce;line-height:1.8">Wipe gums with a clean damp cloth after feeding. Gets the baby used to oral hygiene before teeth arrive. Start early — the habit forms before resistance does.</div>
       </div>
-
       <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #93c5fd">
         <div style="font-weight:700;font-size:14px;color:#1d4ed8;margin-bottom:6px">🪥 First tooth → start brushing</div>
-        <div style="font-size:13px;color:#1e40af;line-height:1.8">Use a soft infant brush. Under 2: just water. Ages 2–6: a tiny smear of fluoride toothpaste (rice grain size). Over 6: pea-sized amount. Brush for them until they can tie their own shoelaces — that's the coordination level needed.</div>
+        <div style="font-size:13px;color:#1e40af;line-height:1.8">Use a soft infant brush. Under 2: just water. Ages 2–6: a smear of fluoride toothpaste (rice grain size). Over 6: pea-sized amount. Brush for them until they can tie their own shoelaces — that's the coordination level needed.</div>
       </div>
-
       <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #86efac">
-        <div style="font-weight:700;font-size:14px;color:#166534;margin-bottom:6px">⚠️ Baby teeth matter — they're not "throwaway"</div>
-        <div style="font-size:13px;color:#15803d;line-height:1.8">Baby teeth hold space for permanent teeth. If lost early to decay, the permanent teeth can drift out of position, causing crowding. Decay can also affect the developing permanent tooth below. A cavity in a baby tooth needs treatment.</div>
+        <div style="font-weight:700;font-size:14px;color:#166534;margin-bottom:6px">⚠️ Baby teeth matter — they're not throwaway</div>
+        <div style="font-size:13px;color:#15803d;line-height:1.8">Baby teeth hold space for permanent teeth. If lost early to decay, permanent teeth drift and crowd. Decay can also affect the developing permanent tooth below. A cavity in a baby tooth needs treatment.</div>
       </div>
-
       <div style="background:linear-gradient(135deg,#fff7ed,#fef3c7);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #fde68a">
-        <div style="font-weight:700;font-size:14px;color:#92400e;margin-bottom:6px">🍬 Avoid "nursing bottle caries"</div>
-        <div style="font-size:13px;color:#78350f;line-height:1.8">Never put a baby to sleep with a bottle of milk, formula, or juice. The sugar pools around the teeth for hours, causing rapid decay of the front teeth — a pattern called "baby bottle tooth decay." Water is the only safe bedtime bottle.</div>
+        <div style="font-weight:700;font-size:14px;color:#92400e;margin-bottom:6px">🍬 Avoid nursing bottle caries</div>
+        <div style="font-size:13px;color:#78350f;line-height:1.8">Never put a baby to sleep with a bottle of milk, formula, or juice. Sugar pools around teeth for hours, causing rapid decay of front teeth. Water is the only safe bedtime bottle.</div>
       </div>
-
       <div style="background:linear-gradient(135deg,#fdf4ff,#ede9fe);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid #c4b5fd">
         <div style="font-weight:700;font-size:14px;color:#5b21b6;margin-bottom:6px">📅 First dentist visit</div>
-        <div style="font-size:13px;color:#4c1d95;line-height:1.8">By the first birthday or within 6 months of the first tooth — whichever comes first. Early visits are brief, gentle, and get the child comfortable with the environment before any problems exist. Prevention is always easier than treatment.</div>
+        <div style="font-size:13px;color:#4c1d95;line-height:1.8">By the first birthday or within 6 months of the first tooth — whichever comes first. Early visits are brief and gentle. Prevention is always easier than treatment.</div>
       </div>
-
       <div style="background:linear-gradient(135deg,#fce7f3,#ffe4e6);border-radius:14px;padding:14px;margin-bottom:16px;border:1.5px solid #fca5a5">
         <div style="font-weight:700;font-size:14px;color:#9f1239;margin-bottom:6px">🦷 Wobbly tooth tips</div>
-        <div style="font-size:13px;color:#881337;line-height:1.8">Let baby teeth fall out on their own — wiggling gently is fine, forcing is not. The permanent tooth pushes from below and the root dissolves naturally. If a tooth seems stuck or the adult tooth is erupting without the baby tooth falling, see a dentist.</div>
+        <div style="font-size:13px;color:#881337;line-height:1.8">Let baby teeth fall out on their own — gentle wiggling is fine, forcing is not. The permanent tooth pushes from below and the root dissolves naturally. If the adult tooth erupts without the baby tooth falling, see a dentist.</div>
       </div>
 
     </div>
@@ -4776,52 +4749,6 @@ function skillAnswer(idx) {
     </div>`;
   if (correct) completeTask('Learned a tooth life skill');
 }
-  {
-    title: 'Case 1: The Silent Ache',
-    scenario: 'A 34-year-old patient arrives complaining of a dull, persistent ache in their upper-right jaw for 3 weeks. The pain worsens slightly when they drink cold water. There is no visible swelling. They mention they had a filling in that area two years ago.',
-    clues: ['Pain triggered by cold', 'Dull ache, not sharp', 'Previously filled tooth', 'No swelling or fever', 'Localised to one area'],
-    options: ['Dental abscess', 'Cracked tooth syndrome', 'Recurrent decay under filling', 'Gum disease (periodontitis)'],
-    answer: 2,
-    explanation: 'Recurrent decay under a filling is the most likely diagnosis. Cold sensitivity + dull ache + a tooth with existing restoration are classic signs. The filling may have developed microleakage over time, allowing bacteria to reach the dentine. No fever or swelling makes abscess less likely. A new X-ray would confirm.',
-    resolution: 'Your dentist removes the old filling, clears the new decay, and places a fresh composite or crown. You\'ll be numb throughout — no pain.'
-  },
-  {
-    title: 'Case 2: Night Terror',
-    scenario: 'A 28-year-old patient reports waking up with jaw pain and frequent headaches. Their partner says they can hear grinding sounds at night. The patient\'s enamel on the biting surfaces looks worn and flat. They\'ve been under significant work stress.',
-    clues: ['Jaw pain on waking', 'Headaches, especially temples', 'Worn flat enamel on molars', 'Grinding sounds at night', 'High stress period'],
-    options: ['Dental abscess', 'Temporomandibular disorder (TMD)', 'Bruxism (tooth grinding)', 'Fractured molar'],
-    answer: 2,
-    explanation: 'This is classic Bruxism — involuntary grinding or clenching, usually during sleep and often stress-triggered. The worn enamel, morning jaw pain, temporal headaches, and partner\'s observation all point to it. TMD can be a consequence of untreated bruxism but isn\'t the primary diagnosis here.',
-    resolution: 'A custom-fitted night guard protects enamel and jaw joints. Stress management techniques, like the exercises in this app, can significantly reduce grinding frequency.'
-  },
-  {
-    title: 'Case 3: The Creeping Gum',
-    scenario: 'A 52-year-old patient notices their teeth "look longer" than before. Their gums bleed when brushing, and they have persistent bad breath despite regular brushing. A few teeth feel slightly loose. They haven\'t seen a dentist in 8 years.',
-    clues: ['Teeth appear longer (gum recession)', 'Bleeding on brushing', 'Persistent halitosis', 'Slightly mobile teeth', 'No dental check-ups in 8 years'],
-    options: ['Aggressive brushing damage', 'Vitamin C deficiency (scurvy)', 'Periodontitis (advanced gum disease)', 'Oral cancer'],
-    answer: 2,
-    explanation: 'Advanced periodontitis. The hallmarks are all present: gum recession exposing more tooth, bleeding, mobility, and halitosis from bacterial toxins. Eight years without professional cleaning allows tartar to build up below the gumline, causing irreversible bone and tissue loss. Aggressive brushing can cause recession but doesn\'t cause mobility or that level of bleeding.',
-    resolution: 'Deep cleaning (scaling and root planing) removes subgingival tartar. Regular 3-month maintenance appointments can halt progression. Caught now, most teeth can still be saved.'
-  },
-  {
-    title: 'Case 4: The Sharp Surprise',
-    scenario: 'A 41-year-old bites into an apple and feels a sudden sharp crack and intense pain. The pain is severe for a few minutes, then settles to a dull throb. Looking in the mirror, they can see what appears to be a large piece of enamel missing from a back tooth.',
-    clues: ['Sudden onset after eating', 'Cracking sound heard', 'Visible fracture in mirror', 'Initial intense pain settling to throb', 'Intact tooth before this moment'],
-    options: ['Cracked cusp fracture', 'Dental abscess bursting', 'Enamel hypoplasia', 'Root resorption'],
-    answer: 0,
-    explanation: 'A cracked cusp — a piece of the tooth has physically fractured away from the crown. The cracking sound, immediate sharp pain, visible missing enamel, and sudden onset are definitive. This is one of the most common dental emergencies. Whether the pulp (nerve) is involved determines whether a crown alone suffices or a root canal is needed first.',
-    resolution: 'See a dentist within 24–48 hours. Keep the area clean, avoid chewing on that side. A crown will restore the tooth completely. The procedure is done under local anaesthetic — you\'ll feel pressure, not pain.'
-  },
-  {
-    title: 'Case 5: The Phantom',
-    scenario: 'A 67-year-old patient reports severe, shooting pain in their upper jaw that comes in electric bursts lasting seconds. The pain can be triggered by a light touch on the cheek, eating, or even a gentle breeze. Between episodes, there is no pain at all. Dental examination shows no obvious decay or gum disease.',
-    clues: ['Electric shock-like pain', 'Triggered by light touch or air', 'Pain-free between episodes', 'No visible dental cause found', 'Older patient, upper jaw'],
-    options: ['Atypical facial pain (psychosomatic)', 'Trigeminal neuralgia', 'Severe tooth abscess', 'Temporomandibular disorder'],
-    answer: 1,
-    explanation: 'Trigeminal neuralgia — often called "the suicide disease" due to its intensity. The defining features are electric shooting pain in the trigeminal nerve distribution (face/jaw), triggered by light stimuli, completely pain-free between attacks, and no dental cause. This is a neurological condition, not a dental one, and requires neurologist referral. It\'s often misdiagnosed for years.',
-    resolution: 'Anticonvulsant medications like carbamazepine provide significant relief for most patients. Surgical options exist for refractory cases. Importantly, this is treatable — and not dangerous to your teeth.'
-  }
-];
 
 // ── MIND VS MOUTH ─────────────────────────────────────────
 const MVM_THOUGHTS = [
@@ -11088,6 +11015,21 @@ function makeDraggable(el, onTap) {
       <div class="dent-section-title">Wellbeing</div>
       <div class="dent-section-sub">Exercises for physical strain relief, and wind-down routines to close your day right.</div>
 
+      <!-- Section: Skill Sharpener -->
+      <div class="dent-card-teal" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;color:#99f6e4;margin-bottom:4px">🧠 Skill Sharpener</div>
+        <div style="font-size:12px;color:#a7f3d0">Quick clinical quizzes to brush up on knowledge. 5 questions, randomised each time.</div>
+      </div>
+      <div id="dent-skill-quiz-container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <button onclick="startDentSkillQuiz('pharmacology')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;padding:14px 10px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-align:center;line-height:1.4">💊<br>Pharmacology</button>
+          <button onclick="startDentSkillQuiz('radiography')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;padding:14px 10px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-align:center;line-height:1.4">🩻<br>Radiography</button>
+          <button onclick="startDentSkillQuiz('anatomy')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;padding:14px 10px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-align:center;line-height:1.4">🦷<br>Dental Anatomy</button>
+          <button onclick="startDentSkillQuiz('anxiety')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;padding:14px 10px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-align:center;line-height:1.4">🧘<br>Patient Anxiety</button>
+        </div>
+        <div id="dent-skill-quiz-active" style="display:none"></div>
+      </div>
+
       <!-- Section: Exercises -->
       <div class="dent-card-teal" style="margin-bottom:12px">
         <div style="font-weight:700;font-size:15px;color:#99f6e4;margin-bottom:4px">🙌 Exercises</div>
@@ -14094,6 +14036,126 @@ async function submitDentPatientNoteMP() {
 }
 
 // ── WELLBEING TAB POPULATION ────────────────────────────────────────────────────
+// ── DENTIST SKILL SHARPENER QUIZ ──────────────────────────────────────────────
+const DENT_SKILL_BANKS = {
+  pharmacology: [
+    { q: `What is the maximum safe dose of lidocaine with epinephrine for a healthy 70kg adult?`, opts: [`3.5 mg/kg (245mg)`, `4.4 mg/kg (308mg)`, `7 mg/kg (490mg)`, `2 mg/kg (140mg)`], a: 1, exp: `4.4 mg/kg up to 308mg for lidocaine with epinephrine (1:100,000). Plain lidocaine max is 4.4 mg/kg. Always calculate by weight.` },
+    { q: `Which antibiotic is first-line for dentoalveolar abscess in a penicillin-allergic patient?`, opts: [`Metronidazole alone`, `Clindamycin`, `Erythromycin`, `Doxycycline`], a: 1, exp: `Clindamycin 300mg TDS is the first-line alternative for penicillin-allergic patients. It has excellent bone penetration.` },
+    { q: `Ibuprofen is contraindicated in which patient group?`, opts: [`Diabetics on metformin`, `Patients with peptic ulcer disease or renal impairment`, `Patients on statins`, `Hypertensives on calcium channel blockers`], a: 1, exp: `NSAIDs including ibuprofen are contraindicated with peptic ulcer disease (GI bleeding risk), renal impairment, and in the third trimester of pregnancy. Also caution with anticoagulants.` },
+    { q: `A patient on warfarin needs an extraction. What INR is the generally accepted safe upper limit?`, opts: [`1.5`, `2.0`, `3.0`, `4.0`], a: 2, exp: `INR up to 3.0 (some guidelines say 3.5) is considered safe for simple extractions with local haemostatic measures. Above this, liaise with the physician about dose adjustment.` },
+    { q: `Which local anaesthetic is safest for a patient with severe liver disease?`, opts: [`Lidocaine`, `Articaine`, `Prilocaine`, `Bupivacaine`], a: 2, exp: `Prilocaine undergoes hydrolysis in plasma, lungs, and kidney — less dependent on hepatic metabolism than lidocaine. Articaine is also partially hydrolysed in plasma.` },
+    { q: `Metronidazole interacts dangerously with which substance?`, opts: [`Calcium supplements`, `Alcohol`, `Vitamin C`, `Dairy products`], a: 1, exp: `Metronidazole causes a disulfiram-like reaction with alcohol — flushing, vomiting, tachycardia. Patients must avoid alcohol during treatment and for 48 hours after the last dose.` },
+    { q: `What is the mechanism of action of epinephrine in local anaesthetic solutions?`, opts: [`Blocks sodium channels`, `Causes vasoconstriction, reducing systemic absorption and prolonging anaesthesia`, `Directly inhibits pain receptors`, `Increases tissue pH for faster onset`], a: 1, exp: `Epinephrine is a vasoconstrictor (alpha-1 agonist) that reduces local blood flow, slowing anaesthetic absorption, prolonging effect, and reducing peak plasma levels.` },
+    { q: `Which drug class can cause gingival enlargement as a side effect?`, opts: [`Proton pump inhibitors`, `Calcium channel blockers (e.g. amlodipine)`, `Biguanides`, `Beta blockers`], a: 1, exp: `Drug-induced gingival enlargement is caused by phenytoin, cyclosporin, and calcium channel blockers (especially nifedipine and amlodipine). Good plaque control reduces severity.` },
+  ],
+  radiography: [
+    { q: `Which radiographic technique uses the long-cone paralleling method?`, opts: [`Bisecting angle technique`, `Paralleling technique`, `Occlusal technique`, `Panoramic technique`], a: 1, exp: `The paralleling technique uses a film/sensor parallel to the long axis of the tooth with the X-ray beam perpendicular to both. It produces the most geometrically accurate images.` },
+    { q: `A J-shaped radiolucency on a periapical radiograph around the apex and lateral surface suggests?`, opts: [`Dens invaginatus`, `External root resorption`, `Internal root resorption`, `Condensing osteitis`], a: 1, exp: `A J-shaped radiolucency around the apex and lateral surface suggests external root resorption, often from trauma, orthodontic treatment, or pressure from adjacent pathology.` },
+    { q: `The lamina dura on a periapical radiograph represents?`, opts: [`Periodontal ligament space`, `Cortical bone lining the tooth socket`, `Cementum layer`, `Alveolar crest bone`], a: 1, exp: `The lamina dura is the radiopaque line of dense cortical bone lining the tooth socket. Loss of lamina dura is associated with periapical pathology and hyperparathyroidism.` },
+    { q: `What is the SLOB rule used for in dental radiography?`, opts: [`Calculating radiation dose`, `Localising objects in three dimensions using two periapical films`, `Detecting proximal caries`, `Measuring bone loss`], a: 1, exp: `SLOB: Same Lingual Opposite Buccal. When horizontal angulation changes, a lingual object moves the SAME direction as the tube shift; a buccal object moves in the OPPOSITE direction.` },
+    { q: `What radiographic appearance is typical of a dentigerous cyst?`, opts: [`Multilocular radiolucency with scalloped border`, `Well-defined unilocular radiolucency surrounding the crown of an unerupted tooth`, `Diffuse radiopacity`, `Widening of PDL space only`], a: 1, exp: `A dentigerous (follicular) cyst presents as a well-defined unilocular radiolucency attached at the CEJ, surrounding the crown of an unerupted tooth. Most common in mandibular third molars.` },
+    { q: `On a panoramic radiograph, the ghost shadow of the spine appears?`, opts: [`Superimposed over the upper anterior region`, `As a faint midline vertical radiopacity`, `Bilaterally in the posterior mandible`, `As radiolucency around condyles`], a: 1, exp: `The cervical spine projects as a vertical ghost (radiopacity) in the midline of the OPG, particularly visible in the anterior maxillary region. It is a normal artefact, not pathology.` },
+    { q: `Which view best demonstrates the floor of the mouth for salivary calculi?`, opts: [`Periapical`, `Bitewing`, `Lower occlusal (cross-sectional)`, `OPG`], a: 2, exp: `The lower 90 degree occlusal cross-sectional view projects the floor of mouth clearly, making it best for detecting submandibular duct calculi.` },
+    { q: `Bitewing radiographs are primarily used to detect?`, opts: [`Periapical pathology`, `Interproximal caries and crestal bone levels`, `Root fractures`, `Sinus pathology`], a: 1, exp: `Bitewings are designed for interproximal caries detection and assessment of alveolar crestal bone height. They do not show the apex, so are unsuitable for periapical pathology.` },
+  ],
+  anatomy: [
+    { q: `The mental foramen is typically located?`, opts: [`Below the apex of the mandibular canine`, `Between the apices of the mandibular first and second premolars`, `Below the first molar apex`, `At the midline of the mandible`], a: 1, exp: `The mental foramen is most commonly located between or below the apices of the mandibular first and second premolars. Its position varies and should be noted on radiographs before procedures in this region.` },
+    { q: `Which nerve supplies sensation to the mandibular incisors?`, opts: [`Inferior alveolar nerve (branch of V3)`, `Mental nerve only`, `Long buccal nerve`, `Lingual nerve`], a: 0, exp: `The inferior alveolar nerve (IAN), a branch of V3, provides sensory supply to all lower teeth via the dental plexus. The mental nerve (terminal branch of IAN) supplies the lower lip and chin.` },
+    { q: `The Stafne bone defect is located?`, opts: [`Above the inferior alveolar canal in the posterior mandible`, `Below the inferior alveolar canal in the posterior mandible, on the lingual aspect`, `In the maxillary sinus`, `At the mandibular symphysis`], a: 1, exp: `Stafne bone cavity is a pseudocyst caused by submandibular salivary gland tissue, located below the inferior alveolar canal in the posterior mandible, lingual aspect.` },
+    { q: `Which teeth most commonly have two roots with three canals?`, opts: [`Maxillary first premolar`, `Mandibular first molar`, `Maxillary first molar`, `Mandibular second premolar`], a: 0, exp: `The maxillary first premolar most commonly has two roots (buccal and palatal) with three canals (two buccal, one palatal). This anatomy is clinically significant for endodontic access.` },
+    { q: `The maxillary sinus floor most commonly relates to which teeth?`, opts: [`Central and lateral incisors`, `Upper canine only`, `Upper premolars and molars, most closely the first molar`, `Lower molars`], a: 2, exp: `The maxillary sinus floor is most closely related to the upper premolars and molars, particularly the first molar roots. Periapical pathology of these teeth can extend into or mimic sinus disease.` },
+    { q: `The Frankfort plane is used as a reference for?`, opts: [`Endodontic working length`, `Cephalometric analysis and head positioning`, `Crown preparation angles`, `Implant angulation`], a: 1, exp: `The Frankfort horizontal plane (porion to orbitale) is a standard craniometric reference for cephalometric analysis and consistent head positioning in radiography and surgery.` },
+    { q: `What is the function of the periodontal ligament (PDL)?`, opts: [`Provides blood supply to enamel`, `Anchors tooth to alveolar bone, absorbs occlusal forces, contains proprioceptors`, `Produces secondary dentine`, `Forms the gingival attachment only`], a: 1, exp: `The PDL is specialised connective tissue that attaches tooth cementum to alveolar bone via Sharpey fibres, absorbs occlusal forces, contains mechanoreceptors, and has regenerative capacity.` },
+  ],
+  anxiety: [
+    { q: `The Modified Dental Anxiety Scale (MDAS) uses how many questions?`, opts: [`3`, `5`, `8`, `10`], a: 1, exp: `The MDAS has 5 questions, each scored 1-5 (not anxious to extremely anxious). Maximum score is 25. A score of 19 or above indicates high dental anxiety.` },
+    { q: `Which technique involves explaining, showing, and doing a procedure before carrying it out?`, opts: [`Systematic desensitisation`, `Tell-Show-Do (TSD)`, `Cognitive reframing`, `Hypnotherapy`], a: 1, exp: `Tell-Show-Do is a foundational behaviour management technique: explain verbally, demonstrate on a model or the patient's hand, then perform. It reduces fear of the unknown and builds trust.` },
+    { q: `A patient with a dental phobia would score on the MDAS?`, opts: [`Between 5 and 10`, `Between 11 and 15`, `Between 16 and 18`, `19 or above`], a: 3, exp: `MDAS 19 or above indicates extreme dental anxiety or phobia. Phobia is a diagnosable specific phobia characterised by persistent, excessive fear triggering avoidance and significant distress.` },
+    { q: `Nitrous oxide (relative analgesia) works primarily by?`, opts: [`Blocking sodium channels like local anaesthetic`, `Producing mild sedation and analgesia via opioid receptor modulation and NMDA antagonism`, `Inducing general anaesthesia at 70% concentration`, `Producing muscular relaxation`], a: 1, exp: `Nitrous oxide works through NMDA receptor antagonism, opioid receptor modulation, and mild sympathomimetic effects. It produces conscious sedation, anxiolysis, and mild analgesia.` },
+    { q: `What is dental neglect in the clinical context?`, opts: [`Avoiding brushing`, `A pattern of avoidance resulting in significant untreated disease, regardless of cause`, `Missing one appointment`, `Refusing X-rays`], a: 1, exp: `Dental neglect refers to the pattern — often driven by anxiety, cost, access, or shame — of prolonged avoidance resulting in significant cumulative untreated disease.` },
+    { q: `The most effective single communication technique for a highly anxious patient in the chair is?`, opts: [`Telling them to relax and breathe`, `Agreeing a stop signal before starting any procedure`, `Playing music during treatment`, `Explaining everything in detail during treatment`], a: 1, exp: `A pre-agreed stop signal (hand raise) gives the patient unconditional control. It has been shown to be the single most powerful anxiety reducer during procedures, preventing panic escalation.` },
+    { q: `Informed consent for an anxious patient should include?`, opts: [`Only the procedure name and cost`, `Risks, benefits, alternatives, and what sensations to expect in plain language`, `A signed form is sufficient without verbal discussion`, `Only material risks above 1% probability`], a: 1, exp: `Informed consent for anxious patients should include sensory information — what they will feel, hear, and smell — in addition to standard risks and benefits. Sensory preparation significantly reduces procedural anxiety.` },
+  ]
+}
+let _dskQ = 0, _dskScore = 0, _dskSet = [], _dskCategory = '', _dskAnswered = false;
+
+function startDentSkillQuiz(category) {
+  _dskCategory = category;
+  const labels = { pharmacology:'💊 Pharmacology', radiography:'🩻 Radiography', anatomy:'🦷 Dental Anatomy', anxiety:'🧘 Patient Anxiety' };
+  const all = DENT_SKILL_BANKS[category] || [];
+  // Pick 5 random questions
+  _dskSet = [...all].sort(() => Math.random() - 0.5).slice(0, 5);
+  _dskQ = 0; _dskScore = 0; _dskAnswered = false;
+
+  const container = document.getElementById('dent-skill-quiz-container');
+  if (container) {
+    container.querySelector('div:first-child').style.display = 'none'; // hide grid
+    const active = document.getElementById('dent-skill-quiz-active');
+    active.style.display = 'block';
+    active.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:#99f6e4">${labels[category]}</div>
+      <button onclick="resetDentSkillQuiz()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:4px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font)">← Back</button>
+    </div><div id="dsk-question-area"></div>`;
+    renderDentSkillQ();
+  }
+}
+
+function renderDentSkillQ() {
+  const area = document.getElementById('dsk-question-area');
+  if (!area) return;
+  if (_dskQ >= _dskSet.length) {
+    const pct = Math.round((_dskScore / _dskSet.length) * 100);
+    area.innerHTML = `<div style="text-align:center;padding:16px 0">
+      <div style="font-size:40px;margin-bottom:10px">${pct>=80?'🏆':pct>=60?'✅':'📚'}</div>
+      <div style="font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:4px">${_dskScore}/${_dskSet.length} correct</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px">${pct>=80?'Strong knowledge!':pct>=60?'Solid — a few areas to revisit.':'Worth reviewing this area.'}</div>
+      <button onclick="startDentSkillQuiz('${_dskCategory}')" style="background:var(--grad);color:#fff;border:none;padding:10px 24px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-right:8px">Try Again</button>
+      <button onclick="resetDentSkillQuiz()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">Choose Topic</button>
+    </div>`;
+    return;
+  }
+  const q = _dskSet[_dskQ];
+  _dskAnswered = false;
+  area.innerHTML = `<div style="font-size:11px;color:#64748b;margin-bottom:8px">Question ${_dskQ+1} of ${_dskSet.length} · Score: ${_dskScore}</div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;margin-bottom:14px">
+      <div style="font-size:14px;color:#e2e8f0;line-height:1.6;font-weight:500">${q.q}</div>
+    </div>
+    <div id="dsk-opts">
+      ${q.opts.map((o,i) => `<button onclick="answerDentSkillQ(${i})" style="width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);color:#cbd5e1;padding:11px 14px;border-radius:12px;margin-bottom:8px;font-size:13px;text-align:left;cursor:pointer;font-family:var(--font);line-height:1.4;transition:border-color .15s">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div id="dsk-exp" style="display:none"></div>`;
+}
+
+function answerDentSkillQ(idx) {
+  if (_dskAnswered) return;
+  _dskAnswered = true;
+  const q = _dskSet[_dskQ];
+  const correct = idx === q.a;
+  if (correct) _dskScore++;
+
+  document.querySelectorAll('#dsk-opts button').forEach((btn, i) => {
+    btn.disabled = true; btn.style.cursor = 'default';
+    if (i === q.a) { btn.style.background='rgba(34,197,94,.15)'; btn.style.borderColor='#22c55e'; btn.style.color='#4ade80'; }
+    else if (i === idx && !correct) { btn.style.background='rgba(239,68,68,.12)'; btn.style.borderColor='#ef4444'; btn.style.color='#f87171'; }
+  });
+
+  const exp = document.getElementById('dsk-exp');
+  exp.style.display = 'block';
+  exp.innerHTML = `<div style="background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#99f6e4;margin-bottom:4px">${correct?'✅ Correct':'❌ Incorrect'} — Explanation</div>
+    <div style="font-size:12px;color:#a7f3d0;line-height:1.6">${q.exp}</div>
+  </div>
+  <button onclick="_dskQ++;renderDentSkillQ()" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#e2e8f0;padding:10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">${_dskQ+1 >= _dskSet.length ? 'See Results →' : 'Next Question →'}</button>`;
+}
+
+function resetDentSkillQuiz() {
+  const container = document.getElementById('dent-skill-quiz-container');
+  if (!container) return;
+  container.querySelector('div:first-child').style.display = 'grid';
+  const active = document.getElementById('dent-skill-quiz-active');
+  if (active) active.style.display = 'none';
+}
+
 let _wellbeingPopulated = false;
 function populateWellbeingTab() {
   if (_wellbeingPopulated) return;
