@@ -1496,42 +1496,68 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 .xray-add small{font-size:10px;color:#64748b}
 </style>
 
-  <!-- Language translation via Google Translate iframe method -->
-  <script>
-  function serLanguageChange(lang) {
-    if (lang === 'en') {
-      // Reset: remove cookie and reload
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname + ';';
-      location.reload();
-      return;
-    }
-    // Set googtrans cookie — Google Translate picks this up automatically
-    const val = '/en/' + lang;
-    document.cookie = 'googtrans=' + val + '; path=/;';
-    document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname + ';';
-    location.reload();
-  }
-
-  // On load: read cookie and set dropdown to match
-  (function syncLangDropdown() {
-    const match = document.cookie.match(/googtrans=\/en\/([a-z]+)/);
-    const lang = match ? match[1] : 'en';
-    const sel = document.getElementById('serenora-lang-select');
-    if (sel) sel.value = lang;
-  })();
-  </script>
 
 
 
-  <!-- Google Translate silent loader — reads googtrans cookie and translates page -->
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+  <!-- Google Translate Widget -->
   <script>
   function googleTranslateElementInit() {
-    new google.translate.TranslateElement({ pageLanguage:'en', autoDisplay:false },
-      document.createElement('div'));
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,hi,mr,bn,pa,gu,te,ta,kn,ml,or,as,ur',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: false
+    }, 'google_translate_element');
   }
   </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <style>
+  /* ── Google Translate widget styling ── */
+  .goog-te-banner-frame, .goog-te-balloon-frame { display:none !important; }
+  body { top:0 !important; }
+  .skiptranslate > iframe { display:none !important; }
+  .goog-te-gadget { font-size:0 !important; color:transparent !important; }
+  .goog-te-gadget .goog-te-gadget-simple {
+    background:#1e293b !important;
+    border:1.5px solid rgba(255,255,255,.2) !important;
+    border-radius:20px !important;
+    padding:5px 14px !important;
+    cursor:pointer !important;
+  }
+  .goog-te-gadget .goog-te-gadget-simple span,
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value span {
+    color:rgba(255,255,255,.85) !important;
+    font-size:12px !important;
+    font-family:var(--font,sans-serif) !important;
+    font-weight:600 !important;
+    border:none !important;
+  }
+  .goog-te-gadget .goog-te-gadget-simple img { display:none !important; }
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value {
+    display:flex; align-items:center; gap:4px;
+  }
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value::after {
+    content:'▾'; color:rgba(255,255,255,.6); font-size:11px; margin-left:2px;
+  }
+  /* Menu popup */
+  .goog-te-menu-frame { box-shadow:0 8px 32px rgba(0,0,0,.4) !important; border-radius:12px !important; }
+  /* Morning mode */
+  body.morning-mode #google-translate-bar { background:linear-gradient(135deg,#7c2d12,#c2410c) !important; border-bottom-color:rgba(251,146,60,.2) !important; }
+  body.morning-mode .goog-te-gadget .goog-te-gadget-simple { background:#9a3412 !important; border-color:rgba(251,146,60,.35) !important; }
+  /* Night mode */
+  body.night-mode #google-translate-bar { background:linear-gradient(135deg,#0c1a2e,#0d2040) !important; border-bottom-color:rgba(99,235,200,.1) !important; }
+  body.night-mode .goog-te-gadget .goog-te-gadget-simple { background:#0d2040 !important; border-color:rgba(99,235,200,.2) !important; }
+  /* Rainy mode */
+  body.rainy-mode #google-translate-bar { background:#0f1117 !important; border-bottom-color:rgba(148,163,184,.15) !important; }
+  body.rainy-mode .goog-te-gadget .goog-te-gadget-simple { background:#1e2533 !important; border-color:rgba(148,163,184,.25) !important; }
+  /* Kids mode */
+  body.kids-mode #google-translate-bar { background:linear-gradient(135deg,#f472b6,#fb923c,#facc15) !important; }
+  body.kids-mode .goog-te-gadget .goog-te-gadget-simple { background:rgba(255,255,255,.25) !important; border-color:rgba(255,255,255,.4) !important; }
+  body.kids-mode .goog-te-gadget .goog-te-gadget-simple span { color:#fff !important; }
+  </style>
+
 </head>
 <body>
 
@@ -1557,31 +1583,14 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <div class="screen active" id="screen-welcome" style="background:#0f172a">
 
 
-  <!-- Custom Language Selector -->
+  <!-- Google Translate bar -->
   <div id="google-translate-bar" style="background:#0f172a;padding:6px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px">
-    <span style="font-size:13px;flex-shrink:0">🌐</span>
+    <span style="font-size:14px;flex-shrink:0">🌐</span>
     <div style="flex-shrink:0">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.2;font-family:var(--font,sans-serif)">Change Language</div>
       <div style="font-size:10px;color:rgba(255,255,255,.45);line-height:1.3;font-family:var(--font,sans-serif)">Select your preferred language</div>
     </div>
-    <div style="flex:1;display:flex;justify-content:flex-end">
-      <select id="serenora-lang-select" onchange="serLanguageChange(this.value)"
-        style="background:#1e293b;color:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 30px 5px 14px;font-size:12px;font-family:var(--font,sans-serif);font-weight:600;cursor:pointer;outline:none;min-width:155px;max-width:220px">
-        <option value="/en/en">🇬🇧 English</option>
-        <option value="/en/hi">🇮🇳 हिंदी</option>
-        <option value="/en/mr">🇮🇳 मराठी</option>
-        <option value="/en/bn">🇧🇩 বাংলা</option>
-        <option value="/en/pa">🇮🇳 ਪੰਜਾਬੀ</option>
-        <option value="/en/gu">🇮🇳 ગુજરાતી</option>
-        <option value="/en/te">🇮🇳 తెలుగు</option>
-        <option value="/en/ta">🇮🇳 தமிழ்</option>
-        <option value="/en/kn">🇮🇳 ಕನ್ನಡ</option>
-        <option value="/en/ml">🇮🇳 മലയാളം</option>
-        <option value="/en/or">🇮🇳 ଓଡ଼ିଆ</option>
-        <option value="/en/as">🇮🇳 অসমীয়া</option>
-        <option value="/en/ur">🇵🇰 اردو</option>
-      </select>
-    </div>
+    <div id="google_translate_element" style="flex:1;display:flex;align-items:center;justify-content:flex-end"></div>
   </div>
 
     <div id="theme-bar-global">
