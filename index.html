@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SerenOra Care</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
@@ -15799,7 +15800,8 @@ async function downloadMonthlyAttendance() {
 
   const dateHeaders = days.map(d=>`<th style="padding:4px 2px;min-width:22px;text-align:center;font-size:10px">${d.slice(8)}</th>`).join('');
 
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<meta name="google" content="notranslate"><style>
     body{font-family:Arial,sans-serif;padding:24px;color:#0f172a}
     table{width:100%;border-collapse:collapse;font-size:12px}
     th{background:#f1f5f9;padding:6px;text-align:left}
@@ -16389,6 +16391,7 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <style>
   @page { margin: 20mm 18mm; size: A4; }
   * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
