@@ -1659,7 +1659,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
             <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
           </g>
         </svg>
-        <span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span> <span style="color:#bfdbfe">Care</span></span>
+        <span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span> <span style="color:#bfdbfe">Care</span></span>
       </div>
     </div>
 
@@ -1705,7 +1705,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           </g>
         </svg>
         <div class="logo-serenora-text" style="font-family:var(--display);font-size:24px;font-weight:700;color:#fff;margin-top:4px">
-          <span class="s1">Seren</span><span class="s2" style="color:#99f6e4">Ora</span> <span class="s3" style="color:#bfdbfe">Care</span>
+          <span translate="no" class="s1">Seren</span><span class="s2" style="color:#99f6e4">Ora</span> <span class="s3" style="color:#bfdbfe">Care</span>
         </div>
       </div>
       <div class="hero-sub" id="hero-sub-txt" data-i18n="heroSub">Dental care, reimagined — for patients, dentists, and clinics.</div>
@@ -1723,7 +1723,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
       <!-- Three portal cards -->
       <div id="welcome-heading" data-i18n="welcomeHeading" style="font-family:var(--display);font-weight:800;font-size:20px;color:#e2e8f0;margin-bottom:4px;margin-top:8px">One app. Three portals.</div>
-      <div id="welcome-subheading" data-i18n="welcomeSub" style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6">SerenOra Care brings together every person in the dental experience — from the anxious patient to the overworked dentist to the clinic manager keeping it all running.</div>
+      <div id="welcome-subheading" data-i18n="welcomeSub" style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6"><span translate="no">SerenOra Care</span> brings together every person in the dental experience — from the anxious patient to the overworked dentist to the clinic manager keeping it all running.</div>
 
       <!-- Patient card — teal/green, matches patient login -->
       <div style="background:linear-gradient(135deg,#0d9488,#134e4a);border-radius:20px;padding:20px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(13,148,136,.3)" onclick="selectRole('patient',null)">
@@ -1802,7 +1802,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
       <div style="height:40px"></div>
       <div style="text-align:center;padding:16px 20px 32px;font-size:11px;color:rgba(255,255,255,.25);line-height:1.8">
-        © 2026 SerenOra Care. All rights reserved.<br>
+        © 2026 <span translate="no">SerenOra Care</span>. All rights reserved.<br>
         Compassionate dental care, reimagined for India.
       </div>
     </div>
@@ -1816,7 +1816,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <div class="screen" id="screen-role-select">
   <div style="background:var(--grad);padding:16px 20px 32px;text-align:center;color:#fff;position:relative">
     <button onclick="showScreen('screen-welcome')" style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:var(--font)">← Back</button>
-    <div style="font-family:var(--display);font-size:26px;font-weight:800;margin-bottom:8px;margin-top:8px">Welcome to SerenOra</div>
+    <div style="font-family:var(--display);font-size:26px;font-weight:800;margin-bottom:8px;margin-top:8px">Welcome to <span translate="no">SerenOra</span></div>
     <div style="font-size:14px;opacity:.85">Tell us who you are so we can personalise your experience</div>
   </div>
   <div class="page-content" style="padding-top:24px">
@@ -1840,7 +1840,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== AGE ===== -->
 <div class="screen" id="screen-age">
-  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><span></span></div>
+  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><span></span></div>
   <div class="page-content">
     <div class="section-title" id="age-title" data-i18n="ageTitle">Who's this for? 💙</div>
     <div class="section-sub" id="age-sub" data-i18n="ageSub">We'll personalize your experience based on age.</div>
@@ -1858,7 +1858,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MOOD ===== -->
 <div class="screen" id="screen-mood">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title" id="mood-title" data-i18n="moodTitle">How are you feeling?</div>
     <div class="section-sub" id="mood-sub" data-i18n="moodSub">No judgment. Just pick the face that looks like you right now.</div>
@@ -1880,7 +1880,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== BREATHING ===== -->
 <div class="screen" id="screen-breathing">
-  <div class="nav"><button class="nav-back" onclick="showScreen('screen-mood')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-mood')">← Back</button><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
     <div class="section-sub" style="text-align:center">Tap the bubble to begin. 4-4-6 breathing cycle.</div>
     <div class="audio-player">
@@ -1903,7 +1903,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MAIN DASHBOARD ===== -->
 <div class="screen" id="screen-main">
-  <div class="nav"><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
+  <div class="nav"><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
   <div class="page-content">
     <div id="dash-title" style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">Welcome back <span class="star-twinkle">✨</span></div>
     <div id="dash-sub" data-i18n="dashSub" style="font-size:13px;color:var(--muted);margin-bottom:16px">Your journey, your pace.</div>
@@ -2836,12 +2836,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
     <!-- ── ABOUT ──────────────────────────────────── -->
     <div class="card-teal" style="text-align:center;padding:16px">
-      <div style="font-family:var(--display);font-weight:700;font-size:14px;color:#134e4a;margin-bottom:4px">SerenOra Care</div>
+      <div style="font-family:var(--display);font-weight:700;font-size:14px;color:#134e4a;margin-bottom:4px"><span translate="no">SerenOra Care</span></div>
       <div style="font-size:11px;color:#1e7a6a">Your calm companion for dental visits 🌿</div>
       <div style="font-size:11px;color:#1e7a6a;margin-top:2px">Version 2.0</div>
       <button onclick="toggleContactPanel()" style="margin-top:10px;background:var(--teal);color:#fff;border:none;padding:8px 20px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">📞 Contact Us</button>
       <div style="font-size:10px;color:#94a3b8;margin-top:12px;text-align:center;line-height:1.6">
-        © 2026 SerenOra Care. All rights reserved.<br>
+        © 2026 <span translate="no">SerenOra Care</span>. All rights reserved.<br>
         Compassionate dental care, reimagined.
       </div>
     </div>
@@ -2938,7 +2938,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
     <!-- App title bar (matches screenshot) -->
     <div style="text-align:center;margin-bottom:4px">
-      <div style="font-family:var(--display);font-size:14px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span> <span style="color:#bfdbfe">Care</span></div>
+      <div translate="no" style="font-family:var(--display);font-size:14px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span> <span style="color:#bfdbfe">Care</span></div>
       <div style="font-size:11px;color:#64748b;margin-top:2px">Appointment Mode Active</div>
     </div>
 
@@ -3133,7 +3133,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   </div>
   <div data-portal-header id="auth-header-bg2" style="background:linear-gradient(135deg,#0d9488,#134e4a);padding:16px 20px 32px;text-align:center;color:#fff;transition:background .4s ease">
     <div style="font-size:48px;margin-bottom:12px" id="auth-header-icon">🏥</div>
-    <div style="font-family:var(--display);font-size:26px;font-weight:700;margin-bottom:6px" id="auth-header-title">SerenOra Portal</div>
+    <div style="font-family:var(--display);font-size:26px;font-weight:700;margin-bottom:6px" id="auth-header-title"><span translate="no">SerenOra</span> Portal</div>
     <div style="font-size:14px;opacity:.75" id="auth-header-sub">Sign in or create an account</div>
   </div>
   <div class="page-content" style="background:#f8fafc;flex:1">
@@ -3604,7 +3604,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== PATIENT LOGIN ===== -->
 <div class="screen" id="screen-patient-login">
-  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span></div>
+  <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span></div>
   <div class="page-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh">
     <div id="patient-login-view" style="width:100%;max-width:380px">
       <!-- Logo -->
@@ -10985,7 +10985,7 @@ function makeDraggable(el, onTap) {
 
         <!-- About -->
         <div style="background:linear-gradient(135deg,rgba(13,148,136,.2),rgba(59,130,246,.15));border:1px solid rgba(13,148,136,.3);border-radius:16px;padding:16px;text-align:center;margin-bottom:16px">
-          <div style="font-family:var(--display);font-weight:700;font-size:14px;color:#99f6e4;margin-bottom:4px">SerenOra Care</div>
+          <div style="font-family:var(--display);font-weight:700;font-size:14px;color:#99f6e4;margin-bottom:4px"><span translate="no">SerenOra Care</span></div>
           <div style="font-size:11px;color:#64748b">Dental wellbeing for patients & providers 🌿</div>
           <div style="font-size:11px;color:#64748b;margin-top:2px">Version 2.0</div>
         </div>
