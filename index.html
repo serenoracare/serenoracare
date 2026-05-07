@@ -1881,6 +1881,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   <div class="page-content">
     <div id="dash-title" style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">Welcome back <span class="star-twinkle">✨</span></div>
     <div id="dash-sub" data-i18n="dashSub" style="font-size:13px;color:var(--muted);margin-bottom:16px">Your journey, your pace.</div>
+    <!-- Dentist insight card — populated by loadDentistInsight() -->
+    <div id="pat-dentist-insight" style="display:none;margin-bottom:16px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(59,130,246,.08));border:1px solid rgba(99,246,228,.18)"></div>
     <!-- Quick-access feature row -->
     <div style="display:flex;gap:10px;margin-bottom:16px">
       <div onclick="showScreen('screen-mdas-pre')" style="flex:1;background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:14px;padding:14px;cursor:pointer;text-align:center"><div style="font-size:24px">📊</div><div style="font-weight:700;font-size:12px;color:#1e40af;margin-top:4px">Anxiety Check</div><div style="font-size:10px;color:#3730a3">MDAS Scale</div></div>
@@ -4291,7 +4293,7 @@ function showScreen(id){
   if(id==='screen-reframe')renderReframe();
   if(id==='screen-plantgame'){initPlantCanvas();if(typeof restorePlantState==='function')restorePlantState();}
   if(id==='screen-journal'&&typeof renderJournal==='function')renderJournal();
-  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();}
+  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();loadDentistInsight();}
   if(id==='screen-patient-account'&&currentUser&&typeof populatePatientRecordsScreen==='function')populatePatientRecordsScreen();
   if(id==='screen-main')initAfterChecks();
   if(id==='screen-procedures')renderProcGrid();
@@ -5506,6 +5508,42 @@ async function shareStoryWithDentist() {
     shareBtn.disabled = false;
     shareBtn.textContent = '📤 Retry Share';
   }
+}
+
+
+// ── DENTIST INSIGHT → shown on patient dashboard ──────────────────────────────
+async function loadDentistInsight() {
+  const el = document.getElementById('pat-dentist-insight');
+  if (!el || !currentUser || !db) return;
+  try {
+    const { data } = await db.from('medical_records')
+      .select('anxiety_helped, anxiety_note, created_at, dentist_id')
+      .eq('patient_id', String(currentUser.id))
+      .not('anxiety_helped', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!data || (!data.anxiety_helped && !data.anxiety_note)) { el.style.display='none'; return; }
+    // Get dentist name
+    let dentName = 'Your dentist';
+    try {
+      const { data: dp } = await db.from('profiles').select('full_name').eq('id', data.dentist_id).maybeSingle();
+      if (dp && dp.full_name) dentName = dp.full_name;
+    } catch(_) {}
+    let dateStr = '';
+    try { dateStr = new Date(data.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); } catch(_) {}
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:22px;flex-shrink:0">💡</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:4px">Insight from ${dentName} <span style="font-weight:400;color:#64748b">${dateStr}</span></div>
+          ${data.anxiety_helped ? `<div style="font-size:13px;color:#e2e8f0;margin-bottom:4px">✅ <b>What helped:</b> ${data.anxiety_helped}</div>` : ''}
+          ${data.anxiety_note ? `<div style="font-size:13px;color:#cbd5e1;line-height:1.5">${data.anxiety_note}</div>` : ''}
+          <div style="font-size:11px;color:#64748b;margin-top:6px">Your dentist noted this for your next visit 🌿</div>
+        </div>
+      </div>`;
+  } catch(_) { el.style.display='none'; }
 }
 
 // ── JOURNAL ────────────────────────────────────────────────────────────────────
@@ -8314,7 +8352,14 @@ function filterDentPatientList() {
 
 function renderDentActivePatientsList(pats) {
   const listEl = document.getElementById('dent-active-patients-list'); if (!listEl) return;
-  if (!pats.length) { listEl.innerHTML='<div style="text-align:center;padding:16px;color:#64748b;font-size:12px">No patients found.</div>'; return; }
+  if (!pats.length) {
+    const q = (document.getElementById('dent-pat-search-mp')||{}).value||'';
+    const msg = q
+      ? 'No patients match your search.'
+      : 'No patients assigned to you yet.<br><span style="font-size:11px">Ask your clinic admin to assign patients to your profile.</span>';
+    listEl.innerHTML = `<div style="text-align:center;padding:24px 16px;color:#64748b;font-size:13px;line-height:1.6">${msg}</div>`;
+    return;
+  }
   const activeProf = currentProfile;
   listEl.innerHTML = pats.map(p => {
     const name = p.full_name || 'Patient';
@@ -10466,6 +10511,22 @@ function makeDraggable(el, onTap) {
               <input type="date" id="dent-note-next-appt" class="dent-input" placeholder="Next appointment date">
               <div id="dent-note-error" style="color:#ef4444;font-size:12px;margin-bottom:8px;display:none"></div>
               <div id="dent-note-success" style="color:#22c55e;font-size:12px;margin-bottom:8px;display:none"></div>
+              <div style="margin-bottom:12px">
+                <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:6px">💡 Anxiety Insight <span style="font-weight:400;color:#64748b">(optional — shared with patient)</span></div>
+                <select id="cs-anxiety-helped" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);outline:none;margin-bottom:6px">
+                  <option value="">— Select what helped most —</option>
+                  <option value="Narrating each step before doing it">Narrating each step before doing it</option>
+                  <option value="Offering pause breaks frequently">Offering pause breaks frequently</option>
+                  <option value="Slower pace throughout">Slower pace throughout</option>
+                  <option value="Background music during procedure">Background music during procedure</option>
+                  <option value="Topical anaesthetic before injection">Topical anaesthetic before injection</option>
+                  <option value="Distraction conversation">Distraction conversation</option>
+                  <option value="Hand signal agreement at start">Hand signal agreement at start</option>
+                  <option value="Breathing technique guided">Breathing technique guided</option>
+                  <option value="No waiting time — patient was punctual">No waiting time — patient was punctual</option>
+                </select>
+                <textarea id="cs-anxiety-note" placeholder="Any other note for this patient's next visit…" rows="2" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);outline:none;resize:none"></textarea>
+              </div>
               <button onclick="submitDentPatientNote()" class="dent-btn">Upload Record &amp; Generate Reminders →</button>
             </div>
           </div>
@@ -12353,7 +12414,12 @@ async function loadDentPatientList() {
     if (error || !data) return;
     const dentistRoles = ['dentist','dentist_pending','dentist_rejected','clinic_admin'];
     const myId = activeUser ? String(activeUser.id) : null;
-    const patients = (data || []).filter(p => !dentistRoles.includes(p.role) && String(p.id) !== myId);
+    // Filter to patients assigned to this dentist only
+    // If no assignments exist yet in the clinic, fall back to all clinic patients
+    const allPatients = (data || []).filter(p => !dentistRoles.includes(p.role) && String(p.id) !== myId);
+    const assignedToMe = allPatients.filter(p => p.assigned_dentist_id && String(p.assigned_dentist_id) === myId);
+    const anyAssigned = allPatients.some(p => p.assigned_dentist_id);
+    const patients = anyAssigned ? assignedToMe : allPatients;
 
     // Update dropdown if it exists (it's on the dashboard tab, may not be visible)
     if (sel) {
@@ -12514,6 +12580,8 @@ async function submitDentPatientNote() {
       clinic_id:            String(currentProfile.clinic_id),
       prescription_details: rx || null,
       treatment_summary:    treatment || null,
+      anxiety_helped:       (document.getElementById('cs-anxiety-helped') ? document.getElementById('cs-anxiety-helped').value : null) || null,
+      anxiety_note:         (document.getElementById('cs-anxiety-note') ? document.getElementById('cs-anxiety-note').value.trim() : null) || null,
       next_appointment:     nextAppt || null,
       procedure_type:       procedure || null,
       post_op_reminders:    JSON.stringify(baseReminders)
@@ -14786,6 +14854,27 @@ function closePickerModal() {
           <div style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:12px" id="ca-monthly-bars"></div>
           <div style="display:flex;justify-content:space-around;margin-top:5px" id="ca-monthly-labels"></div>
         </div>
+        <!-- ── Anxiety Analytics ── -->
+        <div class="ca-card" id="ca-anxiety-section">
+          <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:4px">🧠 Anxiety Analytics</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:14px">Patient-reported data across your clinic</div>
+
+          <!-- KPI row -->
+          <div class="ca-stat-grid" id="ca-anxiety-kpis" style="margin-bottom:16px"></div>
+
+          <!-- Top fears bar chart -->
+          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Most Common Patient Fears</div>
+          <div id="ca-fears-chart" style="margin-bottom:20px"></div>
+
+          <!-- MDAS by procedure -->
+          <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Avg Anxiety Score by Procedure</div>
+          <div id="ca-mdas-proc-chart" style="margin-bottom:20px"></div>
+
+          <!-- Dentist anxiety outcomes -->
+          <div style="font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Dentist Anxiety Outcomes</div>
+          <div id="ca-dent-anxiety-list"></div>
+        </div>
+
         <div style="height:80px"></div>
       </div>
     </div>
@@ -15019,6 +15108,7 @@ function showCaTab(tabId, btn, title) {
   const titleEl = document.getElementById('ca-screen-title'); if (titleEl) titleEl.textContent = title;
   // Tab-specific init — only runs when that tab is actually opened
   if (tabId === 'ca-tab-bills')    { loadCaBills(); renderCaBillStats(); renderCaBills(); }
+  if (tabId === 'ca-tab-stats')    { renderCaStats(); renderCaAnxietyAnalytics(); }
   if (tabId === 'ca-tab-patients') { renderCaPatientList(); }
   if (tabId === 'ca-tab-calendar') { renderCaCalendar(); }
 }
@@ -15131,6 +15221,16 @@ async function _caLoadAll() {
     renderCaPatientList();
     populateCaDentDropdowns();
     renderCaStats();
+
+    // Load anxiety data for analytics
+    try {
+      const { data: stories } = await activeDb.from('dental_stories')
+        .select('patient_id, fears, summary, updated_at')
+        .eq('clinic_id', _caData.clinicId);
+      _caData.stories = stories || [];
+    } catch(_) { _caData.stories = []; }
+
+    renderCaAnxietyAnalytics();
     renderCaBills();
     renderCaMySpace();
 
@@ -15610,6 +15710,113 @@ async function assignPatientToDentist(patientId, dentistId) {
 }
 
 // ── STATISTICS TAB ───────────────────────────────────────
+
+// ── CLINIC ANXIETY ANALYTICS ─────────────────────────────────────────────────
+function renderCaAnxietyAnalytics() {
+  const stories  = _caData.stories  || [];
+  const patients = _caData.patients || [];
+  const records  = _caData.records  || [];
+  const dentists = _caData.dentists || [];
+
+  // ── KPIs ──────────────────────────────────────────────────────────────────
+  const totalWithStory = stories.length;
+  const pctAnxious = patients.length ? Math.round(totalWithStory / patients.length * 100) : 0;
+
+  // Parse MDAS scores from cs_data
+  const mdasScores = [];
+  records.forEach(r => {
+    try {
+      const cs = typeof r.cs_data === 'string' ? JSON.parse(r.cs_data) : r.cs_data;
+      if (cs && cs.mdasScore && !isNaN(Number(cs.mdasScore))) mdasScores.push({ score: Number(cs.mdasScore), proc: r.procedure_type, dentId: r.dentist_id || null });
+    } catch(_) {}
+  });
+  const avgMdas = mdasScores.length ? Math.round(mdasScores.reduce((a,b)=>a+b.score,0)/mdasScores.length) : null;
+  const highAnxiety = mdasScores.filter(s=>s.score>=19).length;
+
+  const kpiEl = document.getElementById('ca-anxiety-kpis');
+  if (kpiEl) kpiEl.innerHTML = [
+    { num: totalWithStory, lbl: 'Anxiety Profiles', col: '#99f6e4' },
+    { num: pctAnxious + '%', lbl: 'Patients Anxious', col: '#f59e0b' },
+    { num: avgMdas !== null ? avgMdas + '/25' : '—', lbl: 'Avg MDAS Score', col: '#a78bfa' },
+    { num: highAnxiety, lbl: 'High Anxiety Visits', col: '#f87171' },
+  ].map(k => `<div class="ca-stat"><div class="num" style="color:${k.col}">${k.num}</div><div class="lbl">${k.lbl}</div></div>`).join('');
+
+  // ── Top Fears ─────────────────────────────────────────────────────────────
+  const fearCount = {};
+  stories.forEach(s => {
+    if (!s.fears) return;
+    s.fears.split(',').forEach(f => {
+      const fear = f.trim();
+      if (fear) fearCount[fear] = (fearCount[fear] || 0) + 1;
+    });
+  });
+  const sortedFears = Object.entries(fearCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxFear = sortedFears.length ? sortedFears[0][1] : 1;
+  const fearColors = ['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee','#818cf8','#f472b6'];
+  const fearChart = document.getElementById('ca-fears-chart');
+  if (fearChart) fearChart.innerHTML = sortedFears.length
+    ? sortedFears.map(([fear, count], i) => `
+        <div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="font-size:12px;color:#cbd5e1">${fear}</span>
+            <span style="font-size:12px;font-weight:700;color:${fearColors[i%fearColors.length]}">${count} patient${count>1?'s':''}</span>
+          </div>
+          <div class="ca-progress"><div class="ca-progress-fill" style="width:${Math.round(count/maxFear*100)}%;background:${fearColors[i%fearColors.length]}"></div></div>
+        </div>`).join('')
+    : '<div style="color:#64748b;font-size:13px;padding:8px">No fear profiles shared yet.</div>';
+
+  // ── MDAS by Procedure ──────────────────────────────────────────────────────
+  const procMdas = {};
+  mdasScores.forEach(({score, proc}) => {
+    if (!proc) return;
+    if (!procMdas[proc]) procMdas[proc] = [];
+    procMdas[proc].push(score);
+  });
+  const procAvgs = Object.entries(procMdas).map(([proc, scores]) => ({
+    proc: proc.charAt(0).toUpperCase() + proc.slice(1).replace(/_/g,' '),
+    avg: Math.round(scores.reduce((a,b)=>a+b,0)/scores.length),
+    n: scores.length
+  })).sort((a,b)=>b.avg-a.avg).slice(0,6);
+
+  const mdasProcEl = document.getElementById('ca-mdas-proc-chart');
+  if (mdasProcEl) mdasProcEl.innerHTML = procAvgs.length
+    ? procAvgs.map(p => {
+        const col = p.avg >= 19 ? '#f87171' : p.avg >= 13 ? '#f59e0b' : '#34d399';
+        const label = p.avg >= 19 ? 'High' : p.avg >= 13 ? 'Moderate' : 'Low';
+        return `<div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="font-size:12px;color:#cbd5e1">${p.proc}</span>
+            <span style="font-size:12px;font-weight:700;color:${col}">${p.avg}/25 <span style="font-weight:400;font-size:10px">(${label})</span></span>
+          </div>
+          <div class="ca-progress"><div class="ca-progress-fill" style="width:${Math.round(p.avg/25*100)}%;background:${col}"></div></div>
+        </div>`;
+      }).join('')
+    : '<div style="color:#64748b;font-size:13px;padding:8px">MDAS data will appear as records are added.</div>';
+
+  // ── Dentist Anxiety Outcomes ───────────────────────────────────────────────
+  const dentScores = {};
+  mdasScores.forEach(({score, dentId}) => {
+    if (!dentId) return;
+    if (!dentScores[dentId]) dentScores[dentId] = [];
+    dentScores[dentId].push(score);
+  });
+  const dentList = document.getElementById('ca-dent-anxiety-list');
+  if (dentList) {
+    const rows = dentists.map(d => {
+      const scores = dentScores[String(d.id)] || [];
+      const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+      const col = avg === null ? '#64748b' : avg >= 19 ? '#f87171' : avg >= 13 ? '#f59e0b' : '#34d399';
+      const initials = (d.full_name||'D').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <div class="patient-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">${initials}</div>
+        <div style="flex:1"><div style="font-size:13px;color:#e2e8f0;font-weight:600">${d.full_name||'—'}</div><div style="font-size:11px;color:#64748b">${scores.length} scored visits</div></div>
+        <div style="font-size:16px;font-weight:800;color:${col}">${avg !== null ? avg+'/25' : '—'}</div>
+      </div>`;
+    });
+    dentList.innerHTML = rows.length ? rows.join('') : '<div style="color:#64748b;font-size:13px;padding:8px">No dentist data yet.</div>';
+  }
+}
+
 function renderCaStats() {
   const R = _caData.records;
   const P = _caData.patients;
