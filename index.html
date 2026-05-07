@@ -421,7 +421,7 @@ body.morning-mode .card{background:#fffbf5!important;box-shadow:0 2px 16px rgba(
 body.morning-mode .card-teal{background:linear-gradient(135deg,#fef3c7,#ffedd5)!important}
 body.morning-mode .card-blue{background:linear-gradient(135deg,#ffedd5,#fef9c3)!important}
 body.morning-mode .hero-wave{background:linear-gradient(180deg,#7c2d12 0%,#c2410c 45%,#ea580c 100%)!important}
-body.morning-mode #theme-bar-global,body.morning-mode .theme-bar,body.morning-mode #lang-bar-global,body.morning-mode .lang-bar,body.morning-mode #home-mini-nav{background:linear-gradient(135deg,#7c2d12,#c2410c)!important}
+body.morning-mode #theme-bar-global,body.morning-mode .theme-bar,body.morning-mode #lang-bar-global,body.morning-mode .lang-bar,body.morning-mode #google-translate-bar,body.morning-mode #home-mini-nav{background:linear-gradient(135deg,#7c2d12,#c2410c)!important}
 body.morning-mode .stat-chip{background:linear-gradient(135deg,#c2410c,#ea580c)!important;border-color:rgba(255,255,255,.3)!important;box-shadow:0 4px 16px rgba(194,65,12,.35)!important}
 body.morning-mode .stat-chip .num{color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.2)!important}
 body.morning-mode .stat-chip .lbl{color:rgba(255,255,255,.85)!important}
@@ -588,7 +588,7 @@ body.night-mode .dentist-card .name{color:#e2e8f0!important}
 body.night-mode .dentist-card .spec{color:#94a3b8!important}
 
 /* Language bar */
-body.night-mode .lang-bar{background:linear-gradient(135deg,#0c1a2e,#0d2040)!important}
+body.night-mode .lang-bar,body.night-mode #google-translate-bar{background:linear-gradient(135deg,#0c1a2e,#0d2040)!important}
 body.night-mode .lang-chip{background:rgba(255,255,255,.1)!important;color:rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.2)!important}
 body.night-mode .lang-chip.active{background:rgba(255,255,255,.9)!important;color:#0c1a2e!important;border-color:transparent!important}
 
@@ -883,7 +883,7 @@ body.morning-mode .lang-bar{background:#7c2d12!important;border-bottom-color:rgb
 body.morning-mode .theme-bar{background:#7c2d12!important;border-bottom-color:rgba(251,146,60,.15)!important}
 body.morning-mode .theme-chip{background:rgba(255,255,255,.15)!important;color:rgba(255,237,213,.9)!important;border-color:rgba(255,255,255,.25)!important}
 body.morning-mode .theme-chip.active{background:linear-gradient(135deg,#c2410c,#ea580c)!important;color:#fff!important;border-color:transparent!important}
-body.rainy-mode .lang-bar{background:#0f1117!important;border-bottom-color:rgba(148,163,184,.15)!important}
+body.rainy-mode .lang-bar,body.rainy-mode #google-translate-bar{background:#0f1117!important;border-bottom-color:rgba(148,163,184,.15)!important}
 body.rainy-mode .theme-bar{background:#0f1117!important;border-bottom-color:rgba(148,163,184,.12)!important}
 body.rainy-mode .theme-chip{background:rgba(71,85,105,.3)!important;color:rgba(203,213,225,.8)!important;border-color:rgba(148,163,184,.25)!important}
 body.rainy-mode .theme-chip.active{background:linear-gradient(135deg,#475569,#334155)!important;color:#e2e8f0!important;border-color:transparent!important}
@@ -954,7 +954,7 @@ body.kids-mode{
   animation:kidsRainbow 8s linear infinite!important;
 }
 @keyframes kidsRainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-body.kids-mode .lang-bar{background:linear-gradient(135deg,#f472b6,#fb923c,#facc15)!important}
+body.kids-mode .lang-bar,body.kids-mode #google-translate-bar{background:linear-gradient(135deg,#f472b6,#fb923c,#facc15)!important}
 body.kids-mode .lang-chip{background:rgba(255,255,255,.2)!important;color:#fff!important;border-color:rgba(255,255,255,.4)!important}
 body.kids-mode .lang-chip.active{background:rgba(255,255,255,.9)!important;color:#7c3aed!important;border-color:transparent!important}
 body.kids-mode .nav,body.kids-mode #home-mini-nav{background:linear-gradient(135deg,#f472b6,#fb923c,#facc15,#34d399,#60a5fa,#a78bfa)!important;background-size:300% 300%!important;animation:kidsNavRainbow 4s linear infinite!important}
@@ -1495,26 +1495,69 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 .xray-add span{font-size:22px}
 .xray-add small{font-size:10px;color:#64748b}
 </style>
+
+
+
+
+
+
+  <!-- Google Translate Widget -->
   <script>
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en',
+      includedLanguages: 'en,hi,mr,bn,pa,gu,te,ta,kn,ml,or,as,ur',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
       autoDisplay: false
     }, 'google_translate_element');
   }
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <style>
-  .goog-te-banner-frame { display:none !important; }
+  /* ── Google Translate widget styling ── */
+  .goog-te-banner-frame, .goog-te-balloon-frame { display:none !important; }
   body { top:0 !important; }
-  #goog-gt-tt { display:none !important; }
-  .goog-tooltip { display:none !important; }
-  .goog-text-highlight { background:none !important; box-shadow:none !important; }
-  body.morning-mode #lang-bar-global { background:linear-gradient(135deg,#7c2d12,#c2410c) !important; border-bottom-color:rgba(251,146,60,.2) !important; }
-  body.night-mode   #lang-bar-global { background:linear-gradient(135deg,#0c1a2e,#0d2040) !important; border-bottom-color:rgba(99,235,200,.1) !important; }
-  body.rainy-mode   #lang-bar-global { background:#0f1117 !important; border-bottom-color:rgba(148,163,184,.15) !important; }
-  body.kids-mode    #lang-bar-global { background:linear-gradient(135deg,#f472b6,#fb923c,#facc15) !important; }
+  .skiptranslate > iframe { display:none !important; }
+  .goog-te-gadget { font-size:0 !important; color:transparent !important; }
+  .goog-te-gadget .goog-te-gadget-simple {
+    background:#1e293b !important;
+    border:1.5px solid rgba(255,255,255,.2) !important;
+    border-radius:20px !important;
+    padding:5px 14px !important;
+    cursor:pointer !important;
+  }
+  .goog-te-gadget .goog-te-gadget-simple span,
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value span {
+    color:rgba(255,255,255,.85) !important;
+    font-size:12px !important;
+    font-family:var(--font,sans-serif) !important;
+    font-weight:600 !important;
+    border:none !important;
+  }
+  .goog-te-gadget .goog-te-gadget-simple img { display:none !important; }
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value {
+    display:flex; align-items:center; gap:4px;
+  }
+  .goog-te-gadget .goog-te-gadget-simple .goog-te-menu-value::after {
+    content:'▾'; color:rgba(255,255,255,.6); font-size:11px; margin-left:2px;
+  }
+  /* Menu popup */
+  .goog-te-menu-frame { box-shadow:0 8px 32px rgba(0,0,0,.4) !important; border-radius:12px !important; }
+  /* Morning mode */
+  body.morning-mode #google-translate-bar { background:linear-gradient(135deg,#7c2d12,#c2410c) !important; border-bottom-color:rgba(251,146,60,.2) !important; }
+  body.morning-mode .goog-te-gadget .goog-te-gadget-simple { background:#9a3412 !important; border-color:rgba(251,146,60,.35) !important; }
+  /* Night mode */
+  body.night-mode #google-translate-bar { background:linear-gradient(135deg,#0c1a2e,#0d2040) !important; border-bottom-color:rgba(99,235,200,.1) !important; }
+  body.night-mode .goog-te-gadget .goog-te-gadget-simple { background:#0d2040 !important; border-color:rgba(99,235,200,.2) !important; }
+  /* Rainy mode */
+  body.rainy-mode #google-translate-bar { background:#0f1117 !important; border-bottom-color:rgba(148,163,184,.15) !important; }
+  body.rainy-mode .goog-te-gadget .goog-te-gadget-simple { background:#1e2533 !important; border-color:rgba(148,163,184,.25) !important; }
+  /* Kids mode */
+  body.kids-mode #google-translate-bar { background:linear-gradient(135deg,#f472b6,#fb923c,#facc15) !important; }
+  body.kids-mode .goog-te-gadget .goog-te-gadget-simple { background:rgba(255,255,255,.25) !important; border-color:rgba(255,255,255,.4) !important; }
+  body.kids-mode .goog-te-gadget .goog-te-gadget-simple span { color:#fff !important; }
   </style>
+
 </head>
 <body>
 
@@ -1539,15 +1582,18 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <!-- ===== WELCOME ===== -->
 <div class="screen active" id="screen-welcome" style="background:#0f172a">
 
-  <div id="lang-bar-global" style="background:#0f172a;border-bottom:1px solid rgba(255,255,255,.08);padding:7px 16px;display:flex;align-items:center;gap:12px">
-    <span style="font-size:14px">🌐</span>
-    <div>
-      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.8);font-family:var(--font,sans-serif)">Change Language</div>
-      <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--font,sans-serif)">Translate the entire app</div>
+
+  <!-- Google Translate bar -->
+  <div id="google-translate-bar" style="background:#0f172a;padding:6px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px">
+    <span style="font-size:14px;flex-shrink:0">🌐</span>
+    <div style="flex-shrink:0">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.2;font-family:var(--font,sans-serif)">Change Language</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.45);line-height:1.3;font-family:var(--font,sans-serif)">Select your preferred language</div>
     </div>
-    <div id="google_translate_element" style="margin-left:auto"></div>
+    <div id="google_translate_element" style="flex:1;display:flex;align-items:center;justify-content:flex-end"></div>
   </div>
-  <div id="theme-bar-global">
+
+    <div id="theme-bar-global">
     <div class="theme-bar">
       <span class="theme-chip active" onclick="setTheme('normal',this)">🌿 Default</span>
       <span class="theme-chip" onclick="setTheme('morning',this)">☀️ Morning</span>
@@ -1636,7 +1682,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           <span class="s1">Seren</span><span class="s2" style="color:#99f6e4">Ora</span> <span class="s3" style="color:#bfdbfe">Care</span>
         </div>
       </div>
-      <div class="hero-sub" id="hero-sub-txt">Dental care, reimagined — for patients, dentists, and clinics.</div>
+      <div class="hero-sub" id="hero-sub-txt" data-i18n="heroSub">Dental care, reimagined — for patients, dentists, and clinics.</div>
     </div>
 
     <!-- Stat bar -->
@@ -1650,8 +1696,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <div class="page-content" style="padding-top:4px;background:#0f172a">
 
       <!-- Three portal cards -->
-      <div id="welcome-heading" style="font-family:var(--display);font-weight:800;font-size:20px;color:#e2e8f0;margin-bottom:4px;margin-top:8px">One app. Three portals.</div>
-      <div id="welcome-subheading" style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6">SerenOra Care brings together every person in the dental experience — from the anxious patient to the overworked dentist to the clinic manager keeping it all running.</div>
+      <div id="welcome-heading" data-i18n="welcomeHeading" style="font-family:var(--display);font-weight:800;font-size:20px;color:#e2e8f0;margin-bottom:4px;margin-top:8px">One app. Three portals.</div>
+      <div id="welcome-subheading" data-i18n="welcomeSub" style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6">SerenOra Care brings together every person in the dental experience — from the anxious patient to the overworked dentist to the clinic manager keeping it all running.</div>
 
       <!-- Patient card — teal/green, matches patient login -->
       <div style="background:linear-gradient(135deg,#0d9488,#134e4a);border-radius:20px;padding:20px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(13,148,136,.3)" onclick="selectRole('patient',null)">
@@ -1770,8 +1816,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <div class="screen" id="screen-age">
   <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><span></span></div>
   <div class="page-content">
-    <div class="section-title" id="age-title">Who's this for? 💙</div>
-    <div class="section-sub" id="age-sub">We'll personalize your experience based on age.</div>
+    <div class="section-title" id="age-title" data-i18n="ageTitle">Who's this for? 💙</div>
+    <div class="section-sub" id="age-sub" data-i18n="ageSub">We'll personalize your experience based on age.</div>
     <div class="age-grid">
       <div class="age-card" onclick="selectAge('little',this)"><div class="age-icon">🐣</div><div class="age-label">Little Smiles</div><div class="age-range">Ages 4–7</div></div>
       <div class="age-card" onclick="selectAge('explorer',this)"><div class="age-icon">🚀</div><div class="age-label">Explorer</div><div class="age-range">Ages 8–12</div></div>
@@ -1788,8 +1834,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <div class="screen" id="screen-mood">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-age')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button onclick="supabaseSignOut()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap">Sign Out</button></div>
   <div class="page-content">
-    <div class="section-title" id="mood-title">How are you feeling?</div>
-    <div class="section-sub" id="mood-sub">No judgment. Just pick the face that looks like you right now.</div>
+    <div class="section-title" id="mood-title" data-i18n="moodTitle">How are you feeling?</div>
+    <div class="section-sub" id="mood-sub" data-i18n="moodSub">No judgment. Just pick the face that looks like you right now.</div>
     <div class="mood-row">
       <div style="text-align:center"><div class="mood-face" onclick="selectMood('great',this)">😊</div><div class="mood-label">Great</div></div>
       <div style="text-align:center"><div class="mood-face" onclick="selectMood('okay',this)">😐</div><div class="mood-label">Okay</div></div>
@@ -1834,7 +1880,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   <div class="nav"><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
   <div class="page-content">
     <div id="dash-title" style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">Welcome back <span class="star-twinkle">✨</span></div>
-    <div id="dash-sub" style="font-size:13px;color:var(--muted);margin-bottom:16px">Your journey, your pace.</div>
+    <div id="dash-sub" data-i18n="dashSub" style="font-size:13px;color:var(--muted);margin-bottom:16px">Your journey, your pace.</div>
     <!-- Quick-access feature row -->
     <div style="display:flex;gap:10px;margin-bottom:16px">
       <div onclick="showScreen('screen-mdas-pre')" style="flex:1;background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:14px;padding:14px;cursor:pointer;text-align:center"><div style="font-size:24px">📊</div><div style="font-weight:700;font-size:12px;color:#1e40af;margin-top:4px">Anxiety Check</div><div style="font-size:10px;color:#3730a3">MDAS Scale</div></div>
@@ -3761,7 +3807,7 @@ let germScore=0, germTimer=30, germInterval=null, germTimerInterval=null, germs=
 let chairStep=1, currentSound=null;
 let plantTaps=0, plantLevel=0, plantCompletionCount=0;
 let audioTimers={};
-let currentLang='en';
+// currentLang is declared and managed by i18n/engine.js
 let currentQuizSet=[], quizSetIndex=0;
 
 // ── MDAS STATE ──────────────────────────────────────────────
@@ -3830,19 +3876,7 @@ function safeHtml(str){
     .replace(/'/g,'&#x27;');
 }
 
-// ── TRANSLATIONS ───────────────────────────────────────────────────────────────
-const LANGS={en:{heroSub:"Your calm companion for dental visits. You've got this.",whyTitle:"Why SerenOra?",whyBody:"We address the root of dental anxiety — not just the symptoms."},hi:{heroSub:"दंत चिकित्सा के लिए आपका शांत साथी।",whyTitle:"SerenOra क्यों?",whyBody:"हम दंत चिंता की जड़ को दूर करते हैं।"},fr:{heroSub:"Votre compagnon calme pour les visites dentaires.",whyTitle:"Pourquoi SerenOra?",whyBody:"Nous traitons la racine de l'anxiété dentaire."},es:{heroSub:"Tu compañero tranquilo para las visitas dentales.",whyTitle:"¿Por qué SerenOra?",whyBody:"Abordamos la raíz de la ansiedad dental."},ur:{heroSub:"دانتوں کے دوروں کے لیے آپ کا پُرسکون ساتھی۔",whyTitle:"SerenOra کیوں؟",whyBody:"ہم دانتوں کی بے چینی کی جڑ کو دور کرتے ہیں۔"},mr:{heroSub:"दंत भेटींसाठी तुमचा शांत साथी.",whyTitle:"SerenOra का?",whyBody:"आम्ही दंत चिंतेच्या मुळाशी जातो."},gu:{heroSub:"દાંતની મુલાકાત માટે તમારો શાંત સાથી.",whyTitle:"SerenOra શા માટે?",whyBody:"અमे दांतनी चिंताना मूळने संबोधित करीए छीए।"},te:{heroSub:"దంత సందర్శనలకు మీ ప్రశాంత సహచరుడు.",whyTitle:"SerenOra ఎందుకు?",whyBody:"మేము దంత ఆందోళన యొక్క మూలాన్ని పరిష్కరిస్తాము."},kn:{heroSub:"ದಂತ ಭೇಟಿಗಳಿಗಾಗಿ ನಿಮ್ಮ ಶಾಂತ ಸಂಗಾತಿ.",whyTitle:"SerenOra ಏಕೆ?",whyBody:"ನಾವು ದಂತ ಆತಂಕದ ಮೂಲವನ್ನು ಪರಿಹರಿಸುತ್ತೇವೆ."},ml:{heroSub:"ദന്ത സന്ദർശനങ്ങൾക്ക് നിങ്ങളുടെ ശാന്ത സഹചാരി.",whyTitle:"SerenOra എന്തുകൊണ്ട്?",whyBody:"ഞങ്ങൾ ദന്ത ഉത്കണ്ഠയുടെ മൂലകാരണം പരിഹരിക്കുന്നു."},ta:{heroSub:"பல் வருகைகளுக்கான உங்கள் அமைதியான தோழன்.",whyTitle:"SerenOra ஏன்?",whyBody:"நாங்கள் பல் பதட்டத்தின் மூலத்தை நிவர்த்தி செய்கிறோம்."},zh:{heroSub:"您的牙科就诊平静伴侣。",whyTitle:"为什么选择SerenOra?",whyBody:"我们解决牙科焦虑的根源。"},ja:{heroSub:"歯科受診のための心の平和なパートナー。",whyTitle:"SerenOraを選ぶ理由",whyBody:"症状だけでなく、歯科不安の根本を解消します。"}};
-
-function setLang(lang,el){
-  currentLang=lang;
-  document.querySelectorAll('.lang-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  const t=LANGS[lang]||LANGS.en;
-  const hst=document.getElementById('hero-sub-txt');if(hst)hst.textContent=t.heroSub;
-  const wt=document.getElementById('why-title');if(wt)wt.textContent=t.whyTitle;
-  const wb=document.getElementById('why-body');if(wb)wb.textContent=t.whyBody;
-  document.body.style.direction=(lang==='ur')?'rtl':'ltr';
-}
+let currentLang="en";
 
 // ── 30 PLANTS ─────────────────────────────────────────────────────────────────
 const PLANTS30=[
