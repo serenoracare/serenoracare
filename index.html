@@ -1506,7 +1506,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en',
-      includedLanguages: 'en,hi,mr,bn,pa,gu,te,ta,kn,ml,or,as,ur',
+      includedLanguages: 'en,hi,mr,bn,pa,gu,te,ta,kn,ml,or,as,ur,sd,ne,si,fr,es,de,ar,zh-CN,ja,ko,pt,ru,it,ms,sw,tr,af,sq,am,hy,az,eu,be,bs,bg,ca,ceb,ny,co,hr,cs,da,eo,et,tl,fi,fy,gl,ka,el,ht,ha,haw,iw,hmn,hu,is,ig,id,ga,la,lv,lt,lb,mk,mg,ms,mt,mi,mn,my,no,ps,fa,pl,ro,sm,gd,sr,st,sn,sk,sl,so,su,sv,tg,th,uk,uz,cy,xh,yi,yo,zu',
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
       autoDisplay: false
     }, 'google_translate_element');
@@ -1558,6 +1558,32 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   body.kids-mode .goog-te-gadget .goog-te-gadget-simple span { color:#fff !important; }
   </style>
 
+
+  <style>
+  /* Protect brand name from translation */
+  .brand-name { unicode-bidi:plaintext; }
+  </style>
+  <script>
+  // After GT translates, restore brand name "SerenOra Care" anywhere it got mangled
+  function protectBrandName() {
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    var node;
+    var regex = /Seren\s*Ora\s*Care|SerenOra\s+Care/gi;
+    var nodes = [];
+    while (node = walker.nextNode()) {
+      if (regex.test(node.textContent)) nodes.push(node);
+    }
+    nodes.forEach(function(n) {
+      n.textContent = n.textContent.replace(/Seren\s*Ora\s*Care|SerenOra\s+Care/gi, 'SerenOra Care');
+    });
+  }
+  // Run after GT finishes (GT fires a custom event, but polling is more reliable)
+  setInterval(protectBrandName, 2000);
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(protectBrandName, 1500);
+    setTimeout(protectBrandName, 3000);
+  });
+  </script>
 </head>
 <body>
 
