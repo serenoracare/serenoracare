@@ -1633,7 +1633,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
             <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
           </g>
         </svg>
-        <span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span <span style="color:#bfdbfe">Care</span></span>
+        <span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span> <span style="color:#bfdbfe">Care</span></span>
       </div>
     </div>
 
@@ -1877,12 +1877,10 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 
 <!-- ===== MAIN DASHBOARD ===== -->
 <div class="screen" id="screen-main">
-  <div class="nav"><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><span></span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
+  <div class="nav"><span translate="no" style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Seren<span style="color:#99f6e4">Ora</span></span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
   <div class="page-content">
     <div id="dash-title" style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">Welcome back <span class="star-twinkle">✨</span></div>
     <div id="dash-sub" data-i18n="dashSub" style="font-size:13px;color:var(--muted);margin-bottom:16px">Your journey, your pace.</div>
-    <!-- Dentist insight card — populated by loadDentistInsight() -->
-    <div id="pat-dentist-insight" style="display:none;margin-bottom:16px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(59,130,246,.08));border:1px solid rgba(99,246,228,.18)"></div>
     <!-- Quick-access feature row -->
     <div style="display:flex;gap:10px;margin-bottom:16px">
       <div onclick="showScreen('screen-mdas-pre')" style="flex:1;background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:14px;padding:14px;cursor:pointer;text-align:center"><div style="font-size:24px">📊</div><div style="font-weight:700;font-size:12px;color:#1e40af;margin-top:4px">Anxiety Check</div><div style="font-size:10px;color:#3730a3">MDAS Scale</div></div>
@@ -2075,6 +2073,16 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <div class="chair-step" id="chair-step-3" onclick="advanceChair(3)"><div class="step-num">Step 3 — The Sounds</div><div class="step-title">Hearing the tools</div><div class="step-desc">The cleaning tool makes a gentle buzzing sound. It's not as loud as you imagined. Your hand signal is ready.</div></div>
     <div class="chair-step" id="chair-step-4" onclick="advanceChair(4)"><div class="step-num">Step 4 — The Procedure</div><div class="step-title">The cleaning begins</div><div class="step-desc">Water, suction, gentle pressure. The dentist narrates every step. You're breathing steadily. It's manageable.</div></div>
     <div class="chair-step" id="chair-step-5" onclick="advanceChair(5)"><div class="step-num">Step 5 — Done!</div><div class="step-title">You made it!</div><div class="step-desc">The chair rises. "Great job today." You rinse, sit up, and feel a wave of relief and pride. That's it.</div></div>
+  </div>
+</div>
+
+<!-- ===== EMERGENCY TRIAGE ===== -->
+<div class="screen" id="screen-triage">
+  <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Dental Emergency</span></div>
+  <div class="page-content">
+    <div class="section-title">Is this a dental emergency? 🚨</div>
+    <div class="section-sub">Answer a few quick questions and we will tell you exactly what to do.</div>
+    <div id="triage-flow"></div>
   </div>
 </div>
 
@@ -2647,7 +2655,12 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
 <div class="screen" id="screen-procedures">
   <div class="nav"><button class="nav-back" onclick="showScreen('screen-main')">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Procedures</span></div>
   <div class="page-content">
-    <div class="section-sub" id="proc-sub">Tap any procedure to learn what happens, simply explained.</div>
+    <div class="section-sub" id="proc-sub">Tap any procedure to understand it step by step — then simulate it.</div>
+    <!-- Treatment Plan from dentist -->
+    <div id="pat-treatment-plan-card" style="display:none;background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(59,130,246,.08));border:1px solid rgba(139,92,246,.25);border-radius:14px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">📋 Your Treatment Plan</div>
+      <div id="pat-treatment-plan-content"></div>
+    </div>
     <div class="search-bar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#94a3b8" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#94a3b8" stroke-width="2"/></svg><input type="text" id="proc-search" placeholder="Search procedures..." oninput="filterProcs()"></div>
     <div id="proc-detail-panel" class="proc-detail"></div>
     <div class="proc-grid" id="proc-grid"></div>
@@ -3632,7 +3645,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
           <div id="pat-clinic-code-row" style="display:none;margin-top:3px;font-size:11px">Join Code: <span id="pat-clinic-code-display" style="font-weight:700;font-family:monospace;letter-spacing:1px">—</span></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <span id="pat-med-history-badge" style="display:none;background:rgba(13,148,136,.3);color:#0d9488;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px;flex-shrink:0;border:1px solid rgba(13,148,136,.4)" title="Medical history on file">🩺 Medical info saved</span>
+          <span id="pat-med-history-badge" style="display:none;background:rgba(13,148,136,.2);color:#0d9488;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0" title="Medical history on file">🩺 Medical info saved</span>
           <button onclick="openProfileEdit()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font)">✏️ Edit Profile</button>
         </div>
       </div>
@@ -3657,11 +3670,40 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <button class="btn-primary" id="pat-join-btn" onclick="patientJoinClinic()">Join Clinic →</button>
     </div>
 
-    <!-- Next appointment banner -->
-    <div id="pat-appt-banner" style="display:none" class="appt-banner">
-      <div class="ab-sub">Next Appointment</div>
-      <div class="ab-date" id="pat-appt-date">—</div>
-      <div class="ab-sub">📅 Mark your calendar</div>
+    <!-- Queue card -->
+    <div id="pat-queue-card" style="display:none;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.08));border:1px solid rgba(139,92,246,.25);border-radius:16px;padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div><div style="font-size:12px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.5px">Today Queue</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px" id="pat-queue-clinic-name"></div></div>
+        <div id="pat-queue-status-badge" style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(139,92,246,.2);color:#a78bfa">Not in queue</div>
+      </div>
+      <div id="pat-queue-position-block" style="display:none;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;text-align:center"><div id="pat-queue-pos" style="font-size:28px;font-weight:800;color:#a78bfa;font-family:var(--display)">-</div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase">Position</div></div>
+          <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;text-align:center"><div id="pat-queue-wait" style="font-size:28px;font-weight:800;color:#e2e8f0;font-family:var(--display)">-</div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase">Est. Wait (min)</div></div>
+        </div>
+        <div id="pat-queue-msg" style="font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;line-height:1.5;text-align:center"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="pat-queue-join-btn" onclick="patJoinQueue()" style="flex:1;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Join Queue</button>
+        <button id="pat-queue-leave-btn" onclick="patLeaveQueue()" style="display:none;flex:1;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:10px;border-radius:10px;font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer">Leave Queue</button>
+        <button onclick="loadPatQueue()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:13px;cursor:pointer">&#8635;</button>
+      </div>
+    </div>
+
+    <!-- Next appointment countdown -->
+    <div id="pat-appt-banner" style="display:none;background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(59,130,246,.08));border:1px solid rgba(99,246,228,.2);border-radius:16px;padding:14px 16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.5px">Next Appointment</div>
+        <div id="pat-appt-urgency" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(13,148,136,.2);color:#99f6e4"></div>
+      </div>
+      <div id="pat-appt-date" style="font-family:var(--display);font-size:16px;font-weight:800;color:#e2e8f0;margin-bottom:8px">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-days" style="font-size:22px;font-weight:800;color:#99f6e4;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Days</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-hours" style="font-size:22px;font-weight:800;color:#e2e8f0;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Hours</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-mins" style="font-size:22px;font-weight:800;color:#e2e8f0;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Mins</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-secs" style="font-size:22px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Secs</div></div>
+      </div>
+      <div id="pat-appt-prep-tip" style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.5"></div>
     </div>
 
     <!-- Tabs -->
@@ -3671,8 +3713,8 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
         <button class="tab" onclick="switchPatientTab('bills',this)">💳 My Bills</button>
         <button class="tab" onclick="switchPatientTab('mdas',this)">MDAS History</button>
         <button class="tab" onclick="switchPatientTab('family',this)">Family</button>
+        <button class="tab" onclick="switchPatientTab('book',this);loadPatBookingSlots()">Book</button>
       </div>
-      <!-- Records tab content -->
       <div id="pat-tab-records-wrap" style="display:block">
         <div style="font-weight:700;font-size:16px;color:var(--navy);margin:16px 0 12px">My Medical Records</div>
         <div id="pat-records-list"><div style="text-align:center;padding:20px;color:var(--muted)">Loading records…</div></div>
@@ -3698,6 +3740,11 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       </div>
 
       <!-- Family / Dependents tab -->
+      <div id="pat-tab-book" style="display:none;padding-top:12px">
+        <div style="font-weight:700;font-size:16px;color:var(--navy);margin-bottom:4px">Book an Appointment</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Available slots from your dentist.</div>
+        <div id="pat-booking-slots"><div style="text-align:center;padding:24px;color:var(--muted)">Loading...</div></div>
+      </div>
       <div id="pat-tab-family" style="display:none">
         <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Add family members or dependents to manage their dental anxiety journey alongside yours.</div>
         <div id="family-members-list"></div>
@@ -4177,6 +4224,7 @@ Rules:
       : getLocalReply(msg);
 
     _chatHistory.push({ role: 'assistant', content: replyText });
+    if(typeof saveSerenaMemory==='function')saveSerenaMemory(msg,replyText);
 
     const botDiv = document.createElement('div');
     botDiv.className = 'chat-msg bot';
@@ -4294,11 +4342,12 @@ function showScreen(id){
   if(id==='screen-reframe')renderReframe();
   if(id==='screen-plantgame'){initPlantCanvas();if(typeof restorePlantState==='function')restorePlantState();}
   if(id==='screen-journal'&&typeof renderJournal==='function')renderJournal();
-  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();loadDentistInsight();}
+  if(id==='screen-dashboard'){renderMDASTrend();renderPatMdasChart();renderDashboardProgress();if(typeof refreshDashboardProfile==='function')refreshDashboardProfile();if(typeof loadPatContactDentistList==='function')loadPatContactDentistList();}
   if(id==='screen-patient-account'&&currentUser&&typeof populatePatientRecordsScreen==='function')populatePatientRecordsScreen();
   if(id==='screen-main')initAfterChecks();
   if(id==='screen-procedures')renderProcGrid();
   if(id==='screen-drawtooth')initDrawTooth();
+  if(id==='screen-triage')initTriage();
   if(id==='screen-mdas-pre')initMDAS('pre');
   if(id==='screen-debrief')initDebrief();
   if(id!=='screen-sound')stopAllSound();
@@ -5512,39 +5561,43 @@ async function shareStoryWithDentist() {
 }
 
 
-// ── DENTIST INSIGHT → shown on patient dashboard ──────────────────────────────
-async function loadDentistInsight() {
-  const el = document.getElementById('pat-dentist-insight');
-  if (!el || !currentUser || !db) return;
-  try {
-    const { data } = await db.from('medical_records')
-      .select('anxiety_helped, anxiety_note, created_at, dentist_id')
-      .eq('patient_id', String(currentUser.id))
-      .not('anxiety_helped', 'is', null)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (!data || (!data.anxiety_helped && !data.anxiety_note)) { el.style.display='none'; return; }
-    // Get dentist name
-    let dentName = 'Your dentist';
-    try {
-      const { data: dp } = await db.from('profiles').select('full_name').eq('id', data.dentist_id).maybeSingle();
-      if (dp && dp.full_name) dentName = dp.full_name;
-    } catch(_) {}
-    let dateStr = '';
-    try { dateStr = new Date(data.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); } catch(_) {}
-    el.style.display = 'block';
-    el.innerHTML = `
-      <div style="display:flex;align-items:flex-start;gap:10px">
-        <span style="font-size:22px;flex-shrink:0">💡</span>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:4px">Insight from ${dentName} <span style="font-weight:400;color:#64748b">${dateStr}</span></div>
-          ${data.anxiety_helped ? `<div style="font-size:13px;color:#e2e8f0;margin-bottom:4px">✅ <b>What helped:</b> ${data.anxiety_helped}</div>` : ''}
-          ${data.anxiety_note ? `<div style="font-size:13px;color:#cbd5e1;line-height:1.5">${data.anxiety_note}</div>` : ''}
-          <div style="font-size:11px;color:#64748b;margin-top:6px">Your dentist noted this for your next visit 🌿</div>
-        </div>
-      </div>`;
-  } catch(_) { el.style.display='none'; }
+// ── Appointment Countdown ─────────────────────────────────────────────────────
+let _countdownInterval = null;
+function startApptCountdown(apptDate) {
+  if (_countdownInterval) clearInterval(_countdownInterval);
+  function tick() {
+    const now = new Date(), diff = apptDate - now;
+    if (diff <= 0) { clearInterval(_countdownInterval); return; }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+    const dEl=document.getElementById('pat-cd-days');   if(dEl)dEl.textContent=days;
+    const hEl=document.getElementById('pat-cd-hours');  if(hEl)hEl.textContent=String(hours).padStart(2,'0');
+    const mEl=document.getElementById('pat-cd-mins');   if(mEl)mEl.textContent=String(mins).padStart(2,'0');
+    const sEl=document.getElementById('pat-cd-secs');   if(sEl)sEl.textContent=String(secs).padStart(2,'0');
+    const urgEl=document.getElementById('pat-appt-urgency');
+    if (urgEl) {
+      if      (days===0) { urgEl.textContent='TODAY';     urgEl.style.background='rgba(239,68,68,.2)';   urgEl.style.color='#f87171'; }
+      else if (days<=1)  { urgEl.textContent='TOMORROW';  urgEl.style.background='rgba(245,158,11,.2)';  urgEl.style.color='#fbbf24'; }
+      else if (days<=7)  { urgEl.textContent='THIS WEEK'; urgEl.style.background='rgba(13,148,136,.2)';  urgEl.style.color='#99f6e4'; }
+      else               { urgEl.textContent=days+' DAYS AWAY'; urgEl.style.background='rgba(255,255,255,.06)'; urgEl.style.color='#64748b'; }
+    }
+    const tipEl=document.getElementById('pat-appt-prep-tip');
+    if (tipEl) {
+      const tips = [
+        "Today is the day. Breathe slowly.",
+        "Today is the day. Try the breathing exercise before you go.",
+        "Tomorrow is the day. Chair Simulation tonight can help.",
+        "A good time to do your MDAS check.",
+        "Try Sound Desensitization this week.",
+        "Log any fears in My Dental Story so your dentist knows."
+      ];
+      tipEl.textContent = days===0 ? tips[0] : days<=1 ? tips[1] : days<=2 ? tips[2] : days<=3 ? tips[3] : days<=7 ? tips[4] : tips[5];
+    }
+  }
+  tick();
+  _countdownInterval = setInterval(tick, 1000);
 }
 
 // ── JOURNAL ────────────────────────────────────────────────────────────────────
@@ -6288,17 +6341,17 @@ function renderMDASResult(total){
       <div style="font-size:13px;color:var(--slate);line-height:1.7;max-width:320px;margin:0 auto">${advice}</div>
     </div>
     <div class="card"><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:10px">Your score breakdown</div>${MDAS_QUESTIONS.map((q,i)=>{const s=mdasPreScores[i]||0;const opts=['Not anxious','Slightly anxious','Fairly anxious','Very anxious','Extremely anxious'];return `<div style="padding:8px 0;border-bottom:1px solid #f1f5f9"><div style="font-size:12px;color:var(--muted);margin-bottom:3px">${q.q.substring(0,60)}...</div><div style="display:flex;align-items:center;gap:8px"><div style="background:var(--grad);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700">${s}</div><div style="font-size:12px;color:var(--slate)">${opts[s-1]||''}</div></div></div>`;}).join('')}</div>
-    <div class="card-teal"><div style="font-weight:700;font-size:14px;color:#134e4a;margin-bottom:6px">📊 Clinical note</div><div style="font-size:12px;color:#1e7a6a;line-height:1.7" id="mdas-clinical-note-text">This score has been recorded. A drop in score after using <span translate="no">SerenOra</span> is your proof of progress.</div></div>
+    <div class="card-teal"><div style="font-weight:700;font-size:14px;color:#134e4a;margin-bottom:6px">📊 Clinical note</div><div style="font-size:12px;color:#1e7a6a;line-height:1.7">This score has been recorded and will be shared with Dr. Akshita Gupta before your appointment on <b>April 28</b>. A drop in score after using SerenOra is your proof of progress.</div></div>
     <button class="btn-primary" onclick="${nextAction==='Go to Dashboard'?"showScreen('screen-dashboard')":nextAction==='Try Breathing Exercise'?"showScreen('screen-breathing')":nextAction==='Start Sound Desensitisation'?"showScreen('screen-sound')":'openChat()'}">
       ${nextAction} →
     </button>
+    <button class="btn-secondary" style="margin-top:10px" onclick="showScreen('screen-main')">Go to Dashboard</button>
     <div style="height:80px"></div>
   `;
   mdasHistory.push(total);if(mdasHistory.length>5)mdasHistory.shift();
   saveMdasHistory(mdasHistory);
   renderMDASTrend();completeTask('Completed MDAS anxiety assessment');
   updateDashboardAfterMDAS(total);
-  setTimeout(updateMdasClinicalNote, 100);
 }
 
 function renderMDASTrend(){
@@ -7944,6 +7997,7 @@ async function uploadMedicalRecord() {
 
   const suc = document.getElementById('record-upload-success');
   suc.textContent = `✅ Record uploaded! ${postOpItems.length} post-op reminders generated for the patient.`;
+  if(typeof scheduleRecoveryProtocol==='function')scheduleRecoveryProtocol();
   suc.style.display = 'block';
   showToast('Record uploaded — reminders sent to patient! 🌿');
   triggerConfettiOnly();
@@ -8142,8 +8196,10 @@ async function populatePatientRecordsScreen() {
     if (banner) banner.style.display = 'block';
     try {
       const d = new Date(upcoming);
-      document.getElementById('pat-appt-date').textContent = d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    } catch(_) { document.getElementById('pat-appt-date').textContent = upcoming; }
+      var dEl=document.getElementById('pat-appt-date');
+      if(dEl)dEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      if(typeof startApptCountdown==='function')startApptCountdown(d);
+    } catch(_) { var dEl2=document.getElementById('pat-appt-date'); if(dEl2)dEl2.textContent=upcoming; }
   }
 
   listEl.innerHTML = records.map(r => {
@@ -8353,14 +8409,7 @@ function filterDentPatientList() {
 
 function renderDentActivePatientsList(pats) {
   const listEl = document.getElementById('dent-active-patients-list'); if (!listEl) return;
-  if (!pats.length) {
-    const q = (document.getElementById('dent-pat-search-mp')||{}).value||'';
-    const msg = q
-      ? 'No patients match your search.'
-      : 'No patients assigned to you yet.<br><span style="font-size:11px">Ask your clinic admin to assign patients to your profile.</span>';
-    listEl.innerHTML = `<div style="text-align:center;padding:24px 16px;color:#64748b;font-size:13px;line-height:1.6">${msg}</div>`;
-    return;
-  }
+  if (!pats.length) { const q=(document.getElementById('dent-pat-search-mp')||{}).value||''; listEl.innerHTML='<div style="text-align:center;padding:24px 16px;color:#64748b;font-size:13px;line-height:1.6">'+(q?'No patients match your search.':'No patients assigned to you yet.<br><span style="font-size:11px">Ask your clinic admin to assign patients to your profile.</span>')+'</div>'; return; }
   const activeProf = currentProfile;
   listEl.innerHTML = pats.map(p => {
     const name = p.full_name || 'Patient';
@@ -8516,10 +8565,9 @@ function copyPatientId(){
 }
 
 function switchPatientTab(tab,el){
-  // Hide/show records wrap
-  const recWrap = document.getElementById('pat-tab-records-wrap');
-  if (recWrap) recWrap.style.display = (tab === 'records') ? 'block' : 'none';
-  ['records','prescriptions','ratings','mdas','family','bills'].forEach(t=>{
+  const recWrap=document.getElementById('pat-tab-records-wrap');
+  if(recWrap)recWrap.style.display=(tab==='records')?'block':'none';
+  ['records','prescriptions','ratings','mdas','family','bills','book'].forEach(t=>{
     const el2=document.getElementById('pat-tab-'+t);if(el2)el2.style.display=t===tab?'block':'none';
   });
   document.querySelectorAll('#screen-patient-account .tab').forEach(t=>t.classList.remove('active'));
@@ -8583,29 +8631,6 @@ function handleRxUpload(input){
 // Update dashboard MDAS latest card after renderMDASResult runs
 // NOTE: renderMDASResult already calls renderMDASTrend() internally.
 // We hook the post-result UI update here without re-declaring the function.
-
-// ── Dynamic MDAS clinical note with assigned dentist name ─────────────────────
-function updateMdasClinicalNote() {
-  const el = document.getElementById('mdas-clinical-note-text');
-  if (!el) return;
-  let dentName = '';
-  try {
-    // Try assigned dentist from profile
-    if (currentProfile && currentProfile.assigned_dentist_name) {
-      dentName = currentProfile.assigned_dentist_name;
-    } else if (window._dentPatientData) {
-      // fallback: already have dentist name somewhere
-    }
-  } catch(_) {}
-  // Try to get from pat-contact-dentist
-  if (!dentName) {
-    const dentEl = document.getElementById('pat-contact-dentist-name');
-    if (dentEl && dentEl.textContent && dentEl.textContent !== '—') dentName = dentEl.textContent;
-  }
-  const dentStr = dentName ? `with <b>Dr. ${dentName.replace(/^Dr\.?\s*/i,'')}</b>` : 'with your dentist';
-  el.innerHTML = `This score has been recorded and will be shared ${dentStr} before your next appointment. A drop in score after using <span translate="no">SerenOra</span> is your proof of progress.`;
-}
-
 function updateDashboardAfterMDAS(total){
   const opts=['Not anxious','Slightly anxious','Fairly anxious','Very anxious','Extremely anxious'];
   const lc=document.getElementById('mdas-latest-content');
@@ -10538,21 +10563,15 @@ function makeDraggable(el, onTap) {
               <input type="date" id="dent-note-next-appt" class="dent-input" placeholder="Next appointment date">
               <div id="dent-note-error" style="color:#ef4444;font-size:12px;margin-bottom:8px;display:none"></div>
               <div id="dent-note-success" style="color:#22c55e;font-size:12px;margin-bottom:8px;display:none"></div>
-              <div style="margin-bottom:12px">
-                <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:6px">💡 Anxiety Insight <span style="font-weight:400;color:#64748b">(optional — shared with patient)</span></div>
-                <select id="cs-anxiety-helped" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);outline:none;margin-bottom:6px">
-                  <option value="">— Select what helped most —</option>
-                  <option value="Narrating each step before doing it">Narrating each step before doing it</option>
-                  <option value="Offering pause breaks frequently">Offering pause breaks frequently</option>
-                  <option value="Slower pace throughout">Slower pace throughout</option>
-                  <option value="Background music during procedure">Background music during procedure</option>
-                  <option value="Topical anaesthetic before injection">Topical anaesthetic before injection</option>
-                  <option value="Distraction conversation">Distraction conversation</option>
-                  <option value="Hand signal agreement at start">Hand signal agreement at start</option>
-                  <option value="Breathing technique guided">Breathing technique guided</option>
-                  <option value="No waiting time — patient was punctual">No waiting time — patient was punctual</option>
-                </select>
-                <textarea id="cs-anxiety-note" placeholder="Any other note for this patient's next visit…" rows="2" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);outline:none;resize:none"></textarea>
+              <!-- Consent -->
+              <div style="background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+                <div style="font-size:11px;font-weight:700;color:#99f6e4;margin-bottom:6px">📝 Informed Consent</div>
+                <div style="font-size:10px;color:#64748b;margin-bottom:8px">Patient has been informed of: risks, benefits, alternatives, and what to expect.</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                  <input type="checkbox" id="cs-consent-given" style="accent-color:#0d9488;width:16px;height:16px">
+                  <label for="cs-consent-given" style="font-size:12px;color:#e2e8f0;cursor:pointer">Patient gave verbal informed consent</label>
+                </div>
+                <button onclick="generateConsentForm()" style="width:100%;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">Generate Multilingual Consent Form →</button>
               </div>
               <button onclick="submitDentPatientNote()" class="dent-btn">Upload Record &amp; Generate Reminders →</button>
             </div>
@@ -10831,6 +10850,28 @@ function makeDraggable(el, onTap) {
     </div>
 
     <!-- ── REMINDERS TAB ── -->
+    <div id="dent-slots" class="dent-tab-content" style="display:none">
+      <div class="dent-page-content">
+        <div class="dent-section-title">My Available Slots</div>
+        <div class="dent-section-sub">Mark when you are free — patients can book these slots.</div>
+        <div class="dent-card" style="margin-bottom:16px">
+          <div style="font-weight:700;font-size:13px;color:#e2e8f0;margin-bottom:12px">Add Available Time</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">Date</div><input class="dent-input" id="dent-slot-date" type="date"></div>
+            <div><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">Duration</div><select class="dent-input" id="dent-slot-duration"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 hour</option><option value="90">1.5 hours</option></select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <div><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">From</div><input class="dent-input" id="dent-slot-from" type="time" value="09:00"></div>
+            <div><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">To</div><input class="dent-input" id="dent-slot-to" type="time" value="10:00"></div>
+          </div>
+          <input class="dent-input" id="dent-slot-notes" type="text" placeholder="Notes e.g. Checkups only" style="margin-bottom:10px">
+          <div id="dent-slot-error" style="color:#f87171;font-size:12px;margin-bottom:6px;display:none"></div>
+          <button onclick="saveDentSlot()" class="dent-btn">Save Slot</button>
+        </div>
+        <div style="font-weight:700;font-size:13px;color:#e2e8f0;margin-bottom:10px">Upcoming Slots</div>
+        <div id="dent-slots-list"><div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Loading...</div></div>
+      </div>
+    </div>
     <div id="dent-reminders" class="dent-tab-content" style="display:none">
       <div class="page-content dent-page">
         <div class="dent-section-title">Reminders</div>
@@ -11186,6 +11227,7 @@ function makeDraggable(el, onTap) {
     <button class="dent-bnav-item" id="dbnav-mypatients" onclick="showDentScreen('dent-mypatients')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="3" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="8" r="2" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M21 20c0-2.2-1.3-4-3-4.5" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="dent-bnav-label">My Patients</span></button>
     <button class="dent-bnav-item" id="dbnav-wellbeing" onclick="showDentScreen('dent-wellbeing')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 4 14 4 8.5C4 5.4 6.4 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.6 3 20 5.4 20 8.5C20 14 12 21 12 21Z" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dent-bnav-label">Wellbeing</span></button>
     <button class="dent-bnav-item" id="dbnav-reminders" onclick="showDentScreen('dent-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="rgba(255,255,255,.4)" stroke-width="2"/></svg><span class="dent-bnav-label">Reminders</span></button>
+    <button class="dent-bnav-item" id="dbnav-slots" onclick="showDentScreen('dent-slots');loadDentSlots()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="dent-bnav-label">Slots</span></button>
     <button class="dent-bnav-item" id="dbnav-myspace" onclick="showDentScreen('dent-myspace')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="dent-bnav-label">My Space</span></button>
   </div>
 </div><!-- end screen-dentist-app -->
@@ -11239,6 +11281,7 @@ function showDentScreen(tabId) {
     'dent-exercises':  'dbnav-wellbeing',
     'dent-winddown':   'dbnav-wellbeing',
     'dent-reminders':  'dbnav-reminders',
+    'dent-slots':      'dbnav-slots',
     'dent-myspace':    'dbnav-myspace',
   };
   document.querySelectorAll('.dent-bnav-item').forEach(b => b.classList.remove('active'));
@@ -11302,6 +11345,7 @@ function switchDentDayTab(tab, el) {
 
 // ── Route dentist after auth ──
 function loadDentistAppDashboard() {
+  if(currentProfile&&currentProfile.role==='dentist'&&typeof startDentAlertPolling==='function')startDentAlertPolling();
   showScreen('screen-dentist-app');
   showDentScreen('dent-dashboard');
   loadDentMySpace();
@@ -12441,8 +12485,6 @@ async function loadDentPatientList() {
     if (error || !data) return;
     const dentistRoles = ['dentist','dentist_pending','dentist_rejected','clinic_admin'];
     const myId = activeUser ? String(activeUser.id) : null;
-    // Filter to patients assigned to this dentist only
-    // If no assignments exist yet in the clinic, fall back to all clinic patients
     const allPatients = (data || []).filter(p => !dentistRoles.includes(p.role) && String(p.id) !== myId);
     const assignedToMe = allPatients.filter(p => p.assigned_dentist_id && String(p.assigned_dentist_id) === myId);
     const anyAssigned = allPatients.some(p => p.assigned_dentist_id);
@@ -12607,8 +12649,6 @@ async function submitDentPatientNote() {
       clinic_id:            String(currentProfile.clinic_id),
       prescription_details: rx || null,
       treatment_summary:    treatment || null,
-      anxiety_helped:       (document.getElementById('cs-anxiety-helped') ? document.getElementById('cs-anxiety-helped').value : null) || null,
-      anxiety_note:         (document.getElementById('cs-anxiety-note') ? document.getElementById('cs-anxiety-note').value.trim() : null) || null,
       next_appointment:     nextAppt || null,
       procedure_type:       procedure || null,
       post_op_reminders:    JSON.stringify(baseReminders)
@@ -12674,6 +12714,7 @@ function continueAsGuest() {
     <button class="docket-tab" onclick="switchDocketTab('docs',this)">Documents</button>
     <button class="docket-tab" onclick="switchDocketTab('xray',this)">X-Rays</button>
     <button class="docket-tab" onclick="switchDocketTab('history',this)">History</button>
+          <button class="docket-tab" onclick="switchDocketTab('handoff',this);loadDocketHandoff()">Summary</button>
   </div>
   <div class="docket-content">
     <div id="docket-tab-records">
@@ -13107,23 +13148,6 @@ function continueAsGuest() {
             <button id="cs-bill-waived" onclick="setBillingStatus('waived')" style="flex:1;padding:10px;border-radius:10px;border:2px solid rgba(255,255,255,.12);background:transparent;color:#94a3b8;font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer">🎁 Waived</button>
           </div>
         </div>
-        <!-- ── Create Bill inline ── -->
-        <div class="cs-field" id="cs-bill-create-section">
-          <div class="cs-label">Create Bill for This Visit</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-            <div>
-              <div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">Amount (₹)</div>
-              <input class="cs-input" id="cs-bill-amount-dent" type="number" placeholder="0" min="0">
-            </div>
-            <div>
-              <div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">Due Date</div>
-              <input class="cs-input" id="cs-bill-due-dent" type="date">
-            </div>
-          </div>
-          <input class="cs-input" id="cs-bill-desc-dent" placeholder="Description e.g. RCT Tooth 26, Crown prep…" style="margin-bottom:8px">
-          <div id="cs-bill-error-dent" style="color:#f87171;font-size:12px;margin-bottom:6px;display:none"></div>
-          <button onclick="createDentBill()" style="width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">💳 Create Bill →</button>
-        </div>
         <div class="cs-field"><div class="cs-label">Internal Notes (Not visible to patient)</div><textarea class="cs-textarea" id="cs-internal-notes" rows="2" placeholder="Private clinical notes for future reference…"></textarea></div>
         <div class="cs-field"><div class="cs-label">Next Appointment</div><input type="date" class="cs-input" id="cs-next-appt"></div>
         <div class="cs-field"><div class="cs-label">Post-Op Instructions (sent to patient)</div>
@@ -13161,12 +13185,17 @@ function continueAsGuest() {
         <div id="cs-rx-list" style="margin-top:10px"></div>
         <div class="cs-field" style="margin-top:12px"><div class="cs-label">Add Custom Medicine</div>
           <div style="display:flex;gap:8px">
-            <input class="cs-input" id="cs-rx-custom-name" placeholder="Medicine name" style="flex:2">
+            <input class="cs-input" id="cs-rx-custom-name" placeholder="Medicine name" style="flex:2" oninput="checkAbxAlert();checkDrugInteractions()">
             <input class="cs-input" id="cs-rx-custom-dose" placeholder="Dose / Instructions" style="flex:3">
             <button onclick="addCustomRx()" style="background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:0 14px;border-radius:10px;font-size:18px;cursor:pointer;flex-shrink:0">+</button>
           </div>
         </div>
         <div class="cs-field"><div class="cs-label">Additional Instructions</div><textarea class="cs-textarea" id="cs-rx-notes" rows="2" placeholder="Take with food. Avoid alcohol…"></textarea></div>
+        <div id="cs-abx-alert" style="display:none;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.4);border-radius:12px;padding:12px 14px;margin-top:8px">
+          <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:4px">⚠️ Antibiotic Stewardship Reminder</div>
+          <div style="font-size:11px;color:#d97706;line-height:1.6" id="cs-abx-alert-text">Systemic antibiotics are not routinely indicated for irreversible pulpitis or localised dento-alveolar abscess in immunocompetent patients. Consider drainage and definitive treatment first. Prescribe only if there is systemic spread (fever, trismus, cellulitis, lymphadenopathy).</div>
+          <div style="font-size:10px;color:rgba(217,119,6,.7);margin-top:6px">Source: SDCEP Drug Prescribing for Dentistry guidelines</div>
+        </div>
       </div>
     </div>
     <!-- SUMMARY TAB -->
@@ -13227,6 +13256,7 @@ function switchDocketTab(tab, btn) {
   if (btn) btn.classList.add('active');
 }
 async function loadDocketPatientInfo(patientId) {
+  window._csDocketPatientId = patientId;
   let p = (window._dentPatientData || {})[patientId];
   // Always fetch fresh data from Supabase to ensure new patients are reflected
   if (db) {
@@ -14323,9 +14353,9 @@ function populateWellbeingTab() {
   if (exSlot && exSrc) {
     const exContent = exSrc.querySelector('.page-content');
     if (exContent) {
+      // Skip the first two children (section-title + section-sub) — wellbeing has its own header
       const children = Array.from(exContent.children);
       children.forEach((child, i) => {
-        // Skip section title/sub and bottom spacers
         if (i < 2 && (child.classList.contains('dent-section-title') || child.classList.contains('dent-section-sub'))) return;
         if (child.style && child.style.height && parseInt(child.style.height) >= 40) return;
         exSlot.appendChild(child);
@@ -14335,9 +14365,9 @@ function populateWellbeingTab() {
   if (wdSlot && wdSrc) {
     const wdContent = wdSrc.querySelector('.page-content');
     if (wdContent) {
+      // Skip section-title + section-sub
       const children = Array.from(wdContent.children);
       children.forEach((child, i) => {
-        // Skip section title/sub and bottom spacers
         if (i < 2 && (child.classList.contains('dent-section-title') || child.classList.contains('dent-section-sub'))) return;
         if (child.style && child.style.height && parseInt(child.style.height) >= 40) return;
         wdSlot.appendChild(child);
@@ -14900,27 +14930,6 @@ function closePickerModal() {
           <div style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:12px" id="ca-monthly-bars"></div>
           <div style="display:flex;justify-content:space-around;margin-top:5px" id="ca-monthly-labels"></div>
         </div>
-        <!-- ── Anxiety Analytics ── -->
-        <div class="ca-card" id="ca-anxiety-section">
-          <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:4px">🧠 Anxiety Analytics</div>
-          <div style="font-size:11px;color:#64748b;margin-bottom:14px">Patient-reported data across your clinic</div>
-
-          <!-- KPI row -->
-          <div class="ca-stat-grid" id="ca-anxiety-kpis" style="margin-bottom:16px"></div>
-
-          <!-- Top fears bar chart -->
-          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Most Common Patient Fears</div>
-          <div id="ca-fears-chart" style="margin-bottom:20px"></div>
-
-          <!-- MDAS by procedure -->
-          <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Avg Anxiety Score by Procedure</div>
-          <div id="ca-mdas-proc-chart" style="margin-bottom:20px"></div>
-
-          <!-- Dentist anxiety outcomes -->
-          <div style="font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Dentist Anxiety Outcomes</div>
-          <div id="ca-dent-anxiety-list"></div>
-        </div>
-
         <div style="height:80px"></div>
       </div>
     </div>
@@ -14946,6 +14955,24 @@ function closePickerModal() {
     </div><!-- end ca-tab-calendar -->
 
     <!-- BILLS TAB -->
+    <div id="ca-tab-queue" class="ca-tab-content">
+      <div class="ca-page">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div><div style="font-weight:800;font-size:18px;color:#e2e8f0">Live Queue</div><div style="font-size:12px;color:#64748b;margin-top:2px">Real-time waiting room</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div id="ca-queue-count" style="background:rgba(139,92,246,.2);color:#a78bfa;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700">0 waiting</div>
+            <button onclick="loadCaQueue()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Refresh</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+          <div class="ca-stat"><div class="num" id="ca-q-waiting" style="color:#a78bfa">0</div><div class="lbl">Waiting</div></div>
+          <div class="ca-stat"><div class="num" id="ca-q-inchair" style="color:#22c55e">0</div><div class="lbl">In Chair</div></div>
+          <div class="ca-stat"><div class="num" id="ca-q-avgwait" style="color:#f59e0b">-</div><div class="lbl">Avg Wait (min)</div></div>
+        </div>
+        <div id="ca-queue-board" style="margin-bottom:16px"><div style="text-align:center;padding:24px;color:#64748b">Loading queue...</div></div>
+        <button onclick="caCallNextPatient()" style="width:100%;background:linear-gradient(135deg,#0d9488,#0f766e);border:none;color:#fff;padding:12px;border-radius:12px;font-family:var(--font);font-weight:700;font-size:14px;cursor:pointer">Call Next Patient</button>
+      </div>
+    </div>
     <div id="ca-tab-bills" class="ca-tab-content">
       <div class="ca-page">
         <div class="ca-section-title">Billing</div>
@@ -15097,6 +15124,7 @@ function closePickerModal() {
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20" stroke-linecap="round"/></svg>
       <span>Bills</span>
     </button>
+    <button class="ca-bnav-item" id="ca-bnav-queue" onclick="showCaTab('ca-tab-queue',this,'Queue');loadCaQueue()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="ca-bnav-label">Queue</span></button>
     <button class="ca-bnav-item" id="ca-bnav-calendar" onclick="showCaTab('ca-tab-calendar',this,'Calendar');renderCaCalendar()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke-linecap="round"/></svg>
       <span>Calendar</span>
@@ -15154,9 +15182,9 @@ function showCaTab(tabId, btn, title) {
   const titleEl = document.getElementById('ca-screen-title'); if (titleEl) titleEl.textContent = title;
   // Tab-specific init — only runs when that tab is actually opened
   if (tabId === 'ca-tab-bills')    { loadCaBills(); renderCaBillStats(); renderCaBills(); }
-  if (tabId === 'ca-tab-stats')    { renderCaStats(); renderCaAnxietyAnalytics(); }
   if (tabId === 'ca-tab-patients') { renderCaPatientList(); }
   if (tabId === 'ca-tab-calendar') { renderCaCalendar(); }
+  if (tabId === 'ca-tab-queue')    { loadCaQueue(); }
 }
 
 function closeCaOverlay(id) {
@@ -15267,16 +15295,8 @@ async function _caLoadAll() {
     renderCaPatientList();
     populateCaDentDropdowns();
     renderCaStats();
-
-    // Load anxiety data for analytics
-    try {
-      const { data: stories } = await activeDb.from('dental_stories')
-        .select('patient_id, fears, summary, updated_at')
-        .eq('clinic_id', _caData.clinicId);
-      _caData.stories = stories || [];
-    } catch(_) { _caData.stories = []; }
-
-    renderCaAnxietyAnalytics();
+    try{const{data:st}=await activeDb.from('dental_stories').select('patient_id,fears,summary').eq('clinic_id',_caData.clinicId);_caData.stories=st||[];}catch(_){_caData.stories=[];}
+    if(typeof renderCaAnxietyAnalytics==='function')renderCaAnxietyAnalytics();
     renderCaBills();
     renderCaMySpace();
 
@@ -15756,113 +15776,6 @@ async function assignPatientToDentist(patientId, dentistId) {
 }
 
 // ── STATISTICS TAB ───────────────────────────────────────
-
-// ── CLINIC ANXIETY ANALYTICS ─────────────────────────────────────────────────
-function renderCaAnxietyAnalytics() {
-  const stories  = _caData.stories  || [];
-  const patients = _caData.patients || [];
-  const records  = _caData.records  || [];
-  const dentists = _caData.dentists || [];
-
-  // ── KPIs ──────────────────────────────────────────────────────────────────
-  const totalWithStory = stories.length;
-  const pctAnxious = patients.length ? Math.round(totalWithStory / patients.length * 100) : 0;
-
-  // Parse MDAS scores from cs_data
-  const mdasScores = [];
-  records.forEach(r => {
-    try {
-      const cs = typeof r.cs_data === 'string' ? JSON.parse(r.cs_data) : r.cs_data;
-      if (cs && cs.mdasScore && !isNaN(Number(cs.mdasScore))) mdasScores.push({ score: Number(cs.mdasScore), proc: r.procedure_type, dentId: r.dentist_id || null });
-    } catch(_) {}
-  });
-  const avgMdas = mdasScores.length ? Math.round(mdasScores.reduce((a,b)=>a+b.score,0)/mdasScores.length) : null;
-  const highAnxiety = mdasScores.filter(s=>s.score>=19).length;
-
-  const kpiEl = document.getElementById('ca-anxiety-kpis');
-  if (kpiEl) kpiEl.innerHTML = [
-    { num: totalWithStory, lbl: 'Anxiety Profiles', col: '#99f6e4' },
-    { num: pctAnxious + '%', lbl: 'Patients Anxious', col: '#f59e0b' },
-    { num: avgMdas !== null ? avgMdas + '/25' : '—', lbl: 'Avg MDAS Score', col: '#a78bfa' },
-    { num: highAnxiety, lbl: 'High Anxiety Visits', col: '#f87171' },
-  ].map(k => `<div class="ca-stat"><div class="num" style="color:${k.col}">${k.num}</div><div class="lbl">${k.lbl}</div></div>`).join('');
-
-  // ── Top Fears ─────────────────────────────────────────────────────────────
-  const fearCount = {};
-  stories.forEach(s => {
-    if (!s.fears) return;
-    s.fears.split(',').forEach(f => {
-      const fear = f.trim();
-      if (fear) fearCount[fear] = (fearCount[fear] || 0) + 1;
-    });
-  });
-  const sortedFears = Object.entries(fearCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const maxFear = sortedFears.length ? sortedFears[0][1] : 1;
-  const fearColors = ['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee','#818cf8','#f472b6'];
-  const fearChart = document.getElementById('ca-fears-chart');
-  if (fearChart) fearChart.innerHTML = sortedFears.length
-    ? sortedFears.map(([fear, count], i) => `
-        <div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-            <span style="font-size:12px;color:#cbd5e1">${fear}</span>
-            <span style="font-size:12px;font-weight:700;color:${fearColors[i%fearColors.length]}">${count} patient${count>1?'s':''}</span>
-          </div>
-          <div class="ca-progress"><div class="ca-progress-fill" style="width:${Math.round(count/maxFear*100)}%;background:${fearColors[i%fearColors.length]}"></div></div>
-        </div>`).join('')
-    : '<div style="color:#64748b;font-size:13px;padding:8px">No fear profiles shared yet.</div>';
-
-  // ── MDAS by Procedure ──────────────────────────────────────────────────────
-  const procMdas = {};
-  mdasScores.forEach(({score, proc}) => {
-    if (!proc) return;
-    if (!procMdas[proc]) procMdas[proc] = [];
-    procMdas[proc].push(score);
-  });
-  const procAvgs = Object.entries(procMdas).map(([proc, scores]) => ({
-    proc: proc.charAt(0).toUpperCase() + proc.slice(1).replace(/_/g,' '),
-    avg: Math.round(scores.reduce((a,b)=>a+b,0)/scores.length),
-    n: scores.length
-  })).sort((a,b)=>b.avg-a.avg).slice(0,6);
-
-  const mdasProcEl = document.getElementById('ca-mdas-proc-chart');
-  if (mdasProcEl) mdasProcEl.innerHTML = procAvgs.length
-    ? procAvgs.map(p => {
-        const col = p.avg >= 19 ? '#f87171' : p.avg >= 13 ? '#f59e0b' : '#34d399';
-        const label = p.avg >= 19 ? 'High' : p.avg >= 13 ? 'Moderate' : 'Low';
-        return `<div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-            <span style="font-size:12px;color:#cbd5e1">${p.proc}</span>
-            <span style="font-size:12px;font-weight:700;color:${col}">${p.avg}/25 <span style="font-weight:400;font-size:10px">(${label})</span></span>
-          </div>
-          <div class="ca-progress"><div class="ca-progress-fill" style="width:${Math.round(p.avg/25*100)}%;background:${col}"></div></div>
-        </div>`;
-      }).join('')
-    : '<div style="color:#64748b;font-size:13px;padding:8px">MDAS data will appear as records are added.</div>';
-
-  // ── Dentist Anxiety Outcomes ───────────────────────────────────────────────
-  const dentScores = {};
-  mdasScores.forEach(({score, dentId}) => {
-    if (!dentId) return;
-    if (!dentScores[dentId]) dentScores[dentId] = [];
-    dentScores[dentId].push(score);
-  });
-  const dentList = document.getElementById('ca-dent-anxiety-list');
-  if (dentList) {
-    const rows = dentists.map(d => {
-      const scores = dentScores[String(d.id)] || [];
-      const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
-      const col = avg === null ? '#64748b' : avg >= 19 ? '#f87171' : avg >= 13 ? '#f59e0b' : '#34d399';
-      const initials = (d.full_name||'D').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
-        <div class="patient-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">${initials}</div>
-        <div style="flex:1"><div style="font-size:13px;color:#e2e8f0;font-weight:600">${d.full_name||'—'}</div><div style="font-size:11px;color:#64748b">${scores.length} scored visits</div></div>
-        <div style="font-size:16px;font-weight:800;color:${col}">${avg !== null ? avg+'/25' : '—'}</div>
-      </div>`;
-    });
-    dentList.innerHTML = rows.length ? rows.join('') : '<div style="color:#64748b;font-size:13px;padding:8px">No dentist data yet.</div>';
-  }
-}
-
 function renderCaStats() {
   const R = _caData.records;
   const P = _caData.patients;
@@ -16223,52 +16136,6 @@ function toggleCaNewBill() {
           }).join('');
       };
     }
-  }
-}
-
-
-// ── Dentist creates bill from casesheet ───────────────────────────────────────
-async function createDentBill() {
-  const amt   = parseFloat((document.getElementById('cs-bill-amount-dent')||{}).value||0);
-  const due   = (document.getElementById('cs-bill-due-dent')||{}).value||'';
-  const desc  = ((document.getElementById('cs-bill-desc-dent')||{}).value||'').trim();
-  const errEl = document.getElementById('cs-bill-error-dent');
-
-  // Get current patient from casesheet context
-  const patId = (document.getElementById('dent-note-patient-select')||{}).value ||
-                (document.getElementById('dent-note-patient-select-mp')||{}).value || '';
-
-  if (!patId) { if(errEl){errEl.textContent='Please select a patient first.';errEl.style.display='block';} return; }
-  if (!amt||amt<=0) { if(errEl){errEl.textContent='Please enter a valid amount.';errEl.style.display='block';} return; }
-  if(errEl) errEl.style.display='none';
-
-  const activeDb = db || window.__supaDb;
-  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
-  const pat = (window._dentPatientData||{})[patId];
-  const patName = pat ? (pat.full_name||'Patient') : 'Patient';
-
-  const bill = {
-    patient_id: patId, patient_name: patName,
-    description: desc||null, amount: amt,
-    due_date: due||null, status: 'pending',
-    created_at: new Date().toISOString(),
-    clinic_id: clinicId,
-  };
-
-  // Save to Supabase
-  if (activeDb && clinicId) {
-    try {
-      await activeDb.from('bills').insert(bill);
-      showToast(`Bill created for ${patName} — ₹${amt} ✅`);
-      // Clear fields
-      ['cs-bill-amount-dent','cs-bill-due-dent','cs-bill-desc-dent'].forEach(id=>{
-        const el=document.getElementById(id); if(el)el.value='';
-      });
-    } catch(e) {
-      if(errEl){errEl.textContent='Could not save bill: '+(e&&e.message?e.message:String(e));errEl.style.display='block';}
-    }
-  } else {
-    showToast('Bill saved locally — sync when back online');
   }
 }
 
