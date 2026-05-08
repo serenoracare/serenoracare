@@ -11183,6 +11183,24 @@ function makeDraggable(el, onTap) {
                 </div>
                 <button onclick="generateConsentForm()" style="width:100%;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">Generate Multilingual Consent Form →</button>
               </div>
+              <!-- Referral Letter -->
+              <div class="cs-field" style="margin-bottom:10px">
+                <div class="cs-label">Generate Referral Letter</div>
+                <select class="cs-input" id="cs-referral-type" style="margin-bottom:8px">
+                  <option value="">No referral needed</option>
+                  <option value="oral_surgeon">Oral Surgeon</option>
+                  <option value="periodontist">Periodontist</option>
+                  <option value="orthodontist">Orthodontist</option>
+                  <option value="endodontist">Endodontist</option>
+                  <option value="prosthodontist">Prosthodontist</option>
+                  <option value="oral_physician">Oral Physician / Oncology</option>
+                  <option value="maxfac">Maxillofacial Surgeon</option>
+                  <option value="gp">General Physician</option>
+                </select>
+                <textarea class="cs-textarea" id="cs-referral-reason" rows="2" placeholder="Reason for referral..."></textarea>
+                <button onclick="generateReferralLetter()" style="width:100%;margin-top:6px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#a78bfa;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">📄 Generate Referral Letter</button>
+                <div id="cs-referral-preview" style="display:none;margin-top:8px;background:#0d1f3c;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;font-size:11px;color:#cbd5e1;line-height:1.7;white-space:pre-wrap"></div>
+              </div>
               <button onclick="submitDentPatientNote()" class="dent-btn">Upload Record &amp; Generate Reminders →</button>
             </div>
           </div>
@@ -13825,6 +13843,11 @@ function continueAsGuest() {
           <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:4px">⚠️ Antibiotic Stewardship Reminder</div>
           <div style="font-size:11px;color:#d97706;line-height:1.6" id="cs-abx-alert-text">Systemic antibiotics are not routinely indicated for irreversible pulpitis or localised dento-alveolar abscess in immunocompetent patients. Consider drainage and definitive treatment first. Prescribe only if there is systemic spread (fever, trismus, cellulitis, lymphadenopathy).</div>
           <div style="font-size:10px;color:rgba(217,119,6,.7);margin-top:6px">Source: SDCEP Drug Prescribing for Dentistry guidelines</div>
+        <!-- Drug Interaction Alert -->
+        <div id="cs-drug-interaction-alert" style="display:none;background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.4);border-radius:12px;padding:12px 14px;margin-top:8px">
+          <div style="font-size:12px;font-weight:700;color:#f87171;margin-bottom:4px">⚠️ Potential Drug Interaction Detected</div>
+          <div id="cs-drug-interaction-text" style="font-size:11px;color:#fca5a5;line-height:1.6"></div>
+        </div>
         </div>
       </div>
     </div>
@@ -13878,7 +13901,7 @@ function closeDocket() {
   document.getElementById('docket-panel').classList.remove('open');
 }
 function switchDocketTab(tab, btn) {
-  ['records','docs','xray','history'].forEach(t => {
+  ['records','docs','xray','history','handoff'].forEach(t => {
     const el = document.getElementById('docket-tab-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
@@ -13887,6 +13910,12 @@ function switchDocketTab(tab, btn) {
 }
 async function loadDocketPatientInfo(patientId) {
   window._csDocketPatientId = patientId;
+  // Fetch and store patient name for referral letters and consent forms
+  try {
+    var _pn = (window._dentPatientData || {})[String(patientId)];
+    window._csDocketPatName = _pn ? (_pn.full_name || 'Patient') : 'Patient';
+    window._csDocketMH = _pn && _pn.medical_history ? _pn.medical_history : {};
+  } catch(_) {}
   let p = (window._dentPatientData || {})[patientId];
   // Always fetch fresh data from Supabase to ensure new patients are reflected
   if (db) {
@@ -14133,7 +14162,9 @@ function openXrayViewer(src, label) {
   document.getElementById('xray-viewer-img').src = src;
   document.getElementById('xray-viewer-label').textContent = label || 'X-Ray';
   overlay.style.display = 'flex';
-  setTimeout(xrayAnnotSync, 150);
+  var imgEl = document.getElementById('xray-viewer-img');
+  if (imgEl.complete) { setTimeout(xrayAnnotSync, 50); }
+  else { imgEl.onload = xrayAnnotSync; }
 }
 
 var _xrayTool = 'arrow';
