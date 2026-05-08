@@ -3706,6 +3706,72 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <div id="pat-appt-prep-tip" style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.5"></div>
     </div>
 
+    <!-- Wellness Tracking Cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div onclick="toggleWellnessCard('cycle')" style="background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(168,85,247,.08));border:1px solid rgba(236,72,153,.25);border-radius:14px;padding:12px;cursor:pointer">
+        <div style="font-size:20px;margin-bottom:6px">🌙</div>
+        <div style="font-size:12px;font-weight:700;color:#f0abfc">Cycle Tracker</div>
+        <div style="font-size:10px;color:rgba(240,171,252,.6);margin-top:2px" id="pat-cycle-status">Not set up</div>
+      </div>
+      <div onclick="toggleWellnessCard('pregnancy')" style="background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(249,115,22,.08));border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:12px;cursor:pointer">
+        <div style="font-size:20px;margin-bottom:6px">🤰</div>
+        <div style="font-size:12px;font-weight:700;color:#fbbf24">Pregnancy Mode</div>
+        <div style="font-size:10px;color:rgba(251,191,36,.6);margin-top:2px" id="pat-preg-status">Not active</div>
+      </div>
+      <div onclick="toggleWellnessCard('bruxism')" style="background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(13,148,136,.08));border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:12px;cursor:pointer">
+        <div style="font-size:20px;margin-bottom:6px">😬</div>
+        <div style="font-size:12px;font-weight:700;color:#4ade80">Bruxism Log</div>
+        <div style="font-size:10px;color:rgba(74,222,128,.6);margin-top:2px" id="pat-brux-status">No data yet</div>
+      </div>
+      <div onclick="showScreen('screen-triage')" style="background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.07));border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:12px;cursor:pointer">
+        <div style="font-size:20px;margin-bottom:6px">🚨</div>
+        <div style="font-size:12px;font-weight:700;color:#f87171">Emergency?</div>
+        <div style="font-size:10px;color:rgba(248,113,113,.6);margin-top:2px">What to do now</div>
+      </div>
+    </div>
+
+    <!-- Cycle Panel -->
+    <div id="pat-wellness-cycle-panel" style="display:none;background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);border-radius:14px;padding:16px;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:#f0abfc;margin-bottom:10px">🌙 Menstrual Cycle Tracker</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px;line-height:1.6">Dental pain sensitivity and healing are affected by your cycle. Tracking this helps you and your dentist choose the best time for procedures.</div>
+      <div style="margin-bottom:8px"><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">First day of last period</div><input type="date" id="pat-cycle-last" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)"></div>
+      <div style="margin-bottom:12px"><div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600">Average cycle length (days)</div><input type="number" id="pat-cycle-length" value="28" min="21" max="35" style="width:100%;background:#0d1f3c;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)"></div>
+      <div id="pat-cycle-insight" style="font-size:12px;color:#f0abfc;line-height:1.6;margin-bottom:10px;background:rgba(236,72,153,.08);border-radius:8px;padding:10px;display:none"></div>
+      <button onclick="saveCycleData()" style="width:100%;background:rgba(236,72,153,.2);border:1px solid rgba(236,72,153,.4);color:#f0abfc;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Save Cycle Data</button>
+    </div>
+
+    <!-- Pregnancy Panel -->
+    <div id="pat-wellness-pregnancy-panel" style="display:none;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:14px;padding:16px;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:#fbbf24;margin-bottom:10px">🤰 Pregnancy Mode</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px;line-height:1.6">Pregnancy affects your oral health significantly — from morning sickness eroding enamel to pregnancy gingivitis. Activating this mode personalises your care and alerts your dentist to plan accordingly.</div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:8px;font-weight:600">Which trimester are you in?</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="setTrimester(1,this)" class="trim-btn" style="flex:1;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:10px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">1st<div style="font-size:9px;font-weight:400;margin-top:2px">Weeks 1-12</div></button>
+          <button onclick="setTrimester(2,this)" class="trim-btn" style="flex:1;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:10px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">2nd<div style="font-size:9px;font-weight:400;margin-top:2px">Weeks 13-27</div></button>
+          <button onclick="setTrimester(3,this)" class="trim-btn" style="flex:1;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:10px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">3rd<div style="font-size:9px;font-weight:400;margin-top:2px">Weeks 28-40</div></button>
+        </div>
+      </div>
+      <div id="pat-preg-advice" style="display:none;margin-bottom:12px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;background:rgba(0,0,0,.2);border-radius:10px;padding:12px"></div>
+      <button onclick="savePregnancyMode()" style="width:100%;background:rgba(251,191,36,.2);border:1px solid rgba(251,191,36,.4);color:#fbbf24;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Activate Pregnancy Mode</button>
+    </div>
+
+    <!-- Bruxism Panel -->
+    <div id="pat-wellness-bruxism-panel" style="display:none;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:16px;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:#4ade80;margin-bottom:10px">😬 Bruxism Morning Check-In</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px;line-height:1.6">Teeth grinding causes silent damage over time. Log how you wake up — the pattern helps your dentist diagnose and treat bruxism early.</div>
+      <div style="font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:10px">How did you wake up today?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:#e2e8f0"><input type="checkbox" id="brux-jaw"    style="accent-color:#4ade80;width:18px;height:18px"> Jaw pain or tightness</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:#e2e8f0"><input type="checkbox" id="brux-head"   style="accent-color:#4ade80;width:18px;height:18px"> Headache (temples or forehead)</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:#e2e8f0"><input type="checkbox" id="brux-teeth"  style="accent-color:#4ade80;width:18px;height:18px"> Tooth sensitivity this morning</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:#e2e8f0"><input type="checkbox" id="brux-facial" style="accent-color:#4ade80;width:18px;height:18px"> Facial muscle soreness</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:#e2e8f0"><input type="checkbox" id="brux-none"   style="accent-color:#4ade80;width:18px;height:18px"> None of the above</label>
+      </div>
+      <button onclick="saveBruxismLog()" style="width:100%;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.4);color:#4ade80;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Log Morning Check-In</button>
+      <div id="pat-brux-history" style="margin-top:12px"></div>
+    </div>
+
     <!-- Tabs -->
     <div>
       <div class="tab-bar">
@@ -5600,6 +5666,166 @@ function startApptCountdown(apptDate) {
   _countdownInterval = setInterval(tick, 1000);
 }
 
+
+// ── Wellness Tracking ─────────────────────────────────────────────────────────
+function toggleWellnessCard(type) {
+  ['cycle','pregnancy','bruxism'].forEach(function(p) {
+    var el = document.getElementById('pat-wellness-' + p + '-panel');
+    if (!el) return;
+    el.style.display = (p === type && el.style.display === 'none') ? 'block' : 'none';
+  });
+  if (type === 'bruxism') loadBruxHistory();
+  if (type === 'cycle')   updateCycleInsight();
+}
+
+function saveCycleData() {
+  var lastEl = document.getElementById('pat-cycle-last');
+  var lenEl  = document.getElementById('pat-cycle-length');
+  if (!lastEl || !lenEl || !lastEl.value) { showToast('Please enter your last period date'); return; }
+  var data = { last: lastEl.value, len: parseInt(lenEl.value) || 28 };
+  try { localStorage.setItem('ser_cycle_' + (currentUser ? currentUser.id : 'g'), JSON.stringify(data)); } catch(_) {}
+  updateCycleInsight();
+  var badge = document.getElementById('pat-cycle-status');
+  if (badge) badge.textContent = 'Tracking active';
+  showToast('Cycle data saved');
+}
+
+function updateCycleInsight() {
+  var el = document.getElementById('pat-cycle-insight');
+  if (!el) return;
+  try {
+    var data = JSON.parse(localStorage.getItem('ser_cycle_' + (currentUser ? currentUser.id : 'g')) || '{}');
+    if (!data.last) return;
+    var dayOfCycle = Math.floor((new Date() - new Date(data.last)) / 86400000) % (data.len || 28);
+    var phases = {
+      menstrual: { range: [0,4],   text: 'Menstrual phase (Day ' + dayOfCycle + '): Pain sensitivity is higher due to prostaglandins. If possible, reschedule non-urgent procedures. Tell your dentist — topical anaesthetic first is recommended.' },
+      follicular:{ range: [5,13],  text: 'Follicular phase (Day ' + dayOfCycle + '): Estrogen is rising. This is the best window for dental procedures — lower pain sensitivity and better healing.' },
+      ovulatory: { range: [14,16], text: 'Ovulatory phase (Day ' + dayOfCycle + '): Good window for procedures. Some women notice increased gum sensitivity at peak estrogen.' },
+      luteal:    { range: [17,99], text: 'Luteal phase (Day ' + dayOfCycle + '): Progesterone is elevated. Some women experience increased gum inflammation — keep up oral hygiene and mention this to your dentist.' }
+    };
+    var phase = 'luteal';
+    if (dayOfCycle <= 4)  phase = 'menstrual';
+    else if (dayOfCycle <= 13) phase = 'follicular';
+    else if (dayOfCycle <= 16) phase = 'ovulatory';
+    el.textContent = phases[phase].text;
+    el.style.display = 'block';
+  } catch(_) {}
+}
+
+var PREG_ADVICE = {
+  1: 'Weeks 1-12: Nausea and morning sickness are common — stomach acid erodes enamel. Rinse with water after vomiting, do not brush immediately. Routine check-ups are safe. X-rays are avoided unless urgent. Local anaesthesia (lignocaine without adrenaline) is safe at all stages.',
+  2: 'Weeks 13-27: The safest window for dental treatment. Pregnancy gingivitis is very common — gums may bleed more due to elevated progesterone. Tell your dentist you are pregnant. They will position the chair slightly to the left to avoid vena cava compression. Professional cleaning is strongly recommended.',
+  3: 'Weeks 28-40: Elective procedures are best postponed until after delivery. Emergency treatment is safe at any stage. Short appointments are recommended — lying flat for long periods is uncomfortable. Avoid prolonged supine position. X-rays only if clinically essential. Inform your obstetrician of any planned treatment.'
+};
+var _currentTrimester = 0;
+
+function setTrimester(n, btn) {
+  _currentTrimester = n;
+  document.querySelectorAll('.trim-btn').forEach(function(b) {
+    b.style.background = 'rgba(251,191,36,.15)';
+    b.style.borderColor = 'rgba(251,191,36,.3)';
+    b.style.fontWeight = '700';
+  });
+  btn.style.background = 'rgba(251,191,36,.35)';
+  btn.style.borderColor = 'rgba(251,191,36,.7)';
+  var el = document.getElementById('pat-preg-advice');
+  if (el) { el.textContent = PREG_ADVICE[n]; el.style.display = 'block'; }
+}
+
+function savePregnancyMode() {
+  if (!_currentTrimester) { showToast('Please select a trimester first'); return; }
+  try { localStorage.setItem('ser_preg_' + (currentUser ? currentUser.id : 'g'), JSON.stringify({ trimester: _currentTrimester })); } catch(_) {}
+  var badge = document.getElementById('pat-preg-status');
+  if (badge) badge.textContent = 'Trimester ' + _currentTrimester + ' active';
+  showToast('Pregnancy mode activated');
+}
+
+function saveBruxismLog() {
+  var syms = [];
+  ['jaw','head','teeth','facial','none'].forEach(function(s) {
+    var el = document.getElementById('brux-' + s);
+    if (el && el.checked) syms.push(s);
+  });
+  if (!syms.length) { showToast('Please select at least one option'); return; }
+  var entry = { date: new Date().toISOString().slice(0,10), syms: syms };
+  try {
+    var key = 'ser_brux_' + (currentUser ? currentUser.id : 'g');
+    var log = JSON.parse(localStorage.getItem(key) || '[]');
+    log = log.filter(function(e) { return e.date !== entry.date; });
+    log.unshift(entry);
+    if (log.length > 30) log = log.slice(0, 30);
+    localStorage.setItem(key, JSON.stringify(log));
+  } catch(_) {}
+  ['jaw','head','teeth','facial','none'].forEach(function(s) {
+    var el = document.getElementById('brux-' + s); if (el) el.checked = false;
+  });
+  var badge = document.getElementById('pat-brux-status');
+  if (badge) badge.textContent = syms.includes('none') ? 'No symptoms today' : syms.length + ' symptoms today';
+  showToast(syms.includes('none') ? 'Great — no bruxism symptoms today!' : syms.length + ' symptom(s) logged');
+  loadBruxHistory();
+}
+
+function loadBruxHistory() {
+  var el = document.getElementById('pat-brux-history');
+  if (!el) return;
+  try {
+    var log = JSON.parse(localStorage.getItem('ser_brux_' + (currentUser ? currentUser.id : 'g')) || '[]');
+    if (!log.length) { el.innerHTML = '<div style="font-size:12px;color:#64748b;text-align:center;padding:8px">No logs yet. Check in tomorrow morning.</div>'; return; }
+    var weekSyms = log.slice(0,7).filter(function(e) { return !e.syms.includes('none'); }).length;
+    el.innerHTML = '<div style="font-size:11px;font-weight:700;color:#4ade80;margin-bottom:8px">' + (weekSyms === 0 ? 'No symptoms in last 7 logs' : weekSyms + ' of last 7 mornings had symptoms') + '</div>' +
+      log.slice(0,7).map(function(e) {
+        var bad = !e.syms.includes('none') && e.syms.length > 0;
+        return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)">' +
+          '<div style="font-size:11px;color:#64748b;width:84px;flex-shrink:0">' + e.date + '</div>' +
+          '<div style="font-size:11px;color:' + (bad ? '#fca5a5' : '#4ade80') + '">' + (bad ? e.syms.join(', ') : 'No symptoms') + '</div></div>';
+      }).join('');
+  } catch(_) {}
+}
+
+// Restore wellness state on account open
+function restoreWellnessState() {
+  try {
+    var uid = currentUser ? currentUser.id : 'g';
+    var preg = JSON.parse(localStorage.getItem('ser_preg_' + uid) || '{}');
+    if (preg.trimester) {
+      var badge = document.getElementById('pat-preg-status');
+      if (badge) badge.textContent = 'Trimester ' + preg.trimester + ' active';
+    }
+    var cycle = JSON.parse(localStorage.getItem('ser_cycle_' + uid) || '{}');
+    if (cycle.last) {
+      var cbadge = document.getElementById('pat-cycle-status');
+      if (cbadge) cbadge.textContent = 'Tracking active';
+    }
+    var brux = JSON.parse(localStorage.getItem('ser_brux_' + uid) || '[]');
+    if (brux.length) {
+      var bbadge = document.getElementById('pat-brux-status');
+      var today = brux[0] && brux[0].date === new Date().toISOString().slice(0,10);
+      if (bbadge) bbadge.textContent = today ? (brux[0].syms.includes('none') ? 'No symptoms today' : brux[0].syms.length + ' symptoms today') : 'Last logged: ' + (brux[0] ? brux[0].date : '—');
+    }
+  } catch(_) {}
+}
+
+
+// ── Keep dentist portal in English regardless of GT cookie ───────────────────
+function enforcePortalLanguage() {
+  if (!currentProfile) return;
+  var role = currentProfile.role || '';
+  var isDentist = role === 'dentist' || role === 'dentist_pending' || role === 'clinic_admin';
+  if (isDentist) {
+    // Reset Google Translate to English for dentist/admin portals
+    var combo = document.querySelector('.goog-te-combo');
+    if (combo && combo.value && combo.value !== 'en') {
+      combo.value = 'en';
+      combo.dispatchEvent(new Event('change'));
+    }
+    // Also clear the googtrans cookie for this session
+    document.cookie = 'googtrans=/en/en; path=/; expires=Fri, 31 Dec 2099 23:59:59 GMT';
+    if (location.hostname) {
+      document.cookie = 'googtrans=/en/en; path=/; expires=Fri, 31 Dec 2099 23:59:59 GMT; domain=' + location.hostname;
+    }
+  }
+}
+
 // ── JOURNAL ────────────────────────────────────────────────────────────────────
 function getJournalKey() {
   return currentUser ? 'serenora_journal_' + currentUser.id : 'serenora_journal_guest';
@@ -6724,6 +6950,7 @@ function loadClinicAdminDashboard() {
   // No role guard — it was blocking logins where profile hadn't resolved yet.
   if (typeof _loadClinicAdminDashboardImpl === 'function') {
     _loadClinicAdminDashboardImpl();
+    if(typeof enforcePortalLanguage==='function')setTimeout(enforcePortalLanguage,800);
     return;
   }
   var _r = 0;
@@ -7427,6 +7654,389 @@ async function supaSignOut() {
   showToast('Signed out successfully 👋');
   showScreen('screen-welcome');
 }
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// SERENORA FEATURE PACK — all new features
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── TRIAGE ────────────────────────────────────────────────────────────────────
+var TRIAGE_OUTCOMES = {
+  swelling:    { urgent:true,  title:"Go to A&E or call your dentist NOW", msg:"Facial swelling with dental pain can indicate a spreading infection. If swelling is near your eye or neck, or you have difficulty swallowing or breathing, go to A&E immediately.", steps:["Do NOT apply heat","Take paracetamol for pain if not allergic","Call your dentist emergency line","Go to A&E if swelling is spreading rapidly"] },
+  trauma:      { urgent:true,  title:"Act within 30-60 minutes", msg:"A knocked-out permanent tooth can be saved if you act fast.", steps:["Hold tooth by crown NOT the root","Rinse gently in milk or saliva — do NOT scrub","Replant immediately if possible OR store in milk","Get to a dentist within 60 minutes","For broken tooth: keep fragments and go today"] },
+  bleeding:    { urgent:true,  title:"Apply firm pressure for 20 minutes", msg:"Post-extraction bleeding is common but controllable.", steps:["Bite firmly on gauze or clean cloth for 20 minutes","Do NOT spit rinse or suck for 24 hours","Avoid hot drinks and alcohol","If bleeding continues after 1 hour go to A&E"] },
+  lost_filling:{ urgent:false, title:"Not urgent — call dentist tomorrow", msg:"A lost filling or crown is uncomfortable but not an emergency.", steps:["Use dental wax or sugar-free gum to protect the area","Avoid chewing on that side","Keep the crown if you have it","Book within a few days"] },
+  mild_pain:   { urgent:false, title:"Manage at home and book an appointment", msg:"Mild toothache can often be managed temporarily.", steps:["Take paracetamol or ibuprofen as directed","Rinse with warm salt water","Avoid very hot cold or sweet foods","Book within 1-2 days","If pain becomes severe or you develop swelling reassess urgently"] }
+};
+var TRIAGE_OPTS = [
+  { label:"Severe pain / swollen face",  next:"swelling" },
+  { label:"Broken or knocked-out tooth", next:"trauma" },
+  { label:"Bleeding that won't stop",    next:"bleeding" },
+  { label:"Lost filling or crown",       next:"lost_filling" },
+  { label:"Mild toothache",              next:"mild_pain" }
+];
+function initTriage() {
+  var el = document.getElementById('triage-flow');
+  if (!el) return;
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' +
+    TRIAGE_OPTS.map(function(o){ return '<button onclick="showTriageOutcome(\''+o.next+'\')" style="background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;text-align:left;cursor:pointer;font-family:var(--font);font-size:14px;color:#e2e8f0;font-weight:600">'+o.label+'</button>'; }).join('') + '</div>';
+}
+function showTriageOutcome(key) {
+  var o = TRIAGE_OUTCOMES[key]; if (!o) return;
+  var el = document.getElementById('triage-flow'); if (!el) return;
+  var col=o.urgent?'#f87171':'#4ade80', bg=o.urgent?'rgba(239,68,68,.1)':'rgba(34,197,94,.1)', bdr=o.urgent?'rgba(239,68,68,.4)':'rgba(34,197,94,.3)';
+  var steps=o.steps.map(function(s,i){ return '<div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:'+col+';flex-shrink:0">'+(i+1)+'</div><div style="font-size:13px;color:#e2e8f0;line-height:1.5">'+s+'</div></div>'; }).join('');
+  el.innerHTML='<div style="background:'+bg+';border:1.5px solid '+bdr+';border-radius:16px;padding:18px;margin-bottom:16px"><div style="font-size:16px;font-weight:800;color:'+col+';margin-bottom:8px">'+(o.urgent?'🚨 ':'✅ ')+o.title+'</div><div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:14px">'+o.msg+'</div>'+steps+'</div><button onclick="initTriage()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:10px;border-radius:10px;font-family:var(--font);font-size:13px;cursor:pointer">Try again</button>';
+}
+
+// ── ANTIBIOTIC STEWARDSHIP ────────────────────────────────────────────────────
+var ABX_DRUGS=['amoxicillin','metronidazole','clindamycin','penicillin','ampicillin','clarithromycin','doxycycline','erythromycin','azithromycin','clavulanate'];
+var ABX_CAUTION=['pulpitis','pain','toothache','sensitivity','decay','caries','cavity','rct','root canal'];
+function checkAbxAlert() {
+  var rxEl=document.getElementById('cs-rx-custom-name'), alertEl=document.getElementById('cs-abx-alert');
+  if (!rxEl||!alertEl) return;
+  var drug=rxEl.value.toLowerCase(), procEl=document.getElementById('cs-procedure-type');
+  var proc=procEl?procEl.value.toLowerCase():'';
+  var isAbx=ABX_DRUGS.some(function(d){return drug.indexOf(d)!==-1;});
+  var isCaution=ABX_CAUTION.some(function(p){return proc.indexOf(p)!==-1;});
+  alertEl.style.display=(isAbx&&isCaution)?'block':'none';
+}
+
+// ── DRUG INTERACTIONS ─────────────────────────────────────────────────────────
+var DRUG_IX=[
+  {a:'ibuprofen',b:'warfarin',msg:'Ibuprofen + Warfarin: Significantly increases bleeding risk. Use paracetamol instead.'},
+  {a:'ibuprofen',b:'aspirin',msg:'Ibuprofen + Aspirin: Reduces antiplatelet effect. Space doses or use paracetamol.'},
+  {a:'metronidazole',b:'warfarin',msg:'Metronidazole + Warfarin: Potentiates anticoagulant effect. Monitor INR closely.'},
+  {a:'amoxicillin',b:'methotrexate',msg:'Amoxicillin + Methotrexate: Increases methotrexate toxicity. Avoid or monitor.'},
+  {a:'clindamycin',b:'erythromycin',msg:'Clindamycin + Erythromycin: Antagonistic — avoid prescribing together.'},
+  {a:'diclofenac',b:'warfarin',msg:'Diclofenac + Warfarin: Increases bleeding risk significantly.'}
+];
+function checkDrugInteractions() {
+  var rxEl=document.getElementById('cs-rx-custom-name'), alertEl=document.getElementById('cs-drug-interaction-alert'), textEl=document.getElementById('cs-drug-interaction-text');
+  if (!rxEl||!alertEl||!textEl) return;
+  var prescribed=rxEl.value.toLowerCase(), patMeds='';
+  try{var mh=window._csDocketMH||{};patMeds=(mh.medications||'').toLowerCase();}catch(_){}
+  var found=[];
+  DRUG_IX.forEach(function(ix){var inRx=prescribed.indexOf(ix.a)!==-1||prescribed.indexOf(ix.b)!==-1;var inMeds=patMeds.indexOf(ix.a)!==-1||patMeds.indexOf(ix.b)!==-1;if(inRx&&inMeds)found.push(ix.msg);});
+  if(found.length){textEl.innerHTML=found.join('<br><br>');alertEl.style.display='block';}
+  else alertEl.style.display='none';
+}
+
+// ── REFERRAL LETTER ───────────────────────────────────────────────────────────
+function generateReferralLetter() {
+  var typeEl=document.getElementById('cs-referral-type'),reasonEl=document.getElementById('cs-referral-reason'),preview=document.getElementById('cs-referral-preview');
+  if(!typeEl||!reasonEl||!preview)return;
+  if(!typeEl.value){showToast('Please select a specialist type');return;}
+  var specialist=typeEl.options[typeEl.selectedIndex].text;
+  var reason=reasonEl.value.trim()||'Please see for specialist assessment and management.';
+  var patName=window._csDocketPatName||'the patient';
+  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'the referring dentist';
+  var clinic=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'our clinic';
+  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var mdas=window._csDocketMDAS?('\nMDAS Anxiety Score: '+window._csDocketMDAS+'/25'):'';
+  var letter='Date: '+today+'\n\nDear Colleague,\n\nRe: '+patName+'\n\nI am writing to refer the above patient to your '+specialist+' clinic.\n\nReason for referral:\n'+reason+mdas+'\n\nThis patient experiences dental anxiety. Their fear profile is available via SerenOra Care. Please take this into account when planning treatment.\n\nYours sincerely,\nDr '+dentName+'\n'+clinic;
+  preview.textContent=letter;
+  preview.style.display='block';
+}
+
+// ── CONSENT FORM ──────────────────────────────────────────────────────────────
+function generateConsentForm() {
+  var procEl=document.getElementById('cs-procedure-type');
+  var proc=procEl&&procEl.options[procEl.selectedIndex]?procEl.options[procEl.selectedIndex].text:'the proposed procedure';
+  var patName=window._csDocketPatName||'Patient';
+  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'your dentist';
+  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var text='INFORMED CONSENT FORM\n\nDate: '+today+'\nPatient: '+patName+'\nDentist: Dr '+dentName+'\nProcedure: '+proc+'\n\nI confirm that:\n1. The procedure, its purpose, risks and benefits have been explained to me in a language I understand.\n2. I have been informed of alternative treatments available.\n3. I have been told what sensations I may experience.\n4. I understand I may withdraw consent at any time using hand signals or verbal communication.\n5. I agree to proceed with '+proc+'.\n\nPatient Signature: _______________________\n\nDate: '+today;
+  var win=window.open('','_blank');
+  if(win){win.document.write('<html><body style="font-family:Arial;padding:40px;max-width:600px;margin:auto;white-space:pre-wrap">'+text+'<br><br><button onclick="window.print()" style="padding:10px 20px;font-size:14px;cursor:pointer">Print</button></body></html>');win.document.close();}
+  else showToast('Please allow popups to generate consent form');
+}
+
+// ── HANDOFF CARD ──────────────────────────────────────────────────────────────
+async function loadDocketHandoff() {
+  var el=document.getElementById('docket-handoff-content');
+  if(!el||!window._csDocketPatientId)return;
+  var activeDb=db||window.__supaDb;
+  if(!activeDb)return;
+  try{
+    var patId=String(window._csDocketPatientId);
+    var pr=await activeDb.from('profiles').select('full_name,age,sex,medical_history,friendly_id').eq('id',patId).maybeSingle();
+    var pat=pr.data||{};
+    var mh=(pat.medical_history&&typeof pat.medical_history==='object')?pat.medical_history:{};
+    var sr=await activeDb.from('dental_stories').select('fears,summary').eq('patient_id',patId).maybeSingle();
+    var story=sr.data||{};
+    var conditions=Object.keys(mh).filter(function(k){return mh[k]&&k!=='allergies'&&k!=='medications';}).join(', ')||'None recorded';
+    el.innerHTML='<div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px">'+
+      '<div style="font-size:16px;font-weight:800;color:#e2e8f0;margin-bottom:4px">'+(pat.full_name||'Patient')+'</div>'+
+      '<div style="font-size:11px;color:#64748b;margin-bottom:12px">'+(pat.age||'—')+' yrs · '+(pat.sex||'—')+' · ID: '+(pat.friendly_id||'—')+'</div>'+
+      (story.fears?'<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px">FEARS</div><div style="font-size:12px;color:#fca5a5">'+story.fears+'</div></div>':'')+
+      (story.summary?'<div style="background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#99f6e4;margin-bottom:4px">APPROACH</div><div style="font-size:11px;color:#99f6e4;line-height:1.5">'+story.summary+'</div></div>':'')+
+      '<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">CONDITIONS</div><div style="font-size:12px;color:#e2e8f0">'+conditions+'</div></div>'+
+      (mh.medications?'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">MEDICATIONS</div><div style="font-size:12px;color:#e2e8f0">'+mh.medications+'</div></div>':'')+
+      (mh.allergies?'<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 12px"><div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px">ALLERGIES</div><div style="font-size:12px;color:#fca5a5">'+mh.allergies+'</div></div>':'')+
+      '</div>';
+  }catch(e){el.innerHTML='<div style="color:#f87171;padding:8px">'+(e.message||'')+'</div>';}
+}
+
+// ── DENTIST SLOTS ─────────────────────────────────────────────────────────────
+async function saveDentSlot() {
+  var date=(document.getElementById('dent-slot-date')||{}).value||'';
+  var from=(document.getElementById('dent-slot-from')||{}).value||'';
+  var to=(document.getElementById('dent-slot-to')||{}).value||'';
+  var dur=parseInt((document.getElementById('dent-slot-duration')||{}).value||60);
+  var notes=((document.getElementById('dent-slot-notes')||{}).value||'').trim();
+  var errEl=document.getElementById('dent-slot-error');
+  if(!date||!from||!to){if(errEl){errEl.textContent='Please fill date and times.';errEl.style.display='block';}return;}
+  if(errEl)errEl.style.display='none';
+  var activeDb=db||window.__supaDb;
+  if(!activeDb){showToast('Not connected');return;}
+  try{
+    await activeDb.from('appointment_slots').insert({dentist_id:String(currentUser.id),clinic_id:currentProfile&&currentProfile.clinic_id?String(currentProfile.clinic_id):null,date:date,from_time:from,to_time:to,duration_mins:dur,notes:notes||null,status:'available',created_at:new Date().toISOString()});
+    showToast('Slot saved! Patients can now book this.');
+    ['dent-slot-date','dent-slot-from','dent-slot-to','dent-slot-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    loadDentSlots();
+  }catch(e){if(errEl){errEl.textContent='Error: '+(e.message||'');errEl.style.display='block';}}
+}
+async function loadDentSlots() {
+  var listEl=document.getElementById('dent-slots-list');
+  if(!listEl||!currentUser)return;
+  listEl.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">Loading...</div>';
+  var activeDb=db||window.__supaDb;
+  if(!activeDb)return;
+  try{
+    var today=new Date().toISOString().slice(0,10);
+    var res=await activeDb.from('appointment_slots').select('*').eq('dentist_id',String(currentUser.id)).gte('date',today).order('date').order('from_time');
+    var data=res.data||[];
+    if(!data.length){listEl.innerHTML='<div style="text-align:center;padding:24px;color:#64748b">No upcoming slots.</div>';return;}
+    listEl.innerHTML=data.map(function(s){
+      var d=new Date(s.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+      var col=s.status==='booked'?'#f59e0b':s.status==='available'?'#22c55e':'#ef4444';
+      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#e2e8f0">'+d+'</div><div style="font-size:12px;color:#94a3b8">'+s.from_time+' - '+s.to_time+' ('+s.duration_mins+' min)</div>'+(s.notes?'<div style="font-size:11px;color:#64748b">'+s.notes+'</div>':'')+'</div><div style="font-size:11px;font-weight:700;color:'+col+'">'+s.status+'</div>'+(s.status==='available'?'<button onclick="deleteDentSlot(\''+s.id+'\')" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:4px 8px;font-size:10px;cursor:pointer">Remove</button>':'')+'</div>';
+    }).join('');
+  }catch(e){listEl.innerHTML='<div style="color:#f87171;padding:8px">'+(e.message||'')+'</div>';}
+}
+async function deleteDentSlot(id) {
+  var activeDb=db||window.__supaDb;if(!activeDb)return;
+  try{await activeDb.from('appointment_slots').delete().eq('id',id);showToast('Slot removed');loadDentSlots();}catch(_){}
+}
+
+// ── PATIENT BOOKING ───────────────────────────────────────────────────────────
+async function loadPatBookingSlots() {
+  var listEl=document.getElementById('pat-booking-slots');
+  if(!listEl||!currentUser)return;
+  listEl.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted)">Loading...</div>';
+  var activeDb=db||window.__supaDb;if(!activeDb)return;
+  try{
+    var pr=await activeDb.from('profiles').select('assigned_dentist_id').eq('id',String(currentUser.id)).maybeSingle();
+    var dentId=pr.data&&pr.data.assigned_dentist_id?String(pr.data.assigned_dentist_id):null;
+    var today=new Date().toISOString().slice(0,10);
+    var q=activeDb.from('appointment_slots').select('*').eq('status','available').gte('date',today).order('date').order('from_time').limit(20);
+    if(dentId)q=q.eq('dentist_id',dentId);
+    var res=await q; var slots=res.data||[];
+    if(!slots.length){listEl.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted)">No available slots right now.</div>';return;}
+    var byDate={};
+    slots.forEach(function(s){if(!byDate[s.date])byDate[s.date]=[];byDate[s.date].push(s);});
+    listEl.innerHTML=Object.entries(byDate).map(function(entry){
+      var date=entry[0],ds=entry[1];
+      var dStr=new Date(date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+      var btns=ds.map(function(s){return '<button onclick="bookSlot(\''+s.id+'\',\''+date+'\',\''+s.from_time+'\')" style="background:rgba(13,148,136,.1);border:1.5px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;margin:4px;font-family:var(--font)">'+s.from_time+' - '+s.to_time+'<span style="font-size:10px;color:#64748b;display:block">'+s.duration_mins+' min'+(s.notes?' | '+s.notes:'')+'</span></button>';}).join('');
+      return '<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px">'+dStr+'</div><div>'+btns+'</div></div>';
+    }).join('');
+  }catch(e){listEl.innerHTML='<div style="color:#ef4444;padding:8px">'+(e.message||'')+'</div>';}
+}
+async function bookSlot(slotId,date,time) {
+  var activeDb=db||window.__supaDb;if(!activeDb||!currentUser)return;
+  if(!confirm('Book '+time+' on '+date+'?'))return;
+  try{
+    await activeDb.from('appointment_slots').update({status:'booked',booked_by_patient_id:String(currentUser.id),booked_at:new Date().toISOString()}).eq('id',slotId);
+    showToast('Appointment booked for '+date+' at '+time);
+    loadPatBookingSlots();
+    var banner=document.getElementById('pat-appt-banner'),dateEl=document.getElementById('pat-appt-date');
+    if(banner&&dateEl){banner.style.display='block';var d=new Date(date+'T'+time);dateEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});if(typeof startApptCountdown==='function')startApptCountdown(d);}
+  }catch(e){showToast('Booking failed: '+(e.message||''));}
+}
+
+// ── QUEUE ─────────────────────────────────────────────────────────────────────
+var _patQueueId=null;
+async function loadPatQueue() {
+  var card=document.getElementById('pat-queue-card');
+  if(!card||!currentUser||!currentProfile)return;
+  var clinicId=currentProfile.clinic_id?String(currentProfile.clinic_id):null;
+  if(!clinicId){card.style.display='none';return;}
+  card.style.display='block';
+  var activeDb=db||window.__supaDb;if(!activeDb)return;
+  try{
+    var today=new Date().toISOString().slice(0,10);
+    var res=await activeDb.from('clinic_queue').select('*').eq('patient_id',String(currentUser.id)).eq('clinic_id',clinicId).gte('joined_at',today+'T00:00:00').in('status',['waiting','in_chair']).maybeSingle();
+    var entry=res.data;
+    if(entry){
+      _patQueueId=entry.id;
+      var aheadRes=await activeDb.from('clinic_queue').select('id').eq('clinic_id',clinicId).eq('status','waiting').lt('joined_at',entry.joined_at).gte('joined_at',today+'T00:00:00');
+      var pos=entry.status==='in_chair'?0:((aheadRes.data?aheadRes.data.length:0)+1);
+      updatePatQueueUI(pos,pos*15,entry.status);
+    }else{_patQueueId=null;updatePatQueueUI(null,null,'none');}
+  }catch(_){}
+}
+function updatePatQueueUI(pos,wait,status) {
+  var badge=document.getElementById('pat-queue-status-badge');
+  var posBlock=document.getElementById('pat-queue-position-block');
+  var posEl=document.getElementById('pat-queue-pos');
+  var waitEl=document.getElementById('pat-queue-wait');
+  var msgEl=document.getElementById('pat-queue-msg');
+  var joinBtn=document.getElementById('pat-queue-join-btn');
+  var leaveBtn=document.getElementById('pat-queue-leave-btn');
+  if(status==='none'||status==='done'||status==='left'){
+    if(badge){badge.textContent='Not in queue';badge.style.background='rgba(100,116,139,.2)';badge.style.color='#94a3b8';}
+    if(posBlock)posBlock.style.display='none';
+    if(joinBtn)joinBtn.style.display='block';
+    if(leaveBtn)leaveBtn.style.display='none';
+  }else if(status==='in_chair'){
+    if(badge){badge.textContent='In Chair!';badge.style.background='rgba(34,197,94,.2)';badge.style.color='#22c55e';}
+    if(posBlock)posBlock.style.display='block';
+    if(posEl)posEl.textContent='Now';if(waitEl)waitEl.textContent='0';
+    if(msgEl)msgEl.textContent='The dentist is ready for you. You have got this!';
+    if(joinBtn)joinBtn.style.display='none';if(leaveBtn)leaveBtn.style.display='none';
+  }else{
+    if(badge){badge.textContent=pos===1?'Next!':'#'+pos+' in queue';badge.style.background=pos<=2?'rgba(245,158,11,.2)':'rgba(139,92,246,.2)';badge.style.color=pos<=2?'#fbbf24':'#a78bfa';}
+    if(posBlock)posBlock.style.display='block';
+    if(posEl)posEl.textContent=pos;if(waitEl)waitEl.textContent=wait;
+    if(msgEl)msgEl.textContent=pos===1?'Almost your turn!':'About '+wait+' minutes. Try the breathing exercise while you wait.';
+    if(joinBtn)joinBtn.style.display='none';if(leaveBtn)leaveBtn.style.display='block';
+  }
+}
+async function patJoinQueue() {
+  var activeDb=db||window.__supaDb;if(!activeDb||!currentUser||!currentProfile)return;
+  var clinicId=currentProfile.clinic_id?String(currentProfile.clinic_id):null;
+  if(!clinicId){showToast('Join a clinic first');return;}
+  try{
+    var res=await activeDb.from('clinic_queue').insert({clinic_id:clinicId,patient_id:String(currentUser.id),patient_name:currentProfile.full_name||'Patient',joined_at:new Date().toISOString(),status:'waiting',dentist_id:currentProfile.assigned_dentist_id?String(currentProfile.assigned_dentist_id):null}).select().maybeSingle();
+    if(res.data)_patQueueId=res.data.id;
+    showToast('You have joined the queue!');loadPatQueue();setInterval(loadPatQueue,30000);
+  }catch(e){showToast('Could not join queue: '+(e.message||''));}
+}
+async function patLeaveQueue() {
+  if(!_patQueueId)return;var activeDb=db||window.__supaDb;if(!activeDb)return;
+  try{await activeDb.from('clinic_queue').update({status:'left'}).eq('id',_patQueueId);_patQueueId=null;showToast('Left the queue');loadPatQueue();}catch(_){}
+}
+
+// ── CLINIC ADMIN QUEUE ────────────────────────────────────────────────────────
+var _caQueueInterval=null;
+async function loadCaQueue() {
+  var board=document.getElementById('ca-queue-board');
+  var count=document.getElementById('ca-queue-count');
+  var wEl=document.getElementById('ca-q-waiting');
+  var cEl=document.getElementById('ca-q-inchair');
+  if(!board)return;
+  board.innerHTML='<div style="text-align:center;padding:24px;color:#64748b">Loading...</div>';
+  var activeDb=db||window.__supaDb;if(!activeDb||!_caData.clinicId)return;
+  try{
+    var today=new Date().toISOString().slice(0,10);
+    var res=await activeDb.from('clinic_queue').select('*').eq('clinic_id',String(_caData.clinicId)).gte('joined_at',today+'T00:00:00').in('status',['waiting','in_chair']).order('joined_at');
+    var entries=res.data||[];
+    var waiting=entries.filter(function(e){return e.status==='waiting';});
+    var inChair=entries.filter(function(e){return e.status==='in_chair';});
+    if(count)count.textContent=waiting.length+' waiting';
+    if(wEl)wEl.textContent=waiting.length;if(cEl)cEl.textContent=inChair.length;
+    if(!entries.length){board.innerHTML='<div style="text-align:center;padding:32px;color:#64748b">Queue is empty. Patients who join will appear here.</div>';return;}
+    var now=new Date();
+    board.innerHTML=entries.map(function(e){
+      var name=e.patient_name||'Patient';
+      var waited=Math.round((now-new Date(e.joined_at))/60000);
+      var isIn=e.status==='in_chair';
+      var waitCol=waited>30?'#f87171':waited>15?'#f59e0b':'#22c55e';
+      var initials=name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+      return '<div style="background:'+(isIn?'rgba(34,197,94,.08)':'rgba(255,255,255,.03)')+';border:1px solid '+(isIn?'rgba(34,197,94,.3)':'rgba(255,255,255,.07)')+';border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:50%;background:'+(isIn?'rgba(34,197,94,.2)':'rgba(139,92,246,.2)')+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:'+(isIn?'#22c55e':'#a78bfa')+';flex-shrink:0">'+(isIn?'In':'#'+(entries.indexOf(e)+1))+'</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#e2e8f0">'+name+'</div><div style="font-size:11px;color:#64748b">Waited <span style="color:'+waitCol+';font-weight:700">'+waited+' min</span></div></div><div style="display:flex;gap:6px">'+(isIn?'':'<button onclick="caCallPatient(\''+e.id+'\')" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#22c55e;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">Call</button>')+'<button onclick="caDonePatient(\''+e.id+'\')" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">Done</button></div></div>';
+    }).join('');
+    if(_caQueueInterval)clearInterval(_caQueueInterval);
+    _caQueueInterval=setInterval(loadCaQueue,20000);
+  }catch(e){board.innerHTML='<div style="color:#f87171;padding:8px">'+(e.message||'')+'</div>';}
+}
+async function caCallPatient(id){var activeDb=db||window.__supaDb;if(!activeDb)return;try{await activeDb.from('clinic_queue').update({status:'in_chair',called_at:new Date().toISOString()}).eq('id',id);showToast('Patient called!');loadCaQueue();}catch(_){}}
+async function caDonePatient(id){var activeDb=db||window.__supaDb;if(!activeDb)return;try{await activeDb.from('clinic_queue').update({status:'done',done_at:new Date().toISOString()}).eq('id',id);showToast('Visit marked complete');loadCaQueue();}catch(_){}}
+async function caCallNextPatient(){
+  var activeDb=db||window.__supaDb;if(!activeDb||!_caData.clinicId)return;
+  try{var today=new Date().toISOString().slice(0,10);var res=await activeDb.from('clinic_queue').select('id,patient_name').eq('clinic_id',String(_caData.clinicId)).eq('status','waiting').gte('joined_at',today+'T00:00:00').order('joined_at').limit(1).maybeSingle();if(!res.data){showToast('No patients waiting');return;}await caCallPatient(res.data.id);showToast('Calling '+(res.data.patient_name||'next patient'));}catch(_){}
+}
+
+// ── RECOVERY PROTOCOL ─────────────────────────────────────────────────────────
+function scheduleRecoveryProtocol() {
+  var now=new Date();
+  var items=[{delay:7200000,msg:'You were genuinely brave today!',sub:'Every visit makes the next one easier.'},{delay:86400000,msg:'How are you feeling today?',sub:'Quick check-in after your dental visit.'},{delay:172800000,msg:'Your next visit will be easier.',sub:'Your brain now has a real memory to replace imagined fear.'}];
+  try{var stored=items.map(function(p){return{time:now.getTime()+p.delay,msg:p.msg,sub:p.sub};});localStorage.setItem('ser_recovery_'+(currentUser?currentUser.id:'g'),JSON.stringify(stored));}catch(_){}
+}
+function checkRecoveryProtocol(){
+  try{
+    var key='ser_recovery_'+(currentUser?currentUser.id:'g');
+    var stored=JSON.parse(localStorage.getItem(key)||'[]');
+    var now=Date.now(),remaining=[];
+    for(var i=0;i<stored.length;i++){
+      var item=stored[i];
+      if(item.time<=now){var el=document.createElement('div');el.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9998;background:linear-gradient(135deg,#0d9488,#0f766e);border-radius:16px;padding:14px 16px;max-width:340px;width:90%;cursor:pointer';el.innerHTML='<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">'+item.msg+'</div><div style="font-size:11px;color:rgba(255,255,255,.75)">'+item.sub+'</div>';el.onclick=function(){this.remove();};document.body.appendChild(el);setTimeout(function(e){if(e.parentNode)e.remove();}.bind(null,el),8000);}
+      else remaining.push(item);
+    }
+    if(remaining.length!==stored.length)localStorage.setItem(key,JSON.stringify(remaining));
+  }catch(_){}
+}
+setInterval(checkRecoveryProtocol,300000);
+
+// ── SERENA MEMORY ─────────────────────────────────────────────────────────────
+function saveSerenaMemory(u,a){try{var key='ser_mem_'+(currentUser?currentUser.id:'g');var mem=JSON.parse(localStorage.getItem(key)||'[]');mem.push({u:u.slice(0,100),a:a.slice(0,100)});if(mem.length>8)mem.splice(0,mem.length-8);localStorage.setItem(key,JSON.stringify(mem));}catch(_){}}
+function getSerenaMemory(){try{var key='ser_mem_'+(currentUser?currentUser.id:'g');var mem=JSON.parse(localStorage.getItem(key)||'[]');if(!mem.length)return '';return ' Context from previous chats: '+mem.slice(-4).map(function(m){return m.u+' > '+m.a;}).join('; ');}catch(_){return '';}}
+
+// ── DENTIST PRE-APPT ALERT ────────────────────────────────────────────────────
+var _dentAlertShown=new Set();
+function startDentAlertPolling(){checkDentPreApptAlerts();setInterval(checkDentPreApptAlerts,60000);}
+async function checkDentPreApptAlerts(){
+  if(!currentProfile||currentProfile.role!=='dentist'||!currentUser)return;
+  var activeDb=db||window.__supaDb;if(!activeDb)return;
+  try{
+    var now=new Date();
+    var in45=new Date(now.getTime()+45*60000).toISOString();
+    var in15=new Date(now.getTime()+15*60000).toISOString();
+    var res=await activeDb.from('medical_records').select('next_appointment,patient_id,procedure_type').gte('next_appointment',in15).lte('next_appointment',in45).eq('dentist_id',String(currentUser.id));
+    var recs=res.data;if(!recs||!recs.length)return;
+    for(var i=0;i<recs.length;i++){
+      var rec=recs[i];var key=rec.next_appointment+rec.patient_id;
+      if(_dentAlertShown.has(key))continue;_dentAlertShown.add(key);
+      var sr=await activeDb.from('dental_stories').select('fears').eq('patient_id',rec.patient_id).maybeSingle();
+      var pr=await activeDb.from('profiles').select('full_name').eq('id',rec.patient_id).maybeSingle();
+      var mins=Math.round((new Date(rec.next_appointment)-now)/60000);
+      var fears=sr.data&&sr.data.fears?sr.data.fears:null;
+      var patName=pr.data?pr.data.full_name:'Patient';
+      var el=document.createElement('div');
+      el.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9999;background:#0f172a;border:1.5px solid rgba(245,158,11,.5);border-radius:16px;padding:14px 16px;max-width:340px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.4)';
+      el.innerHTML='<div style="display:flex;gap:10px"><span style="font-size:22px">🦷</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fbbf24">Arriving in '+mins+' min: '+patName+'</div>'+(fears?'<div style="font-size:11px;color:#f87171">Fears: '+fears+'</div>':'<div style="font-size:11px;color:#22c55e">No anxiety profile</div>')+'</div><button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#64748b;font-size:18px;cursor:pointer">x</button></div>';
+      document.body.appendChild(el);setTimeout(function(e){if(e.parentNode)e.remove();}.bind(null,el),30000);
+    }
+  }catch(_){}
+}
+
+// ── VOICE NOTES ───────────────────────────────────────────────────────────────
+var _vrec=null,_vfield=null,_vactive=false;
+function startVoiceNote(fieldId){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Voice input not supported in this browser');return;}
+  _vfield=document.getElementById(fieldId);if(!_vfield)return;
+  if(_vactive){_vactive=false;if(_vrec){_vrec.stop();_vrec=null;}document.querySelectorAll('[data-vtarget]').forEach(function(b){b.textContent='🎤';b.style.background='rgba(13,148,136,.15)';});showToast('Voice note saved');return;}
+  _vactive=true;_vrec=new SR();_vrec.continuous=true;_vrec.interimResults=true;_vrec.lang='en-IN';
+  var btn=document.querySelector('[data-vtarget="'+fieldId+'"]');
+  if(btn){btn.textContent='Stop';btn.style.background='rgba(239,68,68,.2)';}
+  var final=_vfield.value;
+  _vrec.onresult=function(e){var interim='';for(var i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=' '+e.results[i][0].transcript;else interim=e.results[i][0].transcript;}_vfield.value=final+(interim?' '+interim:'');};
+  _vrec.onerror=function(){_vactive=false;};
+  _vrec.onend=function(){if(_vactive)_vrec.start();};
+  _vrec.start();showToast('Listening... tap mic again to stop');
+}
+
+// ── LANGUAGE ENFORCEMENT ──────────────────────────────────────────────────────
+function enforcePortalLanguage(){
+  if(!currentProfile)return;
+  var isDentist=['dentist','dentist_pending','clinic_admin'].indexOf(currentProfile.role)!==-1;
+  if(!isDentist)return;
+  var combo=document.querySelector('.goog-te-combo');
+  if(combo&&combo.value&&combo.value!=='en'){combo.value='en';combo.dispatchEvent(new Event('change'));}
+}
+
 
 // ── aliases for sign-out buttons across screens ──
 function supabaseSignOut() { supaSignOut(); }
@@ -11346,6 +11956,7 @@ function switchDentDayTab(tab, el) {
 // ── Route dentist after auth ──
 function loadDentistAppDashboard() {
   if(currentProfile&&currentProfile.role==='dentist'&&typeof startDentAlertPolling==='function')startDentAlertPolling();
+  if(typeof enforcePortalLanguage==='function')setTimeout(enforcePortalLanguage,800);
   showScreen('screen-dentist-app');
   showDentScreen('dent-dashboard');
   loadDentMySpace();
@@ -12717,6 +13328,7 @@ function continueAsGuest() {
           <button class="docket-tab" onclick="switchDocketTab('handoff',this);loadDocketHandoff()">Summary</button>
   </div>
   <div class="docket-content">
+    <div id="docket-tab-handoff" style="display:none;padding:12px 0"><div id="docket-handoff-content"><div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Loading patient summary...</div></div><button onclick="window.print()" style="width:100%;margin-top:12px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#a78bfa;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Print Handoff Card</button></div>
     <div id="docket-tab-records">
       <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Visit History</div>
       <div id="docket-visits-list"><div style="text-align:center;padding:20px;color:#64748b;font-size:13px">Select a patient to view records</div></div>
@@ -12784,7 +13396,7 @@ function continueAsGuest() {
           </select>
         </div>
         <div class="cs-field">
-          <div class="cs-label">Chief Complaint Statement</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span class="cs-label" style="margin-bottom:0">Chief Complaint Statement</span><button data-vtarget="cs-complaint-text" onclick="startVoiceNote('cs-complaint-text')" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font)">🎤 Voice</button></div>
           <textarea class="cs-textarea" id="cs-complaint-text" rows="3" placeholder="Patient presents with…"></textarea>
           <div style="display:flex;gap:8px;margin-top:8px">
             <div style="font-size:11px;font-weight:600;color:#64748b;display:flex;align-items:center;white-space:nowrap;flex-shrink:0">Duration:</div>
@@ -12885,6 +13497,24 @@ function continueAsGuest() {
       </div>
       <div class="cs-section">
         <div class="cs-section-title">🦷 Intraoral Examination</div>
+        <!-- Oral Cancer Screening -->
+        <div id="cs-cancer-screen-prompt" style="display:none;background:rgba(139,92,246,.1);border:1.5px solid rgba(139,92,246,.3);border-radius:12px;padding:12px 14px;margin-bottom:12px">
+          <div style="font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:6px">🎗️ Oral Cancer Screening Recommended</div>
+          <div style="font-size:11px;color:#c4b5fd;line-height:1.6;margin-bottom:8px">Patient is over 40 or has risk factors. Document soft tissue examination below.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#e2e8f0;cursor:pointer"><input type="checkbox" id="cs-cancer-lips" style="accent-color:#a78bfa"> Lips</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#e2e8f0;cursor:pointer"><input type="checkbox" id="cs-cancer-tongue" style="accent-color:#a78bfa"> Tongue</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#e2e8f0;cursor:pointer"><input type="checkbox" id="cs-cancer-floor" style="accent-color:#a78bfa"> Floor of mouth</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#e2e8f0;cursor:pointer"><input type="checkbox" id="cs-cancer-palate" style="accent-color:#a78bfa"> Palate</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#e2e8f0;cursor:pointer"><input type="checkbox" id="cs-cancer-buccal" style="accent-color:#a78bfa"> Buccal mucosa</label>
+          </div>
+          <select id="cs-cancer-result" style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px;font-size:11px;font-family:var(--font)">
+            <option value="">Screening result...</option>
+            <option value="normal">All areas — within normal limits</option>
+            <option value="lesion_monitor">Lesion present — monitoring, review in 2 weeks</option>
+            <option value="lesion_refer">Lesion present — urgent referral made</option>
+          </select>
+        </div>
         <div class="cs-field"><div class="cs-label">Soft Tissue Findings</div>
           <div class="cs-picklist" style="margin-bottom:8px">
             <span class="cs-pick-chip" onclick="togglePick(this,'soft')">Normal mucosa</span>
@@ -13443,24 +14073,213 @@ function addXrayToHistory(src, label) {
 
 // Full-screen X-ray viewer
 function openXrayViewer(src, label) {
-  let overlay = document.getElementById('xray-viewer-overlay');
+  var overlay = document.getElementById('xray-viewer-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'xray-viewer-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
-    overlay.innerHTML = `<div style="position:absolute;top:16px;right:16px;display:flex;gap:10px">
-      <button onclick="document.getElementById('xray-viewer-overlay').style.display='none'" style="background:rgba(255,255,255,.1);border:none;color:#e2e8f0;padding:8px 16px;border-radius:20px;font-family:var(--font);font-size:13px;cursor:pointer">✕ Close</button>
-    </div>
-    <div id="xray-viewer-label" style="font-size:13px;color:#94a3b8;margin-bottom:10px"></div>
-    <img id="xray-viewer-img" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:10px">`;
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;flex-direction:column;padding:0';
+    // Toolbar
+    var toolbar = document.createElement('div');
+    toolbar.style.cssText = 'background:#0f172a;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap';
+    var lbl = document.createElement('div');
+    lbl.id = 'xray-viewer-label';
+    lbl.style.cssText = 'font-size:13px;color:#94a3b8;flex:1';
+    toolbar.appendChild(lbl);
+    var btnStyle = 'padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#e2e8f0';
+    var tools = [{t:'arrow',l:'→ Arrow'},{t:'circle',l:'○ Circle'},{t:'text',l:'T Text'},{t:'freehand',l:'✏️ Draw'}];
+    tools.forEach(function(item){
+      var b = document.createElement('button');
+      b.id = 'xray-tool-' + item.t;
+      b.setAttribute('style', btnStyle);
+      b.textContent = item.l;
+      b.addEventListener('click', function(){ xrayAnnotSetTool(item.t); });
+      toolbar.appendChild(b);
+    });
+    var colorPick = document.createElement('input');
+    colorPick.type='color'; colorPick.id='xray-annot-color'; colorPick.value='#ef4444';
+    colorPick.style.cssText='width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;background:none';
+    toolbar.appendChild(colorPick);
+    var undoBtn = document.createElement('button');
+    undoBtn.setAttribute('style',btnStyle); undoBtn.textContent='↩ Undo';
+    undoBtn.addEventListener('click', xrayAnnotUndo);
+    toolbar.appendChild(undoBtn);
+    var saveBtn = document.createElement('button');
+    saveBtn.setAttribute('style','padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font);background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.4);color:#99f6e4');
+    saveBtn.textContent = '💾 Save';
+    saveBtn.addEventListener('click', xrayAnnotSave);
+    toolbar.appendChild(saveBtn);
+    var closeBtn = document.createElement('button');
+    closeBtn.setAttribute('style','padding:5px 14px;border-radius:8px;font-size:13px;cursor:pointer;background:rgba(255,255,255,.1);border:none;color:#e2e8f0');
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('click', function(){ overlay.style.display='none'; });
+    toolbar.appendChild(closeBtn);
+    overlay.appendChild(toolbar);
+    // Image container
+    var container = document.createElement('div');
+    container.style.cssText = 'flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center';
+    var img = document.createElement('img');
+    img.id = 'xray-viewer-img';
+    img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;display:block;user-select:none';
+    img.setAttribute('draggable','false');
+    var canvas = document.createElement('canvas');
+    canvas.id = 'xray-annot-canvas';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair';
+    container.appendChild(img);
+    container.appendChild(canvas);
+    overlay.appendChild(container);
     document.body.appendChild(overlay);
+    initXrayAnnotation();
   }
   document.getElementById('xray-viewer-img').src = src;
   document.getElementById('xray-viewer-label').textContent = label || 'X-Ray';
   overlay.style.display = 'flex';
+  setTimeout(xrayAnnotSync, 150);
 }
 
-// CASESHEET
+var _xrayTool = 'arrow';
+var _xrayAnnotations = [];
+var _xrayDrawing = false;
+var _xrayStart = null;
+var _xrayFreePoints = [];
+
+function xrayAnnotSetTool(tool) {
+  _xrayTool = tool;
+  ['arrow','circle','text','freehand'].forEach(function(t) {
+    var btn = document.getElementById('xray-tool-' + t);
+    if (!btn) return;
+    if (t === tool) { btn.style.background='rgba(59,130,246,.3)'; btn.style.borderColor='rgba(59,130,246,.5)'; btn.style.color='#93c5fd'; }
+    else { btn.style.background='rgba(255,255,255,.06)'; btn.style.borderColor='rgba(255,255,255,.12)'; btn.style.color='#e2e8f0'; }
+  });
+}
+
+function initXrayAnnotation() {
+  var canvas = document.getElementById('xray-annot-canvas');
+  if (!canvas) return;
+  canvas.addEventListener('mousedown', xrayAnnotMouseDown);
+  canvas.addEventListener('mousemove', xrayAnnotMouseMove);
+  canvas.addEventListener('mouseup',   xrayAnnotMouseUp);
+  canvas.addEventListener('touchstart', function(e){ e.preventDefault(); xrayAnnotMouseDown(e.touches[0]); }, {passive:false});
+  canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); xrayAnnotMouseMove(e.touches[0]); }, {passive:false});
+  canvas.addEventListener('touchend',   function(e){ e.preventDefault(); xrayAnnotMouseUp(e.changedTouches[0]); }, {passive:false});
+}
+
+function xrayGetPos(e) {
+  var canvas = document.getElementById('xray-annot-canvas');
+  var rect = canvas.getBoundingClientRect();
+  return { x:(e.clientX-rect.left)*(canvas.width/rect.width), y:(e.clientY-rect.top)*(canvas.height/rect.height) };
+}
+
+function xrayAnnotSync() {
+  var canvas = document.getElementById('xray-annot-canvas');
+  var img = document.getElementById('xray-viewer-img');
+  if (!canvas || !img) return;
+  canvas.width  = img.naturalWidth  || img.offsetWidth  || 800;
+  canvas.height = img.naturalHeight || img.offsetHeight || 600;
+  _xrayAnnotations = [];
+  xrayAnnotRedraw();
+}
+
+function xrayAnnotMouseDown(e) {
+  _xrayDrawing = true;
+  var pos = xrayGetPos(e);
+  _xrayStart = pos;
+  if (_xrayTool === 'freehand') _xrayFreePoints = [pos];
+  if (_xrayTool === 'text') {
+    var txt = prompt('Enter annotation text:');
+    if (txt) {
+      var col = (document.getElementById('xray-annot-color')||{}).value||'#ef4444';
+      _xrayAnnotations.push({type:'text',x:pos.x,y:pos.y,text:txt,color:col});
+      xrayAnnotRedraw();
+    }
+    _xrayDrawing = false;
+  }
+}
+
+function xrayAnnotMouseMove(e) {
+  if (!_xrayDrawing) return;
+  var pos = xrayGetPos(e);
+  if (_xrayTool === 'freehand') { _xrayFreePoints.push(pos); }
+  xrayAnnotRedraw(pos);
+}
+
+function xrayAnnotMouseUp(e) {
+  if (!_xrayDrawing) return;
+  _xrayDrawing = false;
+  var pos = xrayGetPos(e);
+  var col = (document.getElementById('xray-annot-color')||{}).value||'#ef4444';
+  if (_xrayTool === 'arrow')    _xrayAnnotations.push({type:'arrow',x1:_xrayStart.x,y1:_xrayStart.y,x2:pos.x,y2:pos.y,color:col});
+  if (_xrayTool === 'circle')   _xrayAnnotations.push({type:'circle',cx:(_xrayStart.x+pos.x)/2,cy:(_xrayStart.y+pos.y)/2,rx:Math.abs(pos.x-_xrayStart.x)/2,ry:Math.abs(pos.y-_xrayStart.y)/2,color:col});
+  if (_xrayTool === 'freehand') _xrayAnnotations.push({type:'freehand',points:[].concat(_xrayFreePoints),color:col});
+  xrayAnnotRedraw();
+}
+
+function xrayAnnotRedraw(previewPos) {
+  var canvas = document.getElementById('xray-annot-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  _xrayAnnotations.forEach(function(a){ xrayDrawAnnot(ctx,a); });
+  if (_xrayDrawing && _xrayStart && previewPos) {
+    var col = (document.getElementById('xray-annot-color')||{}).value||'#ef4444';
+    var p = {type:_xrayTool,color:col};
+    if (_xrayTool==='arrow')    {p.x1=_xrayStart.x;p.y1=_xrayStart.y;p.x2=previewPos.x;p.y2=previewPos.y;}
+    if (_xrayTool==='circle')   {p.cx=(_xrayStart.x+previewPos.x)/2;p.cy=(_xrayStart.y+previewPos.y)/2;p.rx=Math.abs(previewPos.x-_xrayStart.x)/2;p.ry=Math.abs(previewPos.y-_xrayStart.y)/2;}
+    if (_xrayTool==='freehand') {p.points=_xrayFreePoints;}
+    xrayDrawAnnot(ctx,p);
+  }
+}
+
+function xrayDrawAnnot(ctx, a) {
+  ctx.strokeStyle = a.color||'#ef4444';
+  ctx.fillStyle   = a.color||'#ef4444';
+  ctx.lineWidth   = Math.max(2, ctx.canvas.width/400);
+  ctx.lineCap = 'round';
+  if (a.type==='arrow') {
+    ctx.beginPath();ctx.moveTo(a.x1,a.y1);ctx.lineTo(a.x2,a.y2);ctx.stroke();
+    var ang=Math.atan2(a.y2-a.y1,a.x2-a.x1), hs=Math.max(10,ctx.canvas.width/60);
+    ctx.beginPath();ctx.moveTo(a.x2,a.y2);
+    ctx.lineTo(a.x2-hs*Math.cos(ang-Math.PI/6),a.y2-hs*Math.sin(ang-Math.PI/6));
+    ctx.lineTo(a.x2-hs*Math.cos(ang+Math.PI/6),a.y2-hs*Math.sin(ang+Math.PI/6));
+    ctx.closePath();ctx.fill();
+  }
+  if (a.type==='circle') {
+    ctx.beginPath();ctx.ellipse(a.cx,a.cy,a.rx||4,a.ry||4,0,0,2*Math.PI);
+    ctx.globalAlpha=0.3;ctx.fill();ctx.globalAlpha=1;ctx.stroke();
+  }
+  if (a.type==='text') {
+    var fs=Math.max(14,ctx.canvas.width/40);
+    ctx.font='bold '+fs+'px Arial';
+    ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=fs/8;
+    ctx.strokeText(a.text,a.x,a.y);
+    ctx.fillStyle=a.color;ctx.fillText(a.text,a.x,a.y);
+  }
+  if (a.type==='freehand'&&a.points&&a.points.length>1) {
+    ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);
+    for(var i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);
+    ctx.stroke();
+  }
+}
+
+function xrayAnnotUndo() { _xrayAnnotations.pop(); xrayAnnotRedraw(); }
+
+function xrayAnnotSave() {
+  var canvas=document.getElementById('xray-annot-canvas');
+  var img=document.getElementById('xray-viewer-img');
+  if(!canvas||!img)return;
+  var merged=document.createElement('canvas');
+  merged.width=canvas.width;merged.height=canvas.height;
+  var mCtx=merged.getContext('2d');
+  mCtx.drawImage(img,0,0,merged.width,merged.height);
+  mCtx.drawImage(canvas,0,0);
+  var annotated=merged.toDataURL('image/jpeg',0.92);
+  var label=(document.getElementById('xray-viewer-label')||{}).textContent||'Annotated';
+  var gallery=document.getElementById('docket-xray-gallery');
+  if(gallery){gallery.querySelectorAll('.xray-thumb img').forEach(function(i){if(i.src===img.src){i.src=annotated;i.parentElement.onclick=function(){openXrayViewer(annotated,label+' (annotated)');};} });}
+  img.src=annotated;
+  _xrayAnnotations=[];xrayAnnotRedraw();
+  showToast('Annotated X-Ray saved');
+}
+
 function openCasesheet(patientId) {
   const pid = patientId || _csDocketPatientId;
   if (pid) {
