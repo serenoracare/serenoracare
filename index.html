@@ -9413,36 +9413,65 @@ async function patientJoinClinic() {
 
 // ── QUADRANT / REGION APPEND ─────────────────────────────────────────────────
 let _activeRegions = new Set();
-function appendComplaintRegion(region) {
-  const btn = document.getElementById('crb-' + region.replace(/ /g,'-').replace('upper-right','ur').replace('upper-left','ul').replace('lower-right','lr').replace('lower-left','ll').replace('front-teeth','front').replace('upper-jaw','upper').replace('lower-jaw','lower'));
-  const ta = document.getElementById('cs-complaint-text');
 
+// Toggle region on the quadrant diagram and rebuild statement
+function toggleComplaintRegion(region, btn) {
   if (_activeRegions.has(region)) {
-    // Remove region from text and deactivate button
     _activeRegions.delete(region);
     if (btn) btn.classList.remove('active');
-    if (ta) {
-      ta.value = ta.value.replace(new RegExp('\\s*\\(' + region + '\\)', 'gi'), '')
-                        .replace(new RegExp(',?\\s*' + region, 'gi'), '')
-                        .trim();
-    }
-    return;
-  }
-
-  _activeRegions.add(region);
-  if (btn) btn.classList.add('active');
-  if (!ta) return;
-
-  // If existing text ends with a region parenthetical, extend it
-  // e.g. "Pain (upper right)" → "Pain (upper right, upper left)"
-  if (ta.value.match(/\([^)]+\)\s*$/)) {
-    ta.value = ta.value.replace(/\)\s*$/, ', ' + region + ')');
-  } else if (ta.value.trim()) {
-    // Append region in parentheses to existing text
-    ta.value = ta.value.trimEnd() + ' (' + region + ')';
   } else {
-    ta.value = 'Pain / discomfort in the ' + region + ' region.';
+    _activeRegions.add(region);
+    if (btn) btn.classList.add('active');
   }
+  buildComplaintStatement();
+}
+
+// Legacy alias (kept for any old callers)
+function appendComplaintRegion(region) {
+  const btnId = region.replace(/ /g,'-').replace('upper-right','ur').replace('upper-left','ul').replace('lower-right','lr').replace('lower-left','ll').replace('front-teeth','front').replace('upper-jaw','upper').replace('lower-jaw','lower');
+  toggleComplaintRegion(region, document.getElementById('crb-' + btnId));
+}
+
+// Toggle an associated-symptom chip and rebuild statement
+function toggleAssocSymptom(el) {
+  el.classList.toggle('sel');
+  buildComplaintStatement();
+}
+
+// Assemble a natural-language complaint statement from all the dropdowns
+function buildComplaintStatement() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const complaint   = g('cs-complaint-type');
+  const durVal      = g('cs-complaint-duration-val');
+  const durUnit     = g('cs-complaint-duration-unit');
+  const onset       = g('cs-complaint-onset');
+  const character   = g('cs-complaint-character');
+  const severity    = g('cs-complaint-severity');
+  const radiation   = g('cs-complaint-radiation');
+  const aggravating = g('cs-complaint-aggravating');
+  const alleviating = g('cs-complaint-alleviating');
+  const regions     = Array.from(_activeRegions);
+  const assocChips  = Array.from(document.querySelectorAll('#cs-assoc-chips .cs-pick-chip.sel')).map(c => c.textContent.trim());
+
+  if (!complaint) return; // nothing selected yet — don't overwrite manual text
+
+  const regionStr = regions.length ? regions.join(' and ') : '';
+  let opening = 'Patient presents with ' + complaint.toLowerCase();
+  if (regionStr) opening += ' in the ' + regionStr + ' region';
+  if (durVal)    opening += ', present for ' + durVal + ' ' + durUnit.toLowerCase();
+  let parts = [opening + '.'];
+
+  if (onset)                       parts.push(onset + '.');
+  const charSev = [character, severity].filter(Boolean);
+  if (charSev.length)              parts.push('Pain character: ' + charSev.join(', ') + '.');
+  if (radiation)                   parts.push(radiation + '.');
+  if (aggravating)                 parts.push('Aggravated by: ' + aggravating.toLowerCase() + '.');
+  if (alleviating)                 parts.push('Relieved by: ' + alleviating.toLowerCase() + '.');
+  const assocF = assocChips.filter(a => a !== 'None');
+  if (assocF.length)               parts.push('Associated: ' + assocF.join(', ') + '.');
+
+  const ta = document.getElementById('cs-complaint-text');
+  if (ta) ta.value = parts.join(' ');
 }
 
 // ── MINI TOOTH GRIDS FOR TREATMENT TABS ─────────────────────────────────────
@@ -13997,61 +14026,202 @@ function continueAsGuest() {
     <div id="cs-tab-complaint">
       <div class="cs-section">
         <div class="cs-section-title">🗣️ Chief Complaint</div>
-        <div class="cs-field"><div class="cs-label">Select from Template</div>
-          <select class="cs-select" id="cs-complaint-template" onchange="applyComplaintTemplate(this.value)">
-            <option value="">Choose template…</option>
-            <option value="toothache">Toothache / Pain</option>
-            <option value="sensitivity">Sensitivity to hot/cold</option>
-            <option value="swelling">Swelling / Abscess</option>
-            <option value="bleeding">Bleeding gums</option>
-            <option value="loose">Loose tooth</option>
-            <option value="fracture">Fractured / Broken tooth</option>
-            <option value="routine">Routine check-up</option>
-            <option value="whitening">Teeth whitening consult</option>
-            <option value="ortho">Orthodontic consult</option>
-            <option value="pain_jaw">Jaw pain / TMJ</option>
-          </select>
-        </div>
-        <div class="cs-field">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span class="cs-label" style="margin-bottom:0">Chief Complaint Statement</span><button data-vtarget="cs-complaint-text" onclick="startVoiceNote('cs-complaint-text')" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font)">🎤 Voice</button></div>
-          <textarea class="cs-textarea" id="cs-complaint-text" rows="3" placeholder="Patient presents with…"></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <div style="font-size:11px;font-weight:600;color:#64748b;display:flex;align-items:center;white-space:nowrap;flex-shrink:0">Duration:</div>
-            <input class="cs-input" id="cs-complaint-duration-val" type="number" placeholder="e.g. 3" style="width:70px;margin-bottom:0;padding:6px 10px;font-size:12px">
-            <select class="cs-select" id="cs-complaint-duration-unit" style="flex:1;margin-bottom:0;padding:6px 10px;font-size:12px"><option>Days</option><option>Weeks</option><option>Months</option></select>
+
+        <!-- ROW 1: Main complaint type + onset duration -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Chief Complaint</div>
+            <select class="cs-select" id="cs-complaint-type" onchange="buildComplaintStatement()">
+              <option value="">— Select complaint —</option>
+              <optgroup label="Pain">
+                <option value="Toothache / Dental pain">Toothache / Dental pain</option>
+                <option value="Pain on biting / chewing">Pain on biting / chewing</option>
+                <option value="Spontaneous throbbing pain">Spontaneous throbbing pain</option>
+                <option value="Jaw pain / TMJ discomfort">Jaw pain / TMJ discomfort</option>
+                <option value="Facial pain / swelling">Facial pain / swelling</option>
+              </optgroup>
+              <optgroup label="Sensitivity">
+                <option value="Sensitivity to cold">Sensitivity to cold</option>
+                <option value="Sensitivity to hot">Sensitivity to hot</option>
+                <option value="Sensitivity to sweet">Sensitivity to sweet</option>
+                <option value="Sensitivity to air">Sensitivity to air</option>
+                <option value="Generalised sensitivity">Generalised sensitivity</option>
+              </optgroup>
+              <optgroup label="Gums / Soft Tissue">
+                <option value="Bleeding gums on brushing">Bleeding gums on brushing</option>
+                <option value="Swollen / puffy gums">Swollen / puffy gums</option>
+                <option value="Gum recession / exposed roots">Gum recession / exposed roots</option>
+                <option value="Ulcer / sore in mouth">Ulcer / sore in mouth</option>
+                <option value="Bad breath / halitosis">Bad breath / halitosis</option>
+              </optgroup>
+              <optgroup label="Tooth / Restoration">
+                <option value="Broken / chipped tooth">Broken / chipped tooth</option>
+                <option value="Loose filling / crown">Loose filling / crown</option>
+                <option value="Lost filling / crown">Lost filling / crown</option>
+                <option value="Cracked tooth">Cracked tooth</option>
+                <option value="Loose tooth">Loose tooth</option>
+              </optgroup>
+              <optgroup label="Functional">
+                <option value="Difficulty chewing">Difficulty chewing</option>
+                <option value="Difficulty opening mouth">Difficulty opening mouth</option>
+                <option value="Night grinding / bruxism">Night grinding / bruxism</option>
+                <option value="Bad taste in mouth">Bad taste in mouth</option>
+                <option value="Food lodgement">Food lodgement</option>
+              </optgroup>
+              <optgroup label="Routine / Elective">
+                <option value="Routine check-up and cleaning">Routine check-up and cleaning</option>
+                <option value="Teeth whitening consultation">Teeth whitening consultation</option>
+                <option value="Orthodontic consultation">Orthodontic consultation</option>
+                <option value="Implant consultation">Implant consultation</option>
+                <option value="Second opinion">Second opinion</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Duration of Complaint</div>
+            <div style="display:flex;gap:6px">
+              <input class="cs-input" id="cs-complaint-duration-val" type="number" placeholder="e.g. 3" style="width:64px;margin-bottom:0;padding:6px 10px;font-size:12px">
+              <select class="cs-select" id="cs-complaint-duration-unit" style="flex:1;margin-bottom:0;padding:6px 10px;font-size:12px">
+                <option>Hours</option><option selected>Days</option><option>Weeks</option><option>Months</option><option>Years</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Quadrant / Region selector — appends to existing text -->
-        <div class="cs-field">
-          <div class="cs-label">Affected Region <span style="font-size:10px;color:#64748b;font-weight:400">(tap to append to complaint)</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-            <button onclick="appendComplaintRegion('upper right')"  class="cs-region-btn" id="crb-ur">↗ Upper Right</button>
-            <button onclick="appendComplaintRegion('upper left')"   class="cs-region-btn" id="crb-ul">↖ Upper Left</button>
-            <button onclick="appendComplaintRegion('lower right')"  class="cs-region-btn" id="crb-lr">↘ Lower Right</button>
-            <button onclick="appendComplaintRegion('lower left')"   class="cs-region-btn" id="crb-ll">↙ Lower Left</button>
+        <!-- ROW 2: Onset + Character of pain -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Onset</div>
+            <select class="cs-select" id="cs-complaint-onset" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>Sudden onset</option>
+              <option>Gradual onset</option>
+              <option>Following trauma / injury</option>
+              <option>After dental procedure</option>
+              <option>Insidious / unclear onset</option>
+            </select>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
-            <button onclick="appendComplaintRegion('front teeth')"  class="cs-region-btn" id="crb-front">🦷 Front</button>
-            <button onclick="appendComplaintRegion('upper jaw')"    class="cs-region-btn" id="crb-upper">⬆ Upper Jaw</button>
-            <button onclick="appendComplaintRegion('lower jaw')"    class="cs-region-btn" id="crb-lower">⬇ Lower Jaw</button>
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Character of Pain</div>
+            <select class="cs-select" id="cs-complaint-character" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>Sharp / stabbing</option>
+              <option>Dull / aching</option>
+              <option>Throbbing / pulsating</option>
+              <option>Burning</option>
+              <option>Pressure / heaviness</option>
+              <option>Intermittent</option>
+              <option>Constant</option>
+              <option>Not applicable (no pain)</option>
+            </select>
           </div>
         </div>
-        <div class="cs-field"><div class="cs-label">Quick Picklist</div>
-          <div class="cs-picklist" id="cs-complaint-picklist">
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Pain upper right</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Pain lower left</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Hot sensitivity</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Cold sensitivity</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Bleeding on brushing</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Halitosis</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Difficulty chewing</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Loose filling</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Broken crown</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Pain on biting</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Night grinding</span>
-            <span class="cs-pick-chip" onclick="togglePick(this,'complaint')">Bad taste</span>
+
+        <!-- ROW 3: Severity + Radiation -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Severity (Pain Score)</div>
+            <select class="cs-select" id="cs-complaint-severity" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>Mild (1–3/10)</option>
+              <option>Moderate (4–6/10)</option>
+              <option>Severe (7–9/10)</option>
+              <option>Unbearable (10/10)</option>
+              <option>No pain</option>
+            </select>
           </div>
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Radiation of Pain</div>
+            <select class="cs-select" id="cs-complaint-radiation" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>No radiation — localised</option>
+              <option>Radiates to ear</option>
+              <option>Radiates to jaw / temple</option>
+              <option>Radiates to neck</option>
+              <option>Radiates to adjacent teeth</option>
+              <option>Diffuse — hard to localise</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ROW 4: Aggravating + Alleviating factors -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Aggravating Factors</div>
+            <select class="cs-select" id="cs-complaint-aggravating" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>Cold drinks / food</option>
+              <option>Hot drinks / food</option>
+              <option>Sweet food / drinks</option>
+              <option>Biting / chewing</option>
+              <option>Lying down</option>
+              <option>Physical activity</option>
+              <option>Pressure on tooth</option>
+              <option>None identified</option>
+            </select>
+          </div>
+          <div class="cs-field" style="margin-bottom:0">
+            <div class="cs-label">Alleviating Factors</div>
+            <select class="cs-select" id="cs-complaint-alleviating" onchange="buildComplaintStatement()">
+              <option value="">— Select —</option>
+              <option>Painkillers (e.g. ibuprofen)</option>
+              <option>Cold water / ice</option>
+              <option>Warm compress</option>
+              <option>Rest</option>
+              <option>Nothing helps</option>
+              <option>Not applicable</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ROW 5: Associated symptoms -->
+        <div class="cs-field" style="margin-bottom:8px">
+          <div class="cs-label">Associated Symptoms <span style="font-size:10px;color:#64748b;font-weight:400">(tap to select)</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px" id="cs-assoc-chips">
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Swelling</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Pus / discharge</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Fever</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Swollen lymph nodes</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Difficulty swallowing</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Trismus (limited opening)</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Halitosis</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">Bleeding</span>
+            <span class="cs-pick-chip" onclick="toggleAssocSymptom(this)">None</span>
+          </div>
+        </div>
+
+        <!-- ROW 6: Affected Region — visual quadrant diagram -->
+        <div class="cs-field" style="margin-bottom:8px">
+          <div class="cs-label">Affected Region <span style="font-size:10px;color:#64748b;font-weight:400">(tap quadrant to select)</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <!-- Quadrant diagram -->
+            <div style="flex-shrink:0">
+              <div style="font-size:10px;color:#64748b;text-align:center;margin-bottom:4px;font-weight:600">UPPER</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;width:140px">
+                <button class="cs-region-btn" id="crb-ur" onclick="toggleComplaintRegion('upper right',this)" style="padding:12px 6px;font-size:11px;border-radius:10px 4px 4px 4px">↗ UR</button>
+                <button class="cs-region-btn" id="crb-ul" onclick="toggleComplaintRegion('upper left',this)"  style="padding:12px 6px;font-size:11px;border-radius:4px 10px 4px 4px">UL ↖</button>
+                <button class="cs-region-btn" id="crb-lr" onclick="toggleComplaintRegion('lower right',this)" style="padding:12px 6px;font-size:11px;border-radius:4px 4px 4px 10px">↘ LR</button>
+                <button class="cs-region-btn" id="crb-ll" onclick="toggleComplaintRegion('lower left',this)"  style="padding:12px 6px;font-size:11px;border-radius:4px 4px 10px 4px">LL ↙</button>
+              </div>
+              <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;font-weight:600">LOWER</div>
+            </div>
+            <!-- Additional region buttons -->
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px;padding-top:18px">
+              <button class="cs-region-btn" id="crb-front"  onclick="toggleComplaintRegion('front teeth',this)"  style="font-size:12px;padding:8px">🦷 Front Teeth</button>
+              <button class="cs-region-btn" id="crb-upper"  onclick="toggleComplaintRegion('upper jaw',this)"    style="font-size:12px;padding:8px">⬆ Full Upper Jaw</button>
+              <button class="cs-region-btn" id="crb-lower"  onclick="toggleComplaintRegion('lower jaw',this)"    style="font-size:12px;padding:8px">⬇ Full Lower Jaw</button>
+              <button class="cs-region-btn" id="crb-general" onclick="toggleComplaintRegion('generalised',this)" style="font-size:12px;padding:8px">🔄 Generalised</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 7: Auto-built statement + voice override -->
+        <div class="cs-field" style="margin-bottom:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span class="cs-label" style="margin-bottom:0">Complaint Statement <span style="font-size:10px;color:#64748b;font-weight:400">(auto-built — edit freely)</span></span>
+            <button data-vtarget="cs-complaint-text" onclick="startVoiceNote('cs-complaint-text')" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:8px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--font)">🎤 Voice</button>
+          </div>
+          <textarea class="cs-textarea" id="cs-complaint-text" rows="4" placeholder="Fill the fields above — statement will appear here automatically…"></textarea>
         </div>
         
         <div class="cs-field"><div class="cs-label">Past Medical / Dental History</div>
@@ -15637,6 +15807,9 @@ window.saveCasesheetRecord = async function() {
       document.querySelectorAll('#cs-screen select').forEach(el => { el.selectedIndex = 0; });
       // Clear pick chips
       document.querySelectorAll('#cs-screen .cs-pick-chip.sel').forEach(c => c.classList.remove('sel'));
+      // Reset complaint region buttons and active regions
+      if (typeof _activeRegions !== 'undefined') _activeRegions.clear();
+      document.querySelectorAll('.cs-region-btn').forEach(b => b.classList.remove('active'));
       // Reset tooth chart
       _csSelectedTeeth.clear(); _csAffectedTeeth.clear(); renderToothChart();
       _csToothDetails = {}; renderPerToothDetails();
