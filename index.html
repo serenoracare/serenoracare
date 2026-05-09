@@ -2780,10 +2780,10 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🎨</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Theme</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">Visual mode for the app</div></div></div>
         <button id="pref-theme-label" onclick="openPickerModal('theme')" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 28px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌿 Default <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--teal)">▼</span></button>
       </div>
-      <!-- Language -->
+      <!-- Language — via Google Translate -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
-        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🌐</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Language</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">App display language</div></div></div>
-        <button id="pref-lang-label" onclick="openPickerModal('lang')" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 28px 7px 12px;border-radius:10px;min-width:90px;border:1.5px solid var(--teal);cursor:pointer;position:relative;text-align:left">🌐 English <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--teal)">▼</span></button>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🌐</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Language</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">Translate via Google</div></div></div>
+        <a href="https://translate.google.com" target="_blank" rel="noopener" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 12px;border-radius:10px;border:1.5px solid var(--teal);cursor:pointer;text-decoration:none;display:inline-block">Google Translate →</a>
       </div>
       <!-- Audio -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
@@ -5829,24 +5829,12 @@ function restoreWellnessState() {
 }
 
 
-// ── Keep dentist portal in English regardless of GT cookie ───────────────────
+// ── Dentist portal language: respects the dentist's own Google Translate selection ─
+// (Previously forced English — removed so dentist can read patient notes in their language)
 function enforcePortalLanguage() {
-  if (!currentProfile) return;
-  var role = currentProfile.role || '';
-  var isDentist = role === 'dentist' || role === 'dentist_pending' || role === 'clinic_admin';
-  if (isDentist) {
-    // Reset Google Translate to English for dentist/admin portals
-    var combo = document.querySelector('.goog-te-combo');
-    if (combo && combo.value && combo.value !== 'en') {
-      combo.value = 'en';
-      combo.dispatchEvent(new Event('change'));
-    }
-    // Also clear the googtrans cookie for this session
-    document.cookie = 'googtrans=/en/en; path=/; expires=Fri, 31 Dec 2099 23:59:59 GMT';
-    if (location.hostname) {
-      document.cookie = 'googtrans=/en/en; path=/; expires=Fri, 31 Dec 2099 23:59:59 GMT; domain=' + location.hostname;
-    }
-  }
+  // No-op: dentist and clinic admin portals now respect the dentist's language preference.
+  // Patient content in the docket is shown as stored; the dentist can use the Google
+  // Translate widget (welcome screen) or the 🌐 button in the docket to translate.
 }
 
 // ── JOURNAL ────────────────────────────────────────────────────────────────────
@@ -7752,41 +7740,112 @@ function checkDrugInteractions() {
 }
 
 // ── REFERRAL LETTER ───────────────────────────────────────────────────────────
+function _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today) {
+  var mhBlock = mhLines.length
+    ? '<p style="margin:0 0 6px"><strong>Medical History:</strong> ' + mhLines.join('; ') + '</p>'
+    : '';
+  var notesBlock = notes
+    ? '<p style="margin:0 0 6px"><strong>Additional notes:</strong> ' + notes + '</p>'
+    : '';
+  var licBlock = (licNo || regSt)
+    ? '<span style="color:#475569;font-size:11px">' + (licNo ? 'Reg. No. ' + licNo : '') + (licNo && regSt ? ' · ' : '') + (regSt || '') + '</span>'
+    : '';
+  return [
+    '<p style="margin:0 0 4px;color:#64748b;font-size:12px">' + today + '</p>',
+    '<p style="margin:0 0 18px"><strong>Dear Colleague,</strong></p>',
+    '<p style="margin:0 0 6px"><strong>Re: ' + patName + '</strong></p>',
+    '<p style="margin:0 0 14px">I am writing to request your specialist opinion and clearance for the above-named patient who is currently under my care at <strong>' + clinicN + '</strong>.</p>',
+    '<p style="margin:0 0 6px"><strong>Planned Procedure:</strong> ' + proc + '</p>',
+    mhBlock,
+    '<p style="margin:0 0 14px">In view of the patient\'s medical history, I would be grateful if you could <strong>provide clearance to proceed</strong> with the above procedure and advise on any alterations to medication dosage or regimen you deem appropriate prior to and following treatment.</p>',
+    notesBlock,
+    '<p style="margin:0 0 14px">This patient also experiences dental anxiety; their behavioural profile is available via SerenOra Care if required.</p>',
+    '<p style="margin:0 0 4px">Yours sincerely,</p>',
+    '<p style="margin:0 0 2px"><strong>Dr ' + dentName + '</strong></p>',
+    '<p style="margin:0 0 2px;color:#475569">' + clinicN + '</p>',
+    licBlock
+  ].join('\n');
+}
+
+function _getMHLines() {
+  try {
+    var mh = window._csDocketMH || {};
+    var lines = [];
+    if (Array.isArray(mh.conditions) && mh.conditions.length) lines = lines.concat(mh.conditions);
+    if (mh.allergies) lines.push('Allergies: ' + mh.allergies);
+    if (mh.medications) lines.push('Current medications: ' + mh.medications);
+    return lines;
+  } catch(_) { return []; }
+}
+
 function generateReferralLetter() {
-  var typeEl=document.getElementById('cs-referral-type'),reasonEl=document.getElementById('cs-referral-reason'),preview=document.getElementById('cs-referral-preview');
-  if(!typeEl||!reasonEl||!preview)return;
-  if(!typeEl.value){showToast('Please select a specialist type');return;}
-  var specialist=typeEl.options[typeEl.selectedIndex].text;
-  var reason=reasonEl.value.trim()||'Please see for specialist assessment and management.';
-  var patName=window._csDocketPatName||'the patient';
-  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'the referring dentist';
-  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
-  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
-  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
-  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
-  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var mdas=window._csDocketMDAS?('\n\nMDAS Anxiety Score: '+window._csDocketMDAS+'/25'):'';
-  var bodyText='Date: '+today+'\n\nDear Colleague,\n\nRe: '+patName+'\n\nI am writing to refer the above patient to your '+specialist+' clinic.\n\nReason for referral:\n'+reason+mdas+'\n\nThis patient experiences dental anxiety. Their fear profile is available via SerenOra Care.\n\nYours sincerely,\nDr '+dentName+'\n'+clinicN;
-  var contentHtml='<div style="white-space:pre-wrap;font-size:13px;line-height:1.9;color:#334155">'+bodyText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
-  preview.innerHTML='<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;font-size:12px;color:#1e293b;white-space:pre-wrap;line-height:1.8;margin-bottom:10px">'+bodyText+'</div>'
-    +'<button onclick="openPrintWindow(buildPdfHtml('+JSON.stringify(contentHtml)+',\'Referral Letter\','+JSON.stringify(dentName)+','+JSON.stringify(clinicN)+','+JSON.stringify(joinC)+','+JSON.stringify(licNo)+','+JSON.stringify(regSt)+',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
-  preview.style.display='block';
+  var typeEl   = document.getElementById('cs-referral-type');
+  var procEl   = document.getElementById('cs-referral-proc');
+  var reasonEl = document.getElementById('cs-referral-reason');
+  var preview  = document.getElementById('cs-referral-preview');
+  if (!typeEl || !preview) return;
+  if (!typeEl.value) { showToast('Please select a specialist type'); return; }
+  var specialist = typeEl.options[typeEl.selectedIndex].text;
+  var proc       = (procEl && procEl.value.trim()) || 'the proposed dental procedure';
+  var notes      = reasonEl ? reasonEl.value.trim() : '';
+  var patName    = window._csDocketPatName || 'the patient';
+  var dentName   = currentProfile && currentProfile.full_name ? currentProfile.full_name : 'the referring dentist';
+  var clinicN    = currentProfile && currentProfile.clinics && currentProfile.clinics.name ? currentProfile.clinics.name : 'SerenOra Clinic';
+  var joinC      = currentProfile && currentProfile.clinics && currentProfile.clinics.join_code ? currentProfile.clinics.join_code : '';
+  var licNo      = currentProfile && currentProfile.license_number ? currentProfile.license_number : '';
+  var regSt      = currentProfile && currentProfile.reg_state ? currentProfile.reg_state : '';
+  var today      = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var mhLines    = _getMHLines();
+
+  var bodyHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today);
+  var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
+
+  preview.innerHTML =
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
+    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName) + ',' + JSON.stringify(clinicN) + ',' + JSON.stringify(joinC) + ',' + JSON.stringify(licNo) + ',' + JSON.stringify(regSt) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
+  preview.style.display = 'block';
 }
 
 // ── CONSENT FORM ──────────────────────────────────────────────────────────────
 function generateConsentForm() {
-  var procEl=document.getElementById('cs-procedure-type');
-  var proc=procEl&&procEl.options[procEl.selectedIndex]?procEl.options[procEl.selectedIndex].text:'the proposed procedure';
-  var patName=window._csDocketPatName||'Patient';
-  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'your dentist';
-  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
-  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
-  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
-  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
-  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var contentHtml='<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div><div class="pdf-row"><span class="lbl">Date</span><span class="val">'+today+'</span></div><div class="pdf-row"><span class="lbl">Patient</span><span class="val">'+patName+'</span></div><div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr '+dentName+'</span></div><div class="pdf-row"><span class="lbl">Procedure</span><span class="val">'+proc+'</span></div></div><div class="pdf-section"><div class="pdf-section-title">Declaration</div><ol style="padding-left:18px;margin:0;line-height:2.2;font-size:12px;color:#334155"><li>The procedure, its purpose, risks and benefits have been explained to me in a language I understand.</li><li>I have been informed of alternative treatments available.</li><li>I have been told what sensations I may experience.</li><li>I understand I may withdraw consent at any time using hand signals or verbal communication.</li><li>I agree to proceed with <strong>'+proc+'</strong>.</li></ol></div><div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px"><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div></div>';
-  var html=buildPdfHtml(contentHtml,'Informed Consent Form',dentName,clinicN,joinC,licNo,regSt,'Patient: '+patName,null);
-  openPrintWindow(html,'consent_form_'+Date.now());
+  var procNameEl = document.getElementById('cs-consent-proc-name');
+  var procSpecEl = document.getElementById('cs-consent-proc-spec');
+  var procFallEl = document.getElementById('cs-procedure-type');
+  var procName   = (procNameEl && procNameEl.value.trim())
+    ? procNameEl.value.trim()
+    : (procFallEl && procFallEl.options[procFallEl.selectedIndex] ? procFallEl.options[procFallEl.selectedIndex].text : 'the proposed procedure');
+  var procSpec   = procSpecEl ? procSpecEl.value.trim() : '';
+  var fullProc   = procSpec ? procName + ' (' + procSpec + ')' : procName;
+  var patName  = window._csDocketPatName || 'Patient';
+  var dentName = currentProfile && currentProfile.full_name ? currentProfile.full_name : 'your dentist';
+  var clinicN  = currentProfile && currentProfile.clinics && currentProfile.clinics.name ? currentProfile.clinics.name : 'SerenOra Clinic';
+  var joinC    = currentProfile && currentProfile.clinics && currentProfile.clinics.join_code ? currentProfile.clinics.join_code : '';
+  var licNo    = currentProfile && currentProfile.license_number ? currentProfile.license_number : '';
+  var regSt    = currentProfile && currentProfile.reg_state ? currentProfile.reg_state : '';
+  var today    = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var contentHtml =
+    '<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div>' +
+    '<div class="pdf-row"><span class="lbl">Date</span><span class="val">' + today + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Patient</span><span class="val">' + patName + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr ' + dentName + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Procedure</span><span class="val"><strong>' + procName + '</strong></span></div>' +
+    (procSpec ? '<div class="pdf-row"><span class="lbl">Specifications</span><span class="val">' + procSpec + '</span></div>' : '') +
+    '</div>' +
+    '<div class="pdf-section"><div class="pdf-section-title">Declaration</div>' +
+    '<ol style="padding-left:18px;margin:0;line-height:2.4;font-size:12px;color:#334155">' +
+    '<li>The nature of <strong>' + procName + '</strong> — its purpose, steps, risks, and benefits — has been explained to me in a language I understand.</li>' +
+    (procSpec ? '<li>I understand that the procedure will be carried out as follows: <em>' + procSpec + '</em>.</li>' : '') +
+    '<li>I have been informed of alternative treatments available to me.</li>' +
+    '<li>I have been told what sensations I may experience during and after the procedure.</li>' +
+    '<li>I understand I may withdraw consent at any time using hand signals or verbal communication, without any consequence to my ongoing care.</li>' +
+    '<li>I consent to proceed with <strong>' + fullProc + '</strong> as planned.</li>' +
+    '</ol></div>' +
+    '<div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:32px">' +
+    '<div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div>' +
+    '<div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div>' +
+    '</div>';
+  var html = buildPdfHtml(contentHtml, 'Informed Consent Form', dentName, clinicN, joinC, licNo, regSt, 'Patient: ' + patName, null);
+  openPrintWindow(html, 'consent_form_' + Date.now());
 }
 
 // ── HANDOFF CARD ──────────────────────────────────────────────────────────────
@@ -8092,63 +8151,85 @@ function startVoiceNote(fieldId){
 }
 
 // ── LANGUAGE ENFORCEMENT ──────────────────────────────────────────────────────
+// Dentist portal now respects the dentist's own language preference.
+// Patient content in the docket can be translated via the 🌐 Translate button.
 function enforcePortalLanguage(){
-  if(!currentProfile)return;
-  var isDentist=['dentist','dentist_pending','clinic_admin'].indexOf(currentProfile.role)!==-1;
-  if(!isDentist)return;
-  var combo=document.querySelector('.goog-te-combo');
-  if(combo&&combo.value&&combo.value!=='en'){combo.value='en';combo.dispatchEvent(new Event('change'));}
+  // No-op — removed English lock so dentist can use any language.
 }
 
 
 
 function generateReferralFromSummary() {
-  var typeEl=document.getElementById('cs-referral-type-sum');
-  var reasonEl=document.getElementById('cs-referral-reason-sum');
-  var preview=document.getElementById('cs-referral-preview-sum');
-  if(!typeEl||!reasonEl||!preview)return;
-  if(!typeEl.value){showToast('Please select a specialist type');return;}
-  var specialist=typeEl.options[typeEl.selectedIndex].text;
-  var reason=reasonEl.value.trim()||'Please see for specialist assessment.';
-  var patName=window._csDocketPatName||'the patient';
-  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'the referring dentist';
-  var clinic=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Care Dental Clinic';
-  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var L=[
-    'Date: '+today,'',
-    'Dear Colleague,','',
-    'Re: '+patName,'',
-    'I am writing to refer the above patient to your '+specialist+' clinic.','',
-    'Reason for referral:',reason,'',
-    'This patient experiences dental anxiety. Their fear profile is available via SerenOra Care.','',
-    'Yours sincerely,','Dr '+dentName,clinic
-  ].join('\n');
-  // Render as proper clinic letterhead PDF
-  var dentName2=currentProfile&&currentProfile.full_name?currentProfile.full_name:'';
-  var clinicN2=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:(clinic||'SerenOra Clinic');
-  var joinC2=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
-  var licNo2=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
-  var regSt2=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
-  var contentHtml='<div style="white-space:pre-wrap;font-size:13px;line-height:1.9;color:#334155">'+L.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
-  preview.innerHTML='<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;font-size:12px;color:#1e293b;white-space:pre-wrap;line-height:1.8;margin-bottom:10px">'+L+'</div>'
-    +'<button onclick="openPrintWindow(buildPdfHtml('+JSON.stringify(contentHtml)+',\'Referral Letter\','+JSON.stringify(dentName2)+','+JSON.stringify(clinicN2)+','+JSON.stringify(joinC2)+','+JSON.stringify(licNo2)+','+JSON.stringify(regSt2)+',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
-  preview.style.display='block';
+  var typeEl   = document.getElementById('cs-referral-type-sum');
+  var procEl   = document.getElementById('cs-referral-proc-sum');
+  var reasonEl = document.getElementById('cs-referral-reason-sum');
+  var preview  = document.getElementById('cs-referral-preview-sum');
+  if (!typeEl || !preview) return;
+  if (!typeEl.value) { showToast('Please select a specialist type'); return; }
+  var specialist = typeEl.options[typeEl.selectedIndex].text;
+  var proc       = (procEl && procEl.value.trim()) || 'the proposed dental procedure';
+  var notes      = reasonEl ? reasonEl.value.trim() : '';
+  var patName    = window._csDocketPatName || 'the patient';
+  var dentName2  = currentProfile && currentProfile.full_name ? currentProfile.full_name : '';
+  var clinicN2   = currentProfile && currentProfile.clinics && currentProfile.clinics.name ? currentProfile.clinics.name : 'SerenOra Clinic';
+  var joinC2     = currentProfile && currentProfile.clinics && currentProfile.clinics.join_code ? currentProfile.clinics.join_code : '';
+  var licNo2     = currentProfile && currentProfile.license_number ? currentProfile.license_number : '';
+  var regSt2     = currentProfile && currentProfile.reg_state ? currentProfile.reg_state : '';
+  var today      = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var mhLines    = _getMHLines();
+
+  var bodyHtml   = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName2, clinicN2, licNo2, regSt2, today);
+  var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
+
+  preview.innerHTML =
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
+    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName2) + ',' + JSON.stringify(clinicN2) + ',' + JSON.stringify(joinC2) + ',' + JSON.stringify(licNo2) + ',' + JSON.stringify(regSt2) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
+  preview.style.display = 'block';
 }
 
 function generateConsentFromSummary() {
-  var patName=window._csDocketPatName||'Patient';
-  var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'your dentist';
-  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
-  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
-  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
-  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
-  var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var procs=[];
-  document.querySelectorAll('.cs-procedure-performed-sel,.cs-procedure-advised-sel').forEach(function(s){if(s.value&&s.options[s.selectedIndex])procs.push(s.options[s.selectedIndex].text);});
-  var procStr=procs.length?procs.join(', '):'the proposed procedures';
-  var contentHtml='<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div><div class="pdf-row"><span class="lbl">Date</span><span class="val">'+today+'</span></div><div class="pdf-row"><span class="lbl">Patient</span><span class="val">'+patName+'</span></div><div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr '+dentName+'</span></div><div class="pdf-row"><span class="lbl">Procedures</span><span class="val">'+procStr+'</span></div></div><div class="pdf-section"><div class="pdf-section-title">Declaration</div><ol style="padding-left:18px;margin:0;line-height:2.2;font-size:12px;color:#334155"><li>The procedures, their purpose, risks and benefits have been explained to me in a language I understand.</li><li>I have been informed of alternative treatments available.</li><li>I understand I may withdraw consent at any time using hand signals.</li><li>I agree to proceed with <strong>'+procStr+'</strong>.</li></ol></div><div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px"><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div></div>';
-  var html=buildPdfHtml(contentHtml,'Informed Consent Form',dentName,clinicN,joinC,licNo,regSt,'Patient: '+patName,null);
-  openPrintWindow(html,'consent_form_'+Date.now());
+  var procNameEl = document.getElementById('cs-consent-proc-name-sum');
+  var procSpecEl = document.getElementById('cs-consent-proc-spec-sum');
+  // Fallback: collect from casesheet procedure selects
+  var procs = [];
+  document.querySelectorAll('.cs-procedure-performed-sel,.cs-procedure-advised-sel').forEach(function(s){
+    if (s.value && s.options[s.selectedIndex]) procs.push(s.options[s.selectedIndex].text);
+  });
+  var procName = (procNameEl && procNameEl.value.trim())
+    ? procNameEl.value.trim()
+    : (procs.length ? procs.join(', ') : 'the proposed procedures');
+  var procSpec  = procSpecEl ? procSpecEl.value.trim() : '';
+  var fullProc  = procSpec ? procName + ' (' + procSpec + ')' : procName;
+  var patName  = window._csDocketPatName || 'Patient';
+  var dentName = currentProfile && currentProfile.full_name ? currentProfile.full_name : 'your dentist';
+  var clinicN  = currentProfile && currentProfile.clinics && currentProfile.clinics.name ? currentProfile.clinics.name : 'SerenOra Clinic';
+  var joinC    = currentProfile && currentProfile.clinics && currentProfile.clinics.join_code ? currentProfile.clinics.join_code : '';
+  var licNo    = currentProfile && currentProfile.license_number ? currentProfile.license_number : '';
+  var regSt    = currentProfile && currentProfile.reg_state ? currentProfile.reg_state : '';
+  var today    = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var contentHtml =
+    '<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div>' +
+    '<div class="pdf-row"><span class="lbl">Date</span><span class="val">' + today + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Patient</span><span class="val">' + patName + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr ' + dentName + '</span></div>' +
+    '<div class="pdf-row"><span class="lbl">Procedure</span><span class="val"><strong>' + procName + '</strong></span></div>' +
+    (procSpec ? '<div class="pdf-row"><span class="lbl">Specifications</span><span class="val">' + procSpec + '</span></div>' : '') +
+    '</div>' +
+    '<div class="pdf-section"><div class="pdf-section-title">Declaration</div>' +
+    '<ol style="padding-left:18px;margin:0;line-height:2.4;font-size:12px;color:#334155">' +
+    '<li>The nature of <strong>' + procName + '</strong> — its purpose, steps, risks, and benefits — has been explained to me in a language I understand.</li>' +
+    (procSpec ? '<li>I understand that the procedure will be carried out as follows: <em>' + procSpec + '</em>.</li>' : '') +
+    '<li>I have been informed of alternative treatments available to me.</li>' +
+    '<li>I have been told what sensations I may experience during and after the procedure.</li>' +
+    '<li>I understand I may withdraw consent at any time using hand signals or verbal communication, without any consequence to my ongoing care.</li>' +
+    '<li>I consent to proceed with <strong>' + fullProc + '</strong> as planned.</li>' +
+    '</ol></div>' +
+    '<div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:32px">' +
+    '<div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div>' +
+    '<div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div>' +
+    '</div>';
+  var html = buildPdfHtml(contentHtml, 'Informed Consent Form', dentName, clinicN, joinC, licNo, regSt, 'Patient: ' + patName, null);
+  openPrintWindow(html, 'consent_form_' + Date.now());
 }
 
 
@@ -10166,44 +10247,44 @@ async function loadDentistInbox() {
   listEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0">⏳ Loading…</div>';
 
   try {
-    // patient_messages table: messages sent by patients to this clinic
+    // patient_messages table: ALL messages for this clinic (both directions)
     let pmRows = [];
     if (clinicId) {
       const { data: pmData } = await db
         .from('patient_messages')
         .select('id, message, created_at, patient_id, sender_role')
         .eq('clinic_id', clinicId)
-        .eq('sender_role', 'patient')
         .order('created_at', { ascending: false });
       pmRows = pmData || [];
     }
 
-    // Also check the peer messages table (patient→dentist direct messages)
-    const { data: peerData, error } = await db
-      .from('messages')
-      .select('sender_id, content, created_at')
-      .eq('recipient_id', dentistId)
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    const peerRows = peerData || [];
+    // Also check the peer messages table (both directions: patient→dentist AND dentist→patient)
+    const [peerFromPatient, peerFromDentist] = await Promise.all([
+      db.from('messages').select('sender_id, content, created_at').eq('recipient_id', dentistId).order('created_at', { ascending: false }),
+      db.from('messages').select('recipient_id, content, created_at').eq('sender_id', dentistId).order('created_at', { ascending: false })
+    ]);
+    const peerRows = [...(peerFromPatient.data || []), ...(peerFromDentist.data || [])];
 
     if (pmRows.length === 0 && peerRows.length === 0) {
       listEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:12px 0;text-align:center">No patient messages yet. When patients message you, they\'ll appear here.</div>';
       return;
     }
 
-    // Build thread list — one entry per patient (latest message wins)
+    // Build thread list — one entry per patient (latest message from EITHER side wins)
     const threadMap = {};
     for (const m of pmRows) {
       const pid = String(m.patient_id);
+      const label = m.sender_role === 'dentist' ? '← You: ' + m.message : m.message;
       if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) {
-        threadMap[pid] = { pid, content: m.message, created_at: m.created_at };
+        threadMap[pid] = { pid, content: label, created_at: m.created_at };
       }
     }
     for (const m of peerRows) {
-      const pid = String(m.sender_id);
+      // sender_id present = message from patient, recipient_id present = message from dentist
+      const pid = m.sender_id ? String(m.sender_id) : String(m.recipient_id);
+      const label = m.sender_id ? m.content : '← You: ' + m.content;
       if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) {
-        threadMap[pid] = { pid, content: m.content, created_at: m.created_at };
+        threadMap[pid] = { pid, content: label, created_at: m.created_at };
       }
     }
     const threads = Object.values(threadMap).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
@@ -10250,15 +10331,18 @@ async function loadDentMessagesTab() {
       const { data: pmData } = await db.from('patient_messages').select('id,message,created_at,patient_id,sender_role').eq('clinic_id', clinicId).order('created_at', { ascending: false });
       pmRows = pmData || [];
     }
-    const { data: peerData } = await db.from('messages').select('sender_id,content,created_at').eq('recipient_id', dentistId).order('created_at', { ascending: false });
-    const peerRows = peerData || [];
+    const [peerFromPat, peerFromDent] = await Promise.all([
+      db.from('messages').select('sender_id,content,created_at').eq('recipient_id', dentistId).order('created_at', { ascending: false }),
+      db.from('messages').select('recipient_id,content,created_at').eq('sender_id', dentistId).order('created_at', { ascending: false })
+    ]);
+    const peerRows = [...(peerFromPat.data || []), ...(peerFromDent.data || [])];
     if (pmRows.length === 0 && peerRows.length === 0) {
       listEl.innerHTML = '<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">💬</div><div style="font-weight:700;font-size:15px;color:#e2e8f0;margin-bottom:6px">No messages yet</div><div style="font-size:13px;color:#64748b">When patients send you messages, they\'ll appear here.</div></div>';
       return;
     }
     const threadMap = {};
-    for (const m of pmRows) { const pid = String(m.patient_id); if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: m.message, created_at: m.created_at }; }
-    for (const m of peerRows) { const pid = String(m.sender_id); if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: m.content, created_at: m.created_at }; }
+    for (const m of pmRows) { const pid = String(m.patient_id); const label = m.sender_role === 'dentist' ? '← You: ' + m.message : m.message; if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: label, created_at: m.created_at }; }
+    for (const m of peerRows) { const pid = m.sender_id ? String(m.sender_id) : String(m.recipient_id); const label = m.sender_id ? m.content : '← You: ' + m.content; if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: label, created_at: m.created_at }; }
     const threads = Object.values(threadMap).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
     let profiles = {};
     try { const { data: pdata } = await db.from('profiles').select('id,full_name').in('id', threads.map(t=>t.pid)); if (pdata) pdata.forEach(p => { profiles[String(p.id)] = p.full_name || 'Patient'; }); } catch(_) {}
@@ -11630,11 +11714,13 @@ function makeDraggable(el, onTap) {
               <div style="background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px">
                 <div style="font-size:11px;font-weight:700;color:#99f6e4;margin-bottom:6px">📝 Informed Consent</div>
                 <div style="font-size:10px;color:#64748b;margin-bottom:8px">Patient has been informed of: risks, benefits, alternatives, and what to expect.</div>
+                <input id="cs-consent-proc-name" class="cs-input" placeholder="Procedure name (e.g. Root Canal Treatment — tooth 36)" style="margin-bottom:6px;font-size:12px">
+                <textarea id="cs-consent-proc-spec" class="cs-textarea" rows="2" placeholder="Procedure specifications / details (e.g. under LA, single sitting, posts if required)…" style="margin-bottom:8px;font-size:12px"></textarea>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
                   <input type="checkbox" id="cs-consent-given" style="accent-color:#0d9488;width:16px;height:16px">
                   <label for="cs-consent-given" style="font-size:12px;color:#e2e8f0;cursor:pointer">Patient gave verbal informed consent</label>
                 </div>
-                <button onclick="generateConsentForm()" style="width:100%;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">Generate Multilingual Consent Form →</button>
+                <button onclick="generateConsentForm()" style="width:100%;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">Generate Consent Form →</button>
               </div>
               <!-- Referral Letter -->
               <div class="cs-field" style="margin-bottom:10px">
@@ -11650,9 +11736,10 @@ function makeDraggable(el, onTap) {
                   <option value="maxfac">Maxillofacial Surgeon</option>
                   <option value="gp">General Physician</option>
                 </select>
-                <textarea class="cs-textarea" id="cs-referral-reason" rows="2" placeholder="Reason for referral..."></textarea>
+                <input class="cs-input" id="cs-referral-proc" placeholder="Procedure to be performed (e.g. Extraction — tooth 46, RCT)" style="margin-bottom:8px">
+                <textarea class="cs-textarea" id="cs-referral-reason" rows="2" placeholder="Additional notes / reason (optional)…"></textarea>
                 <button onclick="generateReferralLetter()" style="width:100%;margin-top:6px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#a78bfa;padding:8px;border-radius:8px;font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer">📄 Generate Referral Letter</button>
-                <div id="cs-referral-preview" style="display:none;margin-top:8px;background:#0d1f3c;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;font-size:11px;color:#cbd5e1;line-height:1.7;white-space:pre-wrap"></div>
+                <div id="cs-referral-preview" style="display:none;margin-top:8px"></div>
               </div>
               <!-- Anxiety Insight for patient -->
               <div style="background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2);border-radius:10px;padding:12px;margin-bottom:10px">
@@ -12083,15 +12170,6 @@ function makeDraggable(el, onTap) {
           </div>
         </div>
 
-        <!-- Patient messages inbox -->
-        <div class="dent-card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div style="font-weight:700;font-size:15px;color:#e2e8f0">Patient Messages</div>
-            <span id="dent-unread-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700">0</span>
-          </div>
-          <div id="dent-inbox-list"><div style="font-size:13px;color:#64748b;text-align:center;padding:16px">Loading messages…</div></div>
-        </div>
-
         <!-- Personal journal -->
         <div class="dent-card">
           <div style="font-weight:700;font-size:15px;color:#e2e8f0;margin-bottom:4px">Personal Journal</div>
@@ -12119,25 +12197,13 @@ function makeDraggable(el, onTap) {
             </select>
           </div>
 
-          <!-- Language -->
+          <!-- Language — via Google Translate -->
           <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06)">
             <div style="display:flex;align-items:center;gap:10px">
               <span style="font-size:18px">🌐</span>
-              <div><div style="font-weight:600;font-size:14px;color:#e2e8f0">Language</div><div style="font-size:11px;color:#64748b">App display language</div></div>
+              <div><div style="font-weight:600;font-size:14px;color:#e2e8f0">Language</div><div style="font-size:11px;color:#64748b">Translate via Google</div></div>
             </div>
-            <select id="dent-pref-lang" onchange="applyPrefLang(this.value)" class="dent-pref-select" style="border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:6px 10px;font-family:var(--font);font-size:12px;color:#e2e8f0;background:#1e2d40;outline:none">
-              <option value="en">English</option>
-              <option value="hi">हिन्दी</option>
-              <option value="mr">मराठी</option>
-              <option value="gu">ગુજરાતી</option>
-              <option value="te">తెలుగు</option>
-              <option value="ta">தமிழ்</option>
-              <option value="ur">اردو</option>
-              <option value="fr">Français</option>
-              <option value="es">Español</option>
-              <option value="zh">中文</option>
-              <option value="ja">日本語</option>
-            </select>
+            <a href="https://translate.google.com" target="_blank" rel="noopener" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:600;font-family:var(--font);text-decoration:none;display:inline-block">Google Translate →</a>
           </div>
 
           <!-- Audio -->
@@ -12977,10 +13043,12 @@ function syncDentSettingsUI() {
   const patThemeSel = document.getElementById('pref-theme');
   if (themeSel && patThemeSel) themeSel.value = patThemeSel.value;
 
-  // Sync language selector
-  const langSel = document.getElementById('dent-pref-lang');
-  const patLangSel = document.getElementById('pref-lang');
-  if (langSel && patLangSel) langSel.value = patLangSel.value;
+  // Language: now uses Google Translate (no dropdown to sync)
+  // Save dentist's GT language preference for docket translation
+  const combo = document.querySelector('.goog-te-combo');
+  if (combo && combo.value && combo.value !== '') {
+    try { localStorage.setItem('serenora_dent_pref_lang', combo.value); } catch(_) {}
+  }
 
   // Sync night mode toggle
   const knob = document.getElementById('dent-night-knob');
@@ -13818,7 +13886,10 @@ function continueAsGuest() {
   <div class="docket-header">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <div class="docket-avatar" id="docket-avatar">—</div>
-      <button onclick="closeDocket()" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button onclick="translateDocketContent()" title="Translate patient notes to your language" style="background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--font)">🌐 Translate</button>
+        <button onclick="closeDocket()" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
+      </div>
     </div>
     <div class="docket-name" id="docket-name">Select a patient</div>
     <div class="docket-meta" id="docket-meta">—</div>
@@ -14397,11 +14468,15 @@ function continueAsGuest() {
             <option value="maxfac">Maxillofacial Surgeon</option>
             <option value="gp">General Physician</option>
           </select>
-          <textarea id="cs-referral-reason-sum" rows="2" placeholder="Reason for referral..." style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);resize:none;box-sizing:border-box;margin-bottom:8px"></textarea>
+          <input id="cs-referral-proc-sum" placeholder="Procedure to be performed (e.g. Implant placement — tooth 46)" style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);box-sizing:border-box;margin-bottom:8px">
+          <textarea id="cs-referral-reason-sum" rows="2" placeholder="Additional notes / reason (optional)…" style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);resize:none;box-sizing:border-box;margin-bottom:8px"></textarea>
           <button onclick="generateReferralFromSummary()" style="width:100%;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#a78bfa;padding:9px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;margin-bottom:8px">📄 Generate Referral Letter</button>
-          <div id="cs-referral-preview-sum" style="display:none;background:#0d1f3c;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;font-size:11px;color:#cbd5e1;line-height:1.7;white-space:pre-wrap;margin-bottom:8px"></div>
+          <div id="cs-referral-preview-sum" style="display:none;margin-bottom:8px"></div>
         </div>
         <div style="background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2);border-radius:12px;padding:12px;margin-top:10px">
+          <div style="font-size:11px;font-weight:700;color:#99f6e4;margin-bottom:8px">📝 Informed Consent</div>
+          <input id="cs-consent-proc-name-sum" placeholder="Procedure name (e.g. Scaling & Root Planing)" style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);box-sizing:border-box;margin-bottom:6px">
+          <textarea id="cs-consent-proc-spec-sum" rows="2" placeholder="Procedure specifications / details…" style="width:100%;background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);resize:none;box-sizing:border-box;margin-bottom:8px"></textarea>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
             <input type="checkbox" id="cs-consent-sum" style="accent-color:#0d9488;width:16px;height:16px">
             <label for="cs-consent-sum" style="font-size:12px;color:#e2e8f0;cursor:pointer">Patient gave verbal informed consent for all procedures above</label>
@@ -14447,6 +14522,24 @@ function openDocket(patientId) {
 function closeDocket() {
   document.getElementById('docket-overlay').classList.remove('open');
   document.getElementById('docket-panel').classList.remove('open');
+}
+
+// ── DOCKET TRANSLATION ────────────────────────────────────────────────────────
+// Applies the dentist's Google Translate selection to docket panel content.
+// Also falls back to opening Google Translate if GT widget isn't active.
+function translateDocketContent() {
+  // Try to trigger the global Google Translate widget to the dentist's saved language
+  const dentLang = localStorage.getItem('serenora_dent_pref_lang') || 'en';
+  const combo = document.querySelector('.goog-te-combo');
+  if (combo) {
+    combo.value = dentLang;
+    combo.dispatchEvent(new Event('change'));
+    showToast('Translating to your selected language…');
+  } else {
+    // GT not loaded — open Google Translate with page URL
+    const url = 'https://translate.google.com/translate?sl=auto&tl=' + dentLang + '&u=' + encodeURIComponent(location.href);
+    window.open(url, '_blank', 'noopener');
+  }
 }
 function switchDocketTab(tab, btn) {
   ['records','docs','xray','history','handoff'].forEach(t => {
