@@ -7767,6 +7767,46 @@ function _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName,
   ].join('');
 }
 
+
+// Builds inline-styled preview for rendering inside the dark app UI (no external CSS classes needed)
+function _buildReferralPreview(patName, specialist, proc, mhLines, notes, clinicN, today) {
+  var ROW = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #334155';
+  var LBL = 'color:#94a3b8;font-size:12px';
+  var VAL = 'font-weight:600;color:#e2e8f0;font-size:12px;text-align:right;max-width:60%';
+  var SEC_TITLE = 'font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#0d9488;border-bottom:1px solid #334155;padding-bottom:4px;margin-bottom:8px';
+  var SEC = 'margin-bottom:16px';
+  var mhRow = mhLines.length
+    ? '<div style="'+ROW+'"><span style="'+LBL+'">Medical History</span><span style="'+VAL+'">'+mhLines.join('; ')+'</span></div>'
+    : '';
+  var notesBlock = notes
+    ? '<div style="'+SEC+'"><div style="'+SEC_TITLE+'">Additional Notes</div><p style="margin:0;color:#cbd5e1;font-size:12px">'+notes+'</p></div>'
+    : '';
+  return '<div style="'+SEC+'">'
+    +'<div style="'+SEC_TITLE+'">Referral Details</div>'
+    +'<div style="'+ROW+'"><span style="'+LBL+'">Date</span><span style="'+VAL+'">'+today+'</span></div>'
+    +'<div style="'+ROW+'"><span style="'+LBL+'">Patient</span><span style="'+VAL+'">'+patName+'</span></div>'
+    +'<div style="'+ROW+'"><span style="'+LBL+'">Referred To</span><span style="'+VAL+'">'+specialist+'</span></div>'
+    +'<div style="'+ROW+'"><span style="'+LBL+'">Planned Procedure</span><span style="'+VAL+'">'+proc+'</span></div>'
+    +mhRow+'</div>'
+    +'<div style="'+SEC+'">'
+    +'<div style="'+SEC_TITLE+'">Clinical Note</div>'
+    +'<p style="margin:0 0 8px;color:#cbd5e1;font-size:12px">Dear Colleague,</p>'
+    +'<p style="margin:0 0 8px;color:#cbd5e1;font-size:12px">I am writing to request your specialist opinion and clearance for <strong style=\"color:#e2e8f0\">'+patName+'</strong>, who is currently under my care at <strong style=\"color:#e2e8f0\">'+clinicN+'</strong>.</p>'
+    +'<p style="margin:0 0 8px;color:#cbd5e1;font-size:12px">I would be grateful if you could <strong style=\"color:#e2e8f0\">provide clearance to proceed</strong> with the above procedure and advise on any medication alterations you deem appropriate.</p>'
+    +'<p style="margin:0;color:#cbd5e1;font-size:12px">This patient experiences dental anxiety; their behavioural profile is available via SerenOra Care if required.</p>'
+    +'</div>'+notesBlock;
+}
+
+// Safe print helper — avoids embedding HTML inside onclick attribute strings
+function _printReferralLetter() {
+  var p = window._referralPdfParams;
+  if (!p) return;
+  openPrintWindow(
+    buildPdfHtml(p.contentHtml, 'Referral Letter — ' + p.specialist, p.dentName, p.clinicN, p.joinC, p.licNo, p.regSt, 'Referral Letter', null),
+    'referral_letter'
+  );
+}
+
 function _getMHLines() {
   try {
     var mh = window._csDocketMH || {};
@@ -7798,10 +7838,12 @@ function generateReferralLetter() {
   var mhLines    = _getMHLines();
 
   var contentHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today);
+  var previewHtml  = _buildReferralPreview(patName, specialist, proc, mhLines, notes, clinicN, today);
+  window._referralPdfParams = { contentHtml: contentHtml, specialist: specialist, dentName: dentName, clinicN: clinicN, joinC: joinC, licNo: licNo, regSt: regSt };
 
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px">' + contentHtml + '</div>' +
-    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName) + ',' + JSON.stringify(clinicN) + ',' + JSON.stringify(joinC) + ',' + JSON.stringify(licNo) + ',' + JSON.stringify(regSt) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
+    '<div style="background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:20px;margin-bottom:10px">' + previewHtml + '</div>' +
+    '<button onclick="_printReferralLetter()" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">\uD83D\uDDA8\uFE0F Print / Download PDF</button>';
   preview.style.display = 'block';
 }
 
@@ -8178,10 +8220,12 @@ function generateReferralFromSummary() {
   var mhLines    = _getMHLines();
 
   var contentHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName2, clinicN2, licNo2, regSt2, today);
+  var previewHtml  = _buildReferralPreview(patName, specialist, proc, mhLines, notes, clinicN2, today);
+  window._referralPdfParams = { contentHtml: contentHtml, specialist: specialist, dentName: dentName2, clinicN: clinicN2, joinC: joinC2, licNo: licNo2, regSt: regSt2 };
 
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px">' + contentHtml + '</div>' +
-    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName2) + ',' + JSON.stringify(clinicN2) + ',' + JSON.stringify(joinC2) + ',' + JSON.stringify(licNo2) + ',' + JSON.stringify(regSt2) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
+    '<div style="background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:20px;margin-bottom:10px">' + previewHtml + '</div>' +
+    '<button onclick="_printReferralLetter()" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">\uD83D\uDDA8\uFE0F Print / Download PDF</button>';
   preview.style.display = 'block';
 }
 
