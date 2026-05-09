@@ -7742,28 +7742,28 @@ function checkDrugInteractions() {
 // ── REFERRAL LETTER ───────────────────────────────────────────────────────────
 function _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today) {
   var mhBlock = mhLines.length
-    ? '<p style="margin:0 0 6px"><strong>Medical History:</strong> ' + mhLines.join('; ') + '</p>'
+    ? '<div class="pdf-row"><span class="lbl">Medical History</span><span class="val">' + mhLines.join('; ') + '</span></div>'
     : '';
   var notesBlock = notes
-    ? '<p style="margin:0 0 6px"><strong>Additional notes:</strong> ' + notes + '</p>'
-    : '';
-  var licBlock = (licNo || regSt)
-    ? '<span style="color:#475569;font-size:11px">' + (licNo ? 'Reg. No. ' + licNo : '') + (licNo && regSt ? ' · ' : '') + (regSt || '') + '</span>'
+    ? '<div class="pdf-section"><div class="pdf-section-title">Additional Notes</div><p style="margin:0;color:#334155">' + notes + '</p></div>'
     : '';
   return [
-    '<p style="margin:0 0 4px;color:#64748b;font-size:12px">' + today + '</p>',
-    '<p style="margin:0 0 18px"><strong>Dear Colleague,</strong></p>',
-    '<p style="margin:0 0 6px"><strong>Re: ' + patName + '</strong></p>',
-    '<p style="margin:0 0 14px">I am writing to request your specialist opinion and clearance for the above-named patient who is currently under my care at <strong>' + clinicN + '</strong>.</p>',
-    '<p style="margin:0 0 6px"><strong>Planned Procedure:</strong> ' + proc + '</p>',
-    mhBlock,
-    '<p style="margin:0 0 14px">In view of the patient\'s medical history, I would be grateful if you could <strong>provide clearance to proceed</strong> with the above procedure and advise on any alterations to medication dosage or regimen you deem appropriate prior to and following treatment.</p>',
-    notesBlock,
-    '<p style="margin:0 0 14px">This patient also experiences dental anxiety; their behavioural profile is available via SerenOra Care if required.</p>',
-    '<p style="margin:0 0 4px">Yours sincerely,</p>',
-    '<p style="margin:0 0 2px"><strong>Dr ' + dentName + '</strong></p>',
-    '<p style="margin:0 0 2px;color:#475569">' + clinicN + '</p>',
-    licBlock
+    '<div class="pdf-section">',
+      '<div class="pdf-section-title">Referral Details</div>',
+      '<div class="pdf-row"><span class="lbl">Date</span><span class="val">' + today + '</span></div>',
+      '<div class="pdf-row"><span class="lbl">Patient</span><span class="val">' + patName + '</span></div>',
+      '<div class="pdf-row"><span class="lbl">Referred To</span><span class="val">' + specialist + '</span></div>',
+      '<div class="pdf-row"><span class="lbl">Planned Procedure</span><span class="val">' + proc + '</span></div>',
+      mhBlock,
+    '</div>',
+    '<div class="pdf-section">',
+      '<div class="pdf-section-title">Clinical Note</div>',
+      '<p style="margin:0 0 10px;color:#334155">Dear Colleague,</p>',
+      '<p style="margin:0 0 10px;color:#334155">I am writing to request your specialist opinion and clearance for <strong>' + patName + '</strong>, who is currently under my care at <strong>' + clinicN + '</strong>.</p>',
+      '<p style="margin:0 0 10px;color:#334155">In view of the patient\'s medical history, I would be grateful if you could <strong>provide clearance to proceed</strong> with the above procedure and advise on any alterations to medication dosage or regimen you deem appropriate prior to and following treatment.</p>',
+      '<p style="margin:0;color:#334155">This patient also experiences dental anxiety; their behavioural profile is available via SerenOra Care if required.</p>',
+    '</div>',
+    notesBlock
   ].join('');
 }
 
@@ -7797,21 +7797,12 @@ function generateReferralLetter() {
   var today      = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   var mhLines    = _getMHLines();
 
-  var bodyHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today);
-  var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
-
-  window._referralPrintData = { contentHtml: contentHtml, specialist: specialist, dentName: dentName, clinicN: clinicN, joinC: joinC, licNo: licNo, regSt: regSt };
+  var contentHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today);
 
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
-    '<button id="referral-print-btn" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px">' + contentHtml + '</div>' +
+    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName) + ',' + JSON.stringify(clinicN) + ',' + JSON.stringify(joinC) + ',' + JSON.stringify(licNo) + ',' + JSON.stringify(regSt) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
   preview.style.display = 'block';
-
-  var btn = document.getElementById('referral-print-btn');
-  if (btn) btn.addEventListener('click', function() {
-    var d = window._referralPrintData || {};
-    openPrintWindow(buildPdfHtml(d.contentHtml, 'Referral Letter — ' + d.specialist, d.dentName, d.clinicN, d.joinC, d.licNo, d.regSt, 'Referral Letter', null), 'referral_letter');
-  });
 }
 
 // ── CONSENT FORM ──────────────────────────────────────────────────────────────
@@ -7858,130 +7849,29 @@ function generateConsentForm() {
 
 // ── HANDOFF CARD ──────────────────────────────────────────────────────────────
 async function loadDocketHandoff() {
-  var el = document.getElementById('docket-handoff-content');
+  var el=document.getElementById('docket-handoff-content');
   var _hPatId = window._docketCurrentPatientId || window._csDocketPatientId;
-  if (!el || !_hPatId) return;
-  var activeDb = db || window.__supaDb;
-  if (!activeDb) return;
-
-  // Guard: stamp the element with the patient we're loading so a race can't overwrite
-  var _loadingFor = String(_hPatId);
-  el.dataset.loadingFor = _loadingFor;
-  el.innerHTML = '<div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Loading patient summary…</div>';
-
-  try {
-    var patId = _loadingFor;
-    var pr = await activeDb.from('profiles').select('full_name,age,sex,medical_history,friendly_id').eq('id', patId).maybeSingle();
-    var pat = pr.data || {};
-    var mh = (pat.medical_history && typeof pat.medical_history === 'object') ? pat.medical_history : {};
-    var sr = await activeDb.from('dental_stories').select('fears,past_experience,summary,mdas_history').eq('patient_id', patId).maybeSingle();
-    var story = sr.data || {};
-    // Fetch recent records for the AI summary
-    var rr = await activeDb.from('medical_records').select('procedure_type,treatment_summary,cs_data,created_at').eq('patient_id', patId).order('created_at', { ascending: false }).limit(5);
-    var recentRecs = rr.data || [];
-
-    // If this load was superseded by a newer patient, bail
-    if (el.dataset.loadingFor !== _loadingFor) return;
-
-    // ── Conditions: use the actual array, not key names ──
-    var condArr = Array.isArray(mh.conditions) ? mh.conditions : [];
-    var conditionsHtml = condArr.length
-      ? condArr.map(function(c){ return '<span style="display:inline-block;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:2px 9px;font-size:12px;color:#fca5a5;margin:2px 3px 2px 0">' + c + '</span>'; }).join('')
-      : '<span style="font-size:12px;color:#64748b">None recorded</span>';
-
-    // ── AI narrative summary ──
-    var aiSummaryHtml = '<div style="text-align:center;padding:10px;color:#64748b;font-size:12px">Generating summary…</div>';
-
-    var summaryCard = '<div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#a78bfa;margin-bottom:6px;letter-spacing:.5px">AI CLINICAL SUMMARY</div><div id="docket-ai-summary-text" style="font-size:12px;color:#c4b5fd;line-height:1.65">' + aiSummaryHtml + '</div></div>';
-
-    // MDAS score
-    var mdasArr = []; try { mdasArr = JSON.parse(story.mdas_history||'[]'); } catch(_) {}
-    var latestMdas = mdasArr.length ? mdasArr[mdasArr.length-1] : null;
-    var mdasColor = !latestMdas ? '#94a3b8' : latestMdas <= 10 ? '#22c55e' : latestMdas <= 18 ? '#f59e0b' : '#ef4444';
-    var mdasLabel = !latestMdas ? 'No MDAS data' : latestMdas <= 10 ? 'Low Anxiety' : latestMdas <= 18 ? 'Moderate Anxiety' : 'High Anxiety';
-
-    el.innerHTML =
-      '<div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px">' +
-        '<div style="font-size:16px;font-weight:800;color:#e2e8f0;margin-bottom:2px">' + (pat.full_name||'Patient') + '</div>' +
-        '<div style="font-size:11px;color:#64748b;margin-bottom:12px">' + (pat.age||'—') + ' yrs · ' + (pat.sex||'—') + ' · ID: ' + (pat.friendly_id||'—') + '</div>' +
-        summaryCard +
-        (condArr.length || mh.allergies || mh.medications ? '<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;margin-bottom:8px">' +
-          (condArr.length ? '<div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:6px;letter-spacing:.5px">CONDITIONS</div><div style="margin-bottom:' + (mh.allergies||mh.medications?'10':'0') + 'px">' + conditionsHtml + '</div>' : '') +
-          (mh.allergies ? '<div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px;margin-top:4px;letter-spacing:.5px">ALLERGIES</div><div style="font-size:12px;color:#fca5a5;margin-bottom:' + (mh.medications?'8':'0') + 'px">' + mh.allergies + '</div>' : '') +
-          (mh.medications ? '<div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px;letter-spacing:.5px">MEDICATIONS</div><div style="font-size:12px;color:#e2e8f0">' + mh.medications + '</div>' : '') +
-        '</div>' : '') +
-        (story.fears ? '<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px;letter-spacing:.5px">DENTAL FEARS</div><div style="font-size:12px;color:#fca5a5">' + story.fears + '</div></div>' : '') +
-        (latestMdas !== null ? '<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;gap:12px"><div style="font-size:20px;font-weight:900;color:' + mdasColor + '">' + latestMdas + '/25</div><div><div style="font-size:11px;font-weight:700;color:' + mdasColor + '">' + mdasLabel + '</div><div style="font-size:10px;color:#64748b">MDAS Anxiety Score</div></div></div>' : '') +
-        (story.past_experience ? '<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px;letter-spacing:.5px">PAST DENTAL EXPERIENCE</div><div style="font-size:12px;color:#e2e8f0;line-height:1.5">' + story.past_experience + '</div></div>' : '') +
+  if(!el||!_hPatId)return;
+  var activeDb=db||window.__supaDb;
+  if(!activeDb)return;
+  try{
+    var patId=String(_hPatId);
+    var pr=await activeDb.from('profiles').select('full_name,age,sex,medical_history,friendly_id').eq('id',patId).maybeSingle();
+    var pat=pr.data||{};
+    var mh=(pat.medical_history&&typeof pat.medical_history==='object')?pat.medical_history:{};
+    var sr=await activeDb.from('dental_stories').select('fears,summary').eq('patient_id',patId).maybeSingle();
+    var story=sr.data||{};
+    var conditions=Object.keys(mh).filter(function(k){return mh[k]&&k!=='allergies'&&k!=='medications';}).join(', ')||'None recorded';
+    el.innerHTML='<div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px">'+
+      '<div style="font-size:16px;font-weight:800;color:#e2e8f0;margin-bottom:4px">'+(pat.full_name||'Patient')+'</div>'+
+      '<div style="font-size:11px;color:#64748b;margin-bottom:12px">'+(pat.age||'—')+' yrs · '+(pat.sex||'—')+' · ID: '+(pat.friendly_id||'—')+'</div>'+
+      (story.fears?'<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px">FEARS</div><div style="font-size:12px;color:#fca5a5">'+story.fears+'</div></div>':'')+
+      (story.summary?'<div style="background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#99f6e4;margin-bottom:4px">APPROACH</div><div style="font-size:11px;color:#99f6e4;line-height:1.5">'+story.summary+'</div></div>':'')+
+      '<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">CONDITIONS</div><div style="font-size:12px;color:#e2e8f0">'+conditions+'</div></div>'+
+      (mh.medications?'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 12px;margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">MEDICATIONS</div><div style="font-size:12px;color:#e2e8f0">'+mh.medications+'</div></div>':'')+
+      (mh.allergies?'<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 12px"><div style="font-size:10px;font-weight:700;color:#f87171;margin-bottom:4px">ALLERGIES</div><div style="font-size:12px;color:#fca5a5">'+mh.allergies+'</div></div>':'')+
       '</div>';
-
-    // ── Fire AI summary asynchronously (non-blocking) ──
-    _generateHandoffAiSummary(pat, mh, story, recentRecs, _loadingFor);
-
-  } catch(e) {
-    if (el.dataset.loadingFor === _loadingFor)
-      el.innerHTML = '<div style="color:#f87171;padding:8px">' + (e.message||'Error loading summary') + '</div>';
-  }
-}
-
-async function _generateHandoffAiSummary(pat, mh, story, recentRecs, patId) {
-  var textEl = document.getElementById('docket-ai-summary-text');
-  if (!textEl) return;
-
-  var condArr = Array.isArray(mh.conditions) ? mh.conditions : [];
-  var recSummaries = recentRecs.slice(0, 3).map(function(r) {
-    var cs = {}; try { cs = JSON.parse(r.cs_data||'{}'); } catch(_) {}
-    var proc = r.procedure_type || 'Visit';
-    var d = ''; try { d = new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch(_) {}
-    return proc + (d?' on '+d:'') + (cs.treatment?' — '+cs.treatment.slice(0,80):'');
-  }).join('; ');
-
-  var mdasArr = []; try { mdasArr = JSON.parse(story.mdas_history||'[]'); } catch(_) {}
-  var latestMdas = mdasArr.length ? mdasArr[mdasArr.length-1] : null;
-
-  var prompt = 'You are a dental clinical assistant. Write a concise 2-3 sentence clinical handoff summary for the treating dentist about this patient. Be direct, clinically focused, and highlight the most important points for the dentist to know before the appointment. Do not use bullet points.
-
-' +
-    'Patient: ' + (pat.full_name||'Unknown') + ', ' + (pat.age||'?') + ' yrs, ' + (pat.sex||'unknown sex') + '
-' +
-    (condArr.length ? 'Medical conditions: ' + condArr.join(', ') + '
-' : '') +
-    (mh.allergies ? 'Allergies: ' + mh.allergies + '
-' : '') +
-    (mh.medications ? 'Current medications: ' + mh.medications + '
-' : '') +
-    (story.fears ? 'Dental fears: ' + story.fears + '
-' : '') +
-    (latestMdas !== null ? 'Anxiety score (MDAS): ' + latestMdas + '/25
-' : '') +
-    (story.past_experience ? 'Past dental experience: ' + story.past_experience + '
-' : '') +
-    (recSummaries ? 'Recent visits: ' + recSummaries + '
-' : 'No recent visits on record.
-');
-
-  try {
-    var resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    var data = await resp.json();
-    var summary = (data.content||[]).map(function(b){ return b.text||''; }).join('').trim();
-    // Guard: only update if still the same patient
-    var handoffEl = document.getElementById('docket-handoff-content');
-    if (handoffEl && handoffEl.dataset.loadingFor === String(patId)) {
-      var summaryTextEl = document.getElementById('docket-ai-summary-text');
-      if (summaryTextEl && summary) summaryTextEl.textContent = summary;
-    }
-  } catch(_) {
-    var summaryTextEl = document.getElementById('docket-ai-summary-text');
-    if (summaryTextEl) summaryTextEl.innerHTML = '<span style="color:#64748b;font-size:11px">Summary unavailable</span>';
-  }
+  }catch(e){el.innerHTML='<div style="color:#f87171;padding:8px">'+(e.message||'')+'</div>';}
 }
 
 // ── DENTIST SLOTS ─────────────────────────────────────────────────────────────
@@ -8287,21 +8177,12 @@ function generateReferralFromSummary() {
   var today      = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   var mhLines    = _getMHLines();
 
-  var bodyHtml   = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName2, clinicN2, licNo2, regSt2, today);
-  var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
-
-  window._referralPrintData = { contentHtml: contentHtml, specialist: specialist, dentName: dentName2, clinicN: clinicN2, joinC: joinC2, licNo: licNo2, regSt: regSt2 };
+  var contentHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName2, clinicN2, licNo2, regSt2, today);
 
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
-    '<button id="referral-print-btn-sum" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px">' + contentHtml + '</div>' +
+    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName2) + ',' + JSON.stringify(clinicN2) + ',' + JSON.stringify(joinC2) + ',' + JSON.stringify(licNo2) + ',' + JSON.stringify(regSt2) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
   preview.style.display = 'block';
-
-  var btn = document.getElementById('referral-print-btn-sum');
-  if (btn) btn.addEventListener('click', function() {
-    var d = window._referralPrintData || {};
-    openPrintWindow(buildPdfHtml(d.contentHtml, 'Referral Letter — ' + d.specialist, d.dentName, d.clinicN, d.joinC, d.licNo, d.regSt, 'Referral Letter', null), 'referral_letter');
-  });
 }
 
 function generateConsentFromSummary() {
@@ -14631,28 +14512,6 @@ let _csAffectedTeeth = new Set();
 // DOCKET
 function openDocket(patientId) {
   _csDocketPatientId = patientId;
-
-  // ── Reset all tabs to Records and wipe stale content before any async loads ──
-  switchDocketTab('records', document.querySelector('.docket-tab'));
-
-  // Clear stale data from previous patient immediately
-  const clearIds = {
-    'docket-avatar':         { text: '…' },
-    'docket-name':           { text: 'Loading…' },
-    'docket-meta':           { text: '' },
-    'docket-alerts':         { html: '' },
-    'docket-visits-list':    { html: '<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">Loading records…</div>' },
-    'docket-history-content':{ html: '<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">Loading…</div>' },
-    'docket-handoff-content':{ html: '<div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Loading patient summary…</div>' },
-    'docket-docs-list':      { html: '<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">Loading…</div>' },
-  };
-  Object.entries(clearIds).forEach(([id, op]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (op.text !== undefined) el.textContent = op.text;
-    if (op.html !== undefined) el.innerHTML   = op.html;
-  });
-
   document.getElementById('docket-overlay').classList.add('open');
   document.getElementById('docket-panel').classList.add('open');
   loadDocketPatientInfo(patientId);
@@ -15356,8 +15215,7 @@ function addPerformedProcedure() {
 
 // ── PER-ROW TOOTH GRID FUNCTIONS ─────────────────────────────────────────────
 // Each procedure row has its own Set of selected teeth, keyed by the row element
-const _rowTeethMap    = new WeakMap(); // row element → Set of selected FDI tooth numbers
-const _rowSentenceMap = new WeakMap(); // row element → last sentence written to textarea
+const _rowTeethMap = new WeakMap(); // row element → Set of selected FDI tooth numbers
 
 function initRowToothGrid(row, mode) {
   if (!row) return;
@@ -15410,20 +15268,19 @@ function toggleRowTooth(t, btn, mode) {
 
   if (preview) { preview.textContent = sentence; preview.style.display = 'block'; }
 
-  // Append to textarea — replace this row's previous sentence via WeakMap tracking (no visible tags)
+  // Append to textarea — replace this row's previous sentence if it exists, otherwise append
   if (ta) {
-    const prevSentence = _rowSentenceMap.get(row);
+    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+    // Look for existing line from this row
     const lines = ta.value.split('\n');
-    if (prevSentence) {
-      const idx = lines.findIndex(l => l === prevSentence);
-      if (idx >= 0) lines[idx] = sentence;
-      else lines.push(sentence);
+    const existIdx = lines.findIndex(l => l.includes(rowKey));
+    const tagged   = `${sentence} ${rowKey}`;
+    if (existIdx >= 0) {
+      lines[existIdx] = tagged;
+      ta.value = lines.join('\n');
     } else {
-      if (ta.value.trim()) lines.push(sentence);
-      else lines[0] = sentence;
+      ta.value = ta.value.trim() ? ta.value.trim() + '\n' + tagged : tagged;
     }
-    _rowSentenceMap.set(row, sentence);
-    ta.value = lines.filter((l,i,a) => l || i === a.length-1).join('\n').replace(/\n{2,}/g, '\n').trim();
   }
 }
 
@@ -15433,15 +15290,12 @@ function clearRowGrid(row, mode) {
   renderRowToothGrid(row, mode);
   const preview = row.querySelector('.cs-row-tooth-preview');
   if (preview) preview.style.display = 'none';
-  // Remove this row's sentence using WeakMap
+  // Remove this row's tagged sentence from the textarea
   const taId = mode === 'advised' ? 'cs-advised-notes' : 'cs-treatment-notes';
   const ta   = document.getElementById(taId);
   if (ta) {
-    const prevSentence = _rowSentenceMap.get(row);
-    if (prevSentence) {
-      ta.value = ta.value.split('\n').filter(l => l !== prevSentence).join('\n').trim();
-      _rowSentenceMap.delete(row);
-    }
+    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+    ta.value = ta.value.split('\n').filter(l => !l.includes(rowKey)).join('\n').trim();
   }
 }
 
@@ -17347,20 +17201,6 @@ async function openCaPatDocket(patientId) {
   const medAlert = mh&&((mh.conditions||[]).length||mh.allergies)
     ? `<div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 12px;font-size:12px;color:#fca5a5;margin-bottom:12px">⚠️ ${(mh.conditions||[]).join(', ')}${mh.allergies?' · Allergy: '+mh.allergies:''}</div>` : '';
 
-  // Fetch bills for this patient to show amount in visit cards
-  let patBills = [];
-  loadCaBills();
-  patBills = _caBills.filter(b => b.patient_id === patientId);
-  const activeDb = db || window.__supaDb;
-  if (!patBills.length && activeDb) {
-    try {
-      const { data } = await activeDb.from('bills').select('*').eq('patient_id', patientId).order('created_at', { ascending: false });
-      if (data && data.length) patBills = data;
-    } catch(_) {}
-  }
-  const billByRecord = {};
-  patBills.forEach(b => { if (b.record_id) billByRecord[b.record_id] = b; });
-
   const body = document.getElementById('ca-pat-sheet-body');
   // Placeholder while async data loads
   body.innerHTML = `
@@ -17384,16 +17224,12 @@ async function openCaPatDocket(patientId) {
         const teeth = cs&&cs.selectedTeeth&&cs.selectedTeeth.length?`<div style="font-size:11px;color:#64748b;margin-top:2px">🦷 Teeth: ${cs.selectedTeeth.join(', ')}</div>`:'';
         const rx = cs&&cs.rx&&cs.rx.length?`<div style="font-size:11px;color:#64748b;margin-top:2px">💊 ${cs.rx.map(x=>x.name).join(', ')}</div>`:'';
         let billing=''; try{const bs=(cs&&cs.billingStatus)||'';if(bs)billing=`<span class="ca-badge ${bs==='billed'?'ca-badge-green':bs==='pending'?'ca-badge-amber':bs==='waived'?'ca-badge-blue':'ca-badge-gray'}">${bs==='billed'?'✅ Billed':bs==='pending'?'⏳ Pending':bs==='waived'?'🎁 Waived':'—'}</span>`;}catch(_){}
-        const linkedBill = billByRecord[r.id];
-        const billAmtHtml = linkedBill
-          ? `<div style="font-size:12px;color:${linkedBill.status==='paid'?'#4ade80':linkedBill.status==='waived'?'#93c5fd':'#fbbf24'};font-weight:700;margin-top:3px">₹${Number(linkedBill.amount||0).toLocaleString('en-IN')} · ${linkedBill.status==='paid'?'Paid':linkedBill.status==='waived'?'Waived':'Pending'}</div>`
-          : '';
         return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px;margin-bottom:8px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
             <span style="font-weight:700;font-size:13px;color:#e2e8f0">${proc}</span>
             <div style="display:flex;align-items:center;gap:6px">${billing}<span style="font-size:11px;color:#64748b">${dateStr}</span></div>
           </div>
-          ${complaint}${treatment}${teeth}${rx}${billAmtHtml}
+          ${complaint}${treatment}${teeth}${rx}
           ${r.next_appointment?`<div style="font-size:11px;color:#0d9488;margin-top:4px;font-weight:600">📅 Next: ${(()=>{try{return new Date(r.next_appointment).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){return r.next_appointment;}})()}</div>`:''}
           <div style="display:flex;gap:6px;margin-top:8px">
             <button onclick="downloadOPSummary('${r.id}','${patientId}')" style="flex:1;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 PDF</button>
