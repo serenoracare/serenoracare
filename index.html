@@ -2767,9 +2767,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     <!-- ── RECENT WINS ───────────────────────────── -->
     <div style="font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);margin:18px 0 10px">🏆 Recent Wins</div>
     <div id="wins-container">
-      <div class="win-item"><div class="win-check">✓</div><div style="font-size:14px;color:var(--slate)">Completed breathing exercise</div></div>
-      <div class="win-item"><div class="win-check">✓</div><div style="font-size:14px;color:var(--slate)">Completed sound desensitization</div></div>
-      <div class="win-item"><div class="win-check">✓</div><div style="font-size:14px;color:var(--slate)">Attended appointment — showed up brave</div></div>
+      <div style="font-size:13px;color:var(--muted);padding:10px 0">Complete activities to see your wins here!</div>
     </div>
 
     <!-- ── PREFERENCES & SETTINGS ───────────────── -->
@@ -6095,20 +6093,40 @@ function completeTask(taskName){
   p.wins.unshift({ text: taskName, date: new Date().toISOString() });
   if (p.wins.length > 20) p.wins = p.wins.slice(0, 20); // keep last 20
   p.sessions = (p.sessions || 0) + 1;
-  // Streak logic
+  // Streak logic — fixed: removed duplicate unreachable else-if
   const today = new Date().toDateString();
   if (p.lastDate !== today) {
     const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (p.lastDate === yesterday) {
-      p.streak = (p.streak || 0) + 1;
-    } else if (p.lastDate !== today) {
-      p.streak = 1;
-    }
+    p.streak = (p.lastDate === yesterday) ? (p.streak || 0) + 1 : 1;
     p.lastDate = today;
   }
   p.bestStreak = Math.max(p.bestStreak || 0, p.streak || 1);
   saveProgress(p);
   renderDashboardProgress();
+}
+
+// ── Merge guest progress into user account on login ──────────────────────────
+function _mergeGuestProgressIntoUser() {
+  try {
+    const guestKey = 'serenora_progress_guest';
+    const guestRaw = localStorage.getItem(guestKey);
+    if (!guestRaw || !currentUser) return;
+    const guest = JSON.parse(guestRaw);
+    if (!guest || (!guest.wins?.length && !guest.sessions)) return;
+    const userKey = 'serenora_progress_' + currentUser.id;
+    const user = JSON.parse(localStorage.getItem(userKey) || 'null') || { wins:[], streak:0, lastDate:null, bestStreak:0, sessions:0 };
+    // Merge wins (deduplicate by text+date)
+    const existingKeys = new Set((user.wins||[]).map(w=>w.text+'|'+w.date));
+    (guest.wins||[]).forEach(w => { if (!existingKeys.has(w.text+'|'+w.date)) user.wins.push(w); });
+    user.wins.sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if (user.wins.length > 20) user.wins = user.wins.slice(0,20);
+    // Take best streak/sessions
+    user.sessions = (user.sessions||0) + (guest.sessions||0);
+    user.bestStreak = Math.max(user.bestStreak||0, guest.bestStreak||0);
+    if (!user.lastDate && guest.lastDate) { user.streak = guest.streak||0; user.lastDate = guest.lastDate; }
+    localStorage.setItem(userKey, JSON.stringify(user));
+    localStorage.removeItem(guestKey); // clear guest data after merge
+  } catch(_) {}
 }
 function renderDashboardProgress() {
   const p = loadProgress();
@@ -6120,6 +6138,18 @@ function renderDashboardProgress() {
   if (numEl)  numEl.textContent  = (p.streak || 0);
   if (bestEl) bestEl.textContent = 'Best: ' + (p.bestStreak || 0) + ' days';
   if (pillEl) pillEl.textContent = (p.streak >= 3) ? '🔥 On track!' : 'Keep going!';
+
+  // Restore latest MDAS score breakdown from saved history (so it persists across sessions)
+  const lc = document.getElementById('mdas-latest-content');
+  if (lc && mdasHistory && mdasHistory.length > 0) {
+    const total = mdasHistory[mdasHistory.length - 1];
+    const col = total <= 10 ? '#22c55e' : total <= 18 ? '#f59e0b' : total <= 24 ? '#f97316' : '#ef4444';
+    const lbl = total <= 10 ? 'Low Anxiety' : total <= 18 ? 'Moderate Anxiety' : total <= 24 ? 'High Anxiety' : 'Severe Anxiety';
+    // Only update if still showing placeholder text (don't overwrite a freshly-taken result)
+    if (lc.querySelector('div[style*="color:var(--muted)"]') || lc.textContent.includes('Complete your first')) {
+      lc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="font-size:36px;font-weight:800;color:${col}">${total}<span style="font-size:14px;color:var(--muted)">/25</span></div><div><div style="font-weight:700;color:${col}">${lbl}</div><div style="font-size:12px;color:var(--muted)">Last recorded score</div></div></div><div class="progress-bar-container" style="margin:0"><div class="progress-bar-fill" style="width:${Math.round(total/25*100)}%;background:${col}"></div></div>`;
+    }
+  }
 
   // Recent wins
   const winsEl = document.getElementById('wins-container');
@@ -6671,7 +6701,7 @@ function finishDebrief(){
   else insights.push({icon:'💙',title:'You showed up',body:`Getting there is 80% of the battle. Even if it was tough, your brain is learning this is survivable. Next time will be easier.`});
   if(helped.length>0)insights.push({icon:'🌿',title:'What helped you',body:`You found that "${helped.slice(0,2).join('" and "')}" made a difference. We'll prioritise these in your next prep sequence.`});
   insights.push({icon:'📊',title:'Clinical record updated',body:`Your post-visit score of ${debriefDuringAnxiety}/10 has been logged. Dr. Akshita Gupta will see this before your next appointment.`});
-  if(debriefStarRating>=4)insights.push({icon:'🔥',title:'Bravery streak extended!',body:`Rating your experience ${debriefStarRating}/5 stars is a sign of growing confidence. Your bravery streak is now 8 days.`});
+  if(debriefStarRating>=4){ const _prog=loadProgress(); insights.push({icon:'🔥',title:'Bravery streak extended!',body:`Rating your experience ${debriefStarRating}/5 stars is a sign of growing confidence. Your bravery streak is now ${_prog.streak||1} day${(_prog.streak||1)!==1?'s':''}.`}); }
   document.getElementById('debrief-insight-container').innerHTML=insights.map(ins=>`<div class="debrief-insight"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:24px">${ins.icon}</span><span style="font-weight:700;font-size:15px;color:var(--navy)">${ins.title}</span></div><div style="font-size:13px;color:var(--slate);line-height:1.6">${ins.body}</div></div>`).join('');
   mdasHistory.push(postEstimate);if(mdasHistory.length>5)mdasHistory.shift();
   saveMdasHistory(mdasHistory);
@@ -7962,7 +7992,7 @@ async function loadPatBookingSlots() {
         if(s.status==='booked'){
           btns+='<div style="background:#dcfce7;border:1.5px solid #16a34a;color:#166534;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;margin:4px;display:inline-block">&#9989; '+(s.from_time?s.from_time.slice(0,5):s.from_time)+' - '+(s.to_time?s.to_time.slice(0,5):s.to_time)+'<div style="font-size:10px;color:#64748b">Booked &bull; '+s.duration_mins+' min</div></div>';
         } else {
-          btns+='<button data-slot-id="'+s.id+'" data-slot-date="'+date+'" data-slot-time="'+s.from_time+'" class="slot-book-btn" style="background:rgba(13,148,136,.1);border:1.5px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;margin:4px;font-family:var(--font)">'+s.from_time+' - '+s.to_time+'<div style="font-size:10px;color:#64748b">'+s.duration_mins+' min'+(s.notes?' | '+s.notes:'')+'</div></button>';
+          btns+='<button data-slot-id="'+s.id+'" data-slot-date="'+date+'" data-slot-time="'+s.from_time+'" class="slot-book-btn" style="background:rgba(13,148,136,.1);border:1.5px solid rgba(13,148,136,.4);color:#0d9488;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;margin:4px;font-family:var(--font)">'+s.from_time+' - '+s.to_time+'<div style="font-size:10px;color:#64748b">'+s.duration_mins+' min'+(s.notes?' | '+s.notes:'')+'</div></button>';
         }
       });
       html2+='<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;margin-bottom:8px;letter-spacing:.5px">'+d+'</div><div>'+btns+'</div></div>';
@@ -8564,6 +8594,9 @@ function routeAfterAuth() {
   const now = Date.now();
   if (now - _lastRouteAfterAuth < 2000) return;
   _lastRouteAfterAuth = now;
+
+  // Merge any activity completed as guest into the user's progress record
+  if (typeof _mergeGuestProgressIntoUser === 'function') _mergeGuestProgressIntoUser();
 
   if (!currentProfile) { showToast('Signed in! 🌿'); showScreen('screen-welcome'); return; }
   if (currentProfile.role === 'dentist_pending') { showToast('Your request is pending clinic admin approval ⏳'); showScreen('screen-welcome'); return; }
