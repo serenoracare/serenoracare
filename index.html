@@ -2783,7 +2783,7 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
       <!-- Language — via Google Translate -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🌐</span><div><div class="pref-label" style="font-weight:600;font-size:14px;color:var(--navy)">Language</div><div class="pref-sub" style="font-size:11px;color:var(--muted)">Translate via Google</div></div></div>
-        <a href="https://translate.google.com" target="_blank" rel="noopener" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 12px;border-radius:10px;border:1.5px solid var(--teal);cursor:pointer;text-decoration:none;display:inline-block">Google Translate →</a>
+        <button onclick="var c=document.querySelector('.goog-te-combo');if(c){c.focus();c.size=5;showToast('Select your language above');}else{showToast('Scroll up to use the Language bar');}" style="background:#fff;color:var(--teal-dark);font-weight:700;font-size:12px;font-family:var(--font);padding:7px 12px;border-radius:10px;border:1.5px solid var(--teal);cursor:pointer">🌐 Select Language</button>
       </div>
       <!-- Audio -->
       <div class="pref-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
@@ -7764,7 +7764,7 @@ function _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName,
     '<p style="margin:0 0 2px"><strong>Dr ' + dentName + '</strong></p>',
     '<p style="margin:0 0 2px;color:#475569">' + clinicN + '</p>',
     licBlock
-  ].join('\n');
+  ].join('');
 }
 
 function _getMHLines() {
@@ -7800,9 +7800,18 @@ function generateReferralLetter() {
   var bodyHtml = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName, clinicN, licNo, regSt, today);
   var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
 
+  window._referralContentHtml = contentHtml;
+  window._referralMeta = { specialist, dentName, clinicN, joinC, licNo, regSt };
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
-    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName) + ',' + JSON.stringify(clinicN) + ',' + JSON.stringify(joinC) + ',' + JSON.stringify(licNo) + ',' + JSON.stringify(regSt) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>';
+  var printBtn = document.createElement('button');
+  printBtn.textContent = '🖨️ Print / Download PDF';
+  printBtn.style.cssText = 'width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer';
+  printBtn.onclick = function() {
+    var m = window._referralMeta || {};
+    openPrintWindow(buildPdfHtml(window._referralContentHtml, 'Referral Letter — ' + m.specialist, m.dentName, m.clinicN, m.joinC, m.licNo, m.regSt, 'Referral Letter', null), 'referral_letter');
+  };
+  preview.appendChild(printBtn);
   preview.style.display = 'block';
 }
 
@@ -8181,9 +8190,18 @@ function generateReferralFromSummary() {
   var bodyHtml   = _buildReferralHtml(patName, specialist, proc, mhLines, notes, dentName2, clinicN2, licNo2, regSt2, today);
   var contentHtml = '<div style="font-size:13px;line-height:1.9;color:#334155;font-family:Georgia,serif">' + bodyHtml + '</div>';
 
+  window._referralContentHtml = contentHtml;
+  window._referralMeta = { specialist, dentName: dentName2, clinicN: clinicN2, joinC: joinC2, licNo: licNo2, regSt: regSt2 };
   preview.innerHTML =
-    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>' +
-    '<button onclick="openPrintWindow(buildPdfHtml(' + JSON.stringify(contentHtml) + ',\'Referral Letter — ' + specialist + '\',' + JSON.stringify(dentName2) + ',' + JSON.stringify(clinicN2) + ',' + JSON.stringify(joinC2) + ',' + JSON.stringify(licNo2) + ',' + JSON.stringify(regSt2) + ',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
+    '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;font-size:12px;color:#1e293b;line-height:1.85;margin-bottom:10px;font-family:Georgia,serif">' + bodyHtml + '</div>';
+  var printBtn2 = document.createElement('button');
+  printBtn2.textContent = '🖨️ Print / Download PDF';
+  printBtn2.style.cssText = 'width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px';
+  printBtn2.onclick = function() {
+    var m = window._referralMeta || {};
+    openPrintWindow(buildPdfHtml(window._referralContentHtml, 'Referral Letter — ' + m.specialist, m.dentName, m.clinicN, m.joinC, m.licNo, m.regSt, 'Referral Letter', null), 'referral_letter');
+  };
+  preview.appendChild(printBtn2);
   preview.style.display = 'block';
 }
 
@@ -12203,7 +12221,7 @@ function makeDraggable(el, onTap) {
               <span style="font-size:18px">🌐</span>
               <div><div style="font-weight:600;font-size:14px;color:#e2e8f0">Language</div><div style="font-size:11px;color:#64748b">Translate via Google</div></div>
             </div>
-            <a href="https://translate.google.com" target="_blank" rel="noopener" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:600;font-family:var(--font);text-decoration:none;display:inline-block">Google Translate →</a>
+            <button onclick="var c=document.querySelector('.goog-te-combo');if(c){c.focus();showToast('Use the language bar at the top');}else{showToast('Scroll to top to change language');}" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer">🌐 Select Language</button>
           </div>
 
           <!-- Audio -->
@@ -13724,7 +13742,10 @@ async function loadDentPatientContext(patientId) {
     const mh = p && p.medical_history;
     if (mh && ((Array.isArray(mh.conditions) && mh.conditions.length > 0) || mh.allergies || mh.medications)) {
       let html = '⚠️ Medical History: ';
-      if (Array.isArray(mh.conditions) && mh.conditions.length > 0) html += mh.conditions.join(', ') + '. ';
+      if (Array.isArray(mh.conditions) && mh.conditions.length > 0) {
+        const _cLabels = {hypertension:'Hypertension',diabetes:'Diabetes',heart:'Heart Disease',asthma:'Asthma',thyroid:'Thyroid Disorder',bleeding:'Bleeding Disorder',epilepsy:'Epilepsy',pregnancy:'Pregnant / Nursing',hiv:'HIV / Hepatitis',kidney:'Kidney Disease'};
+        html += mh.conditions.map(c => _cLabels[c] || c).join(', ') + '. ';
+      }
       if (mh.allergies) html += 'Allergies: ' + mh.allergies + '. ';
       if (mh.medications) html += 'Medications: ' + mh.medications;
       mhEl.textContent = html;
@@ -14513,7 +14534,18 @@ let _csAffectedTeeth = new Set();
 
 // DOCKET
 function openDocket(patientId) {
+  // ── Clear stale patient data to prevent cross-patient contamination ─────
   _csDocketPatientId = patientId;
+  window._csDocketPatName = '';
+  window._csDocketMH = {};
+  window._docketCurrentPatientId = patientId;
+  // Clear rendered docket UI before loading fresh data
+  const nameEl = document.getElementById('docket-name'); if (nameEl) nameEl.textContent = 'Loading…';
+  const alertEl = document.getElementById('docket-alerts'); if (alertEl) alertEl.innerHTML = '';
+  const visitsEl = document.getElementById('docket-visits-list'); if (visitsEl) visitsEl.innerHTML = '<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">Loading…</div>';
+  const histEl = document.getElementById('docket-history-content'); if (histEl) histEl.innerHTML = '';
+  const handoffEl = document.getElementById('docket-handoff-content'); if (handoffEl) handoffEl.innerHTML = '<div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Loading patient summary...</div>';
+  // ────────────────────────────────────────────────────────────────────────
   document.getElementById('docket-overlay').classList.add('open');
   document.getElementById('docket-panel').classList.add('open');
   loadDocketPatientInfo(patientId);
@@ -14536,9 +14568,8 @@ function translateDocketContent() {
     combo.dispatchEvent(new Event('change'));
     showToast('Translating to your selected language…');
   } else {
-    // GT not loaded — open Google Translate with page URL
-    const url = 'https://translate.google.com/translate?sl=auto&tl=' + dentLang + '&u=' + encodeURIComponent(location.href);
-    window.open(url, '_blank', 'noopener');
+    // GT widget not available — prompt user to use Language settings, don't open external page
+    showToast('Use Language in Settings to enable translation');
   }
 }
 function switchDocketTab(tab, btn) {
@@ -14591,7 +14622,8 @@ async function loadDocketPatientInfo(patientId) {
   const mh = p.medical_history;
   if (mh && ((Array.isArray(mh.conditions) && mh.conditions.length > 0) || mh.allergies)) {
     let alerts = [];
-    if (Array.isArray(mh.conditions)) alerts = alerts.concat(mh.conditions);
+    const _aLabels = {hypertension:'Hypertension',diabetes:'Diabetes',heart:'Heart Disease',asthma:'Asthma',thyroid:'Thyroid Disorder',bleeding:'Bleeding Disorder',epilepsy:'Epilepsy',pregnancy:'Pregnant / Nursing',hiv:'HIV / Hepatitis',kidney:'Kidney Disease'};
+    if (Array.isArray(mh.conditions)) alerts = alerts.concat(mh.conditions.map(c => _aLabels[c] || c));
     if (mh.allergies) alerts.push('Allergy: ' + mh.allergies);
     alertEl.innerHTML = alerts.slice(0,3).map(a => `<span style="display:inline-block;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);border-radius:8px;padding:3px 8px;font-size:11px;color:#fca5a5;margin:2px">${a}</span>`).join('');
   } else { alertEl.innerHTML = ''; }
@@ -14599,7 +14631,8 @@ async function loadDocketPatientInfo(patientId) {
   if (histEl && mh) {
     let html = '';
     if (Array.isArray(mh.conditions) && mh.conditions.length > 0)
-      html += `<div style="margin-bottom:10px"><div style="font-size:11px;color:#99f6e4;font-weight:700;margin-bottom:5px">CONDITIONS</div>${mh.conditions.map(c=>`<div style="font-size:13px;color:#e2e8f0;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)">${c}</div>`).join('')}</div>`;
+      const _condL = {hypertension:'Hypertension',diabetes:'Diabetes',heart:'Heart Disease',asthma:'Asthma',thyroid:'Thyroid Disorder',bleeding:'Bleeding Disorder',epilepsy:'Epilepsy',pregnancy:'Pregnant / Nursing',hiv:'HIV / Hepatitis',kidney:'Kidney Disease'};
+      html += `<div style="margin-bottom:10px"><div style="font-size:11px;color:#99f6e4;font-weight:700;margin-bottom:5px">CONDITIONS</div>${mh.conditions.map(c=>`<div style="font-size:13px;color:#e2e8f0;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)">${_condL[c]||c}</div>`).join('')}</div>`;
     if (mh.allergies)
       html += `<div style="margin-bottom:10px"><div style="font-size:11px;color:#fca5a5;font-weight:700;margin-bottom:5px">ALLERGIES</div><div style="font-size:13px;color:#e2e8f0">${mh.allergies}</div></div>`;
     if (mh.medications)
@@ -14975,9 +15008,16 @@ function openCasesheet(patientId) {
       else alertEl.style.display = 'none';
     }
   }
+  // ── ALWAYS clear all fields before opening for a new patient ──────────────
+  document.querySelectorAll('#cs-screen input[type="text"], #cs-screen input[type="number"], #cs-screen textarea').forEach(el => { el.value = ''; });
+  document.querySelectorAll('#cs-screen select').forEach(el => { el.selectedIndex = 0; });
+  document.querySelectorAll('#cs-screen .cs-pick-chip.sel').forEach(c => c.classList.remove('sel'));
+  _csRxList = []; if (typeof renderRxList === 'function') renderRxList();
+  _csBillingStatus = 'billed'; if (typeof setBillingStatus === 'function') setBillingStatus('billed');
+  // ──────────────────────────────────────────────────────────────────────────
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 7);
   const apptEl = document.getElementById('cs-next-appt');
-  if (apptEl && !apptEl.value) apptEl.value = tomorrow.toISOString().slice(0,10);
+  apptEl.value = tomorrow.toISOString().slice(0,10);
   document.getElementById('cs-screen').classList.add('open');
   switchCsTab('complaint', document.querySelector('.cs-tab-pill'));
   renderToothChart(); closeDocket();
@@ -15967,7 +16007,7 @@ function showVisitSummaryModal(id, proc, dateStr, recObj) {
   </div>
   ${csData?`<div class="vsm-cols"><div>
     <div class="vsm-col-title">Consultation</div>
-    ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''}</div>`:''}
+    ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''} <span style="color:#94a3b8;font-size:10px;font-style:italic">patient's own words</span></div>`:''}
     ${csData.history?`<div class="vsm-item"><b>History:</b> ${csData.history}</div>`:''}
     ${csData.investigations?`<div class="vsm-item"><b>Investigations:</b> ${csData.investigations}</div>`:''}
     ${selTeeth?`<div class="vsm-item"><b>Treatment teeth:</b> ${selTeeth}</div>`:''}
@@ -16181,7 +16221,7 @@ function showPatientVisitSummary(rec) {
   </div>
   ${csData?`<div class="vsm-cols"><div>
     <div class="vsm-col-title">Consultation</div>
-    ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''}</div>`:''}
+    ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''} <span style="color:#94a3b8;font-size:10px;font-style:italic">patient's own words</span></div>`:''}
     ${csData.history?`<div class="vsm-item"><b>History:</b> ${csData.history}</div>`:''}
     ${selTeeth?`<div class="vsm-item"><b>Treatment teeth:</b> ${selTeeth}</div>`:''}
     ${affTeeth?`<div class="vsm-item"><b>Affected teeth:</b> ${affTeeth}</div>`:''}
@@ -17201,7 +17241,7 @@ async function openCaPatDocket(patientId) {
   const PROC = {filling:'Dental Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',scaling:'Scaling & Polishing',crown:'Crown',implant:'Implant',whitening:'Whitening',ortho:'Orthodontics',xray_consult:'X-Ray / Consult',other:'Treatment'};
 
   const medAlert = mh&&((mh.conditions||[]).length||mh.allergies)
-    ? `<div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 12px;font-size:12px;color:#fca5a5;margin-bottom:12px">⚠️ ${(mh.conditions||[]).join(', ')}${mh.allergies?' · Allergy: '+mh.allergies:''}</div>` : '';
+    ? (()=>{ const _ml={hypertension:'Hypertension',diabetes:'Diabetes',heart:'Heart Disease',asthma:'Asthma',thyroid:'Thyroid Disorder',bleeding:'Bleeding Disorder',epilepsy:'Epilepsy',pregnancy:'Pregnant / Nursing',hiv:'HIV / Hepatitis',kidney:'Kidney Disease'}; return `<div style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 12px;font-size:12px;color:#fca5a5;margin-bottom:12px">⚠️ ${(mh.conditions||[]).map(c=>_ml[c]||c).join(', ')}${mh.allergies?' · Allergy: '+mh.allergies:''}</div>`; })() : '';
 
   const body = document.getElementById('ca-pat-sheet-body');
   // Placeholder while async data loads
