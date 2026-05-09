@@ -3075,7 +3075,19 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
   <div class="nav"><button class="nav-back" onclick="goBack()">← Back</button><span style="font-family:var(--display);font-size:17px;font-weight:700;color:#fff">Reminders</span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:var(--font)" onclick="supabaseSignOut()">Sign Out</button></div>
   <div class="page-content">
     <div class="section-title">Reminders</div>
-    <div class="section-sub">Your personalised post-visit instructions and appointment prep — added by your dentist after each visit.</div>
+    <div class="section-sub">Your personalised post-visit instructions, appointment countdown and prep.</div>
+
+    <!-- Next appointment countdown in reminders -->
+    <div id="rem-appt-banner" style="display:none;background:linear-gradient(135deg,#e0f7fa,#e8f4fd);border:1.5px solid #0d9488;border-radius:16px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📅 Next Appointment</div>
+      <div id="rem-appt-date" style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:8px">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+        <div style="background:#e0f2fe;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-days" style="font-size:20px;font-weight:800;color:#0d9488;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Days</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-hours" style="font-size:20px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Hours</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-mins" style="font-size:20px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Mins</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-secs" style="font-size:20px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Secs</div></div>
+      </div>
+    </div>
 
     <!-- Clinic-uploaded reminders -->
     <div id="personalised-reminders-list">
@@ -3692,19 +3704,19 @@ body.rainy-mode .proc-detail button[style*="background:#f1f5f9"]{background:rgba
     </div>
 
     <!-- Next appointment countdown -->
-    <div id="pat-appt-banner" style="display:none;background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(59,130,246,.08));border:1px solid rgba(99,246,228,.2);border-radius:16px;padding:14px 16px;margin-bottom:16px">
+    <div id="pat-appt-banner" style="display:none;background:linear-gradient(135deg,#e0f7fa,#e8f4fd);border:1.5px solid #0d9488;border-radius:16px;padding:14px 16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.5px">Next Appointment</div>
+        <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:.5px">Next Appointment</div>
         <div id="pat-appt-urgency" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(13,148,136,.2);color:#99f6e4"></div>
       </div>
-      <div id="pat-appt-date" style="font-family:var(--display);font-size:16px;font-weight:800;color:#e2e8f0;margin-bottom:8px">—</div>
+      <div id="pat-appt-date" style="font-family:var(--display);font-size:16px;font-weight:800;color:#1e293b;margin-bottom:8px">—</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
-        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-days" style="font-size:22px;font-weight:800;color:#99f6e4;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Days</div></div>
-        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-hours" style="font-size:22px;font-weight:800;color:#e2e8f0;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Hours</div></div>
-        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-mins" style="font-size:22px;font-weight:800;color:#e2e8f0;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Mins</div></div>
-        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-secs" style="font-size:22px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Secs</div></div>
+        <div style="background:#e0f2fe;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-days" style="font-size:22px;font-weight:800;color:#0d9488;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Days</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-hours" style="font-size:22px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Hours</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-mins" style="font-size:22px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Mins</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-secs" style="font-size:22px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Secs</div></div>
       </div>
-      <div id="pat-appt-prep-tip" style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.5"></div>
+      <div id="pat-appt-prep-tip" style="margin-top:10px;font-size:11px;color:#4b5563;line-height:1.5"></div>
     </div>
 
     <!-- Wellness Tracking Cards -->
@@ -5658,7 +5670,7 @@ function startApptCountdown(apptDate) {
       if      (days===0) { urgEl.textContent='TODAY';     urgEl.style.background='rgba(239,68,68,.2)';   urgEl.style.color='#f87171'; }
       else if (days<=1)  { urgEl.textContent='TOMORROW';  urgEl.style.background='rgba(245,158,11,.2)';  urgEl.style.color='#fbbf24'; }
       else if (days<=7)  { urgEl.textContent='THIS WEEK'; urgEl.style.background='rgba(13,148,136,.2)';  urgEl.style.color='#99f6e4'; }
-      else               { urgEl.textContent=days+' DAYS AWAY'; urgEl.style.background='rgba(255,255,255,.06)'; urgEl.style.color='#64748b'; }
+      else               { urgEl.textContent=days+' DAYS AWAY'; urgEl.style.background='#f1f5f9'; urgEl.style.color='#475569'; }
     }
     const tipEl=document.getElementById('pat-appt-prep-tip');
     if (tipEl) {
@@ -6218,19 +6230,19 @@ async function loadPersonalisedReminders() {
   const activeDb   = db || window.__supaDb;
   if (!activeUser || !activeDb) {
     listEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">⏳ Loading…</div>';
-    setTimeout(async () => {
-      // Only retry if we still haven't signed in by then
-      if (!currentUser && !window.currentUser) {
-        listEl.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted)">
-          <div style="font-size:40px;margin-bottom:12px">📋</div>
-          <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">No personalised reminders yet</div>
-          <div style="font-size:13px;line-height:1.6;margin-bottom:16px">After your dentist uploads your visit record, personalised post-op instructions will appear here automatically.</div>
-          <button onclick="openPortalAs('patient','login')" class="btn-primary">Sign In to See Reminders →</button>
-        </div>`;
-      } else {
-        await _doLoadReminders();
+    // Retry multiple times to wait for auth
+    var _reminderRetries = 0;
+    var _reminderRetryFn = async function() {
+      var u = currentUser || window.currentUser;
+      var d2 = db || window.__supaDb;
+      if (u && d2) { await _doLoadReminders(); return; }
+      _reminderRetries++;
+      if (_reminderRetries < 8) { setTimeout(_reminderRetryFn, 800); }
+      else {
+        listEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">No reminders yet</div><div style="font-size:13px;line-height:1.6">After your dentist uploads your visit record, post-op instructions will appear here.</div></div>';
       }
-    }, 2500);
+    };
+    setTimeout(_reminderRetryFn, 600);
     return;
   }
   await _doLoadReminders();
@@ -7748,11 +7760,16 @@ function generateReferralLetter() {
   var reason=reasonEl.value.trim()||'Please see for specialist assessment and management.';
   var patName=window._csDocketPatName||'the patient';
   var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'the referring dentist';
-  var clinic=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'our clinic';
+  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
+  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
+  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
+  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var mdas=window._csDocketMDAS?('\nMDAS Anxiety Score: '+window._csDocketMDAS+'/25'):'';
-  var letter='Date: '+today+'\n\nDear Colleague,\n\nRe: '+patName+'\n\nI am writing to refer the above patient to your '+specialist+' clinic.\n\nReason for referral:\n'+reason+mdas+'\n\nThis patient experiences dental anxiety. Their fear profile is available via SerenOra Care. Please take this into account when planning treatment.\n\nYours sincerely,\nDr '+dentName+'\n'+clinic;
-  preview.textContent=letter;
+  var mdas=window._csDocketMDAS?('\n\nMDAS Anxiety Score: '+window._csDocketMDAS+'/25'):'';
+  var bodyText='Date: '+today+'\n\nDear Colleague,\n\nRe: '+patName+'\n\nI am writing to refer the above patient to your '+specialist+' clinic.\n\nReason for referral:\n'+reason+mdas+'\n\nThis patient experiences dental anxiety. Their fear profile is available via SerenOra Care.\n\nYours sincerely,\nDr '+dentName+'\n'+clinicN;
+  var contentHtml='<div style="white-space:pre-wrap;font-size:13px;line-height:1.9;color:#334155">'+bodyText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+  preview.innerHTML='<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;font-size:12px;color:#1e293b;white-space:pre-wrap;line-height:1.8;margin-bottom:10px">'+bodyText+'</div>'
+    +'<button onclick="openPrintWindow(buildPdfHtml('+JSON.stringify(contentHtml)+',\'Referral Letter\','+JSON.stringify(dentName)+','+JSON.stringify(clinicN)+','+JSON.stringify(joinC)+','+JSON.stringify(licNo)+','+JSON.stringify(regSt)+',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">🖨️ Print / Download PDF</button>';
   preview.style.display='block';
 }
 
@@ -7762,11 +7779,14 @@ function generateConsentForm() {
   var proc=procEl&&procEl.options[procEl.selectedIndex]?procEl.options[procEl.selectedIndex].text:'the proposed procedure';
   var patName=window._csDocketPatName||'Patient';
   var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'your dentist';
+  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
+  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
+  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
+  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var text='INFORMED CONSENT FORM\n\nDate: '+today+'\nPatient: '+patName+'\nDentist: Dr '+dentName+'\nProcedure: '+proc+'\n\nI confirm that:\n1. The procedure, its purpose, risks and benefits have been explained to me in a language I understand.\n2. I have been informed of alternative treatments available.\n3. I have been told what sensations I may experience.\n4. I understand I may withdraw consent at any time using hand signals or verbal communication.\n5. I agree to proceed with '+proc+'.\n\nPatient Signature: _______________________\n\nDate: '+today;
-  var win=window.open('','_blank');
-  if(win){win.document.write('<html><body style="font-family:Arial;padding:40px;max-width:600px;margin:auto;white-space:pre-wrap">'+text+'<br><br><button onclick="window.print()" style="padding:10px 20px;font-size:14px;cursor:pointer">Print</button></body></html>');win.document.close();}
-  else showToast('Please allow popups to generate consent form');
+  var contentHtml='<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div><div class="pdf-row"><span class="lbl">Date</span><span class="val">'+today+'</span></div><div class="pdf-row"><span class="lbl">Patient</span><span class="val">'+patName+'</span></div><div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr '+dentName+'</span></div><div class="pdf-row"><span class="lbl">Procedure</span><span class="val">'+proc+'</span></div></div><div class="pdf-section"><div class="pdf-section-title">Declaration</div><ol style="padding-left:18px;margin:0;line-height:2.2;font-size:12px;color:#334155"><li>The procedure, its purpose, risks and benefits have been explained to me in a language I understand.</li><li>I have been informed of alternative treatments available.</li><li>I have been told what sensations I may experience.</li><li>I understand I may withdraw consent at any time using hand signals or verbal communication.</li><li>I agree to proceed with <strong>'+proc+'</strong>.</li></ol></div><div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px"><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div></div>';
+  var html=buildPdfHtml(contentHtml,'Informed Consent Form',dentName,clinicN,joinC,licNo,regSt,'Patient: '+patName,null);
+  openPrintWindow(html,'consent_form_'+Date.now());
 }
 
 // ── HANDOFF CARD ──────────────────────────────────────────────────────────────
@@ -7820,18 +7840,24 @@ async function loadDentSlots() {
   if(!listEl||!currentUser)return;
   listEl.innerHTML='<div style="text-align:center;padding:16px;color:#64748b">Loading...</div>';
   var activeDb=db||window.__supaDb;
-  if(!activeDb)return;
+  if(!activeDb){listEl.innerHTML='<div style="text-align:center;padding:24px;color:#64748b;font-size:13px">Not connected.</div>';return;}
   try{
     var today=new Date().toISOString().slice(0,10);
     var res=await activeDb.from('appointment_slots').select('*').eq('dentist_id',String(currentUser.id)).gte('date',today).order('date').order('from_time');
+    if(res.error)throw res.error;
     var data=res.data||[];
-    if(!data.length){listEl.innerHTML='<div style="text-align:center;padding:24px;color:#64748b">No upcoming slots.</div>';return;}
+    if(!data.length){listEl.innerHTML='<div style="text-align:center;padding:24px;color:#64748b;font-size:13px">No upcoming slots added yet.<br><span style="font-size:11px">Add available times above so patients can book.</span></div>';return;}
+    var bookedIds=data.filter(function(s){return s.booked_by_patient_id;}).map(function(s){return String(s.booked_by_patient_id);});
+    var patNames={};
+    if(bookedIds.length){try{var pr=await activeDb.from('profiles').select('id,full_name').in('id',bookedIds);if(pr.data)pr.data.forEach(function(p){patNames[String(p.id)]=p.full_name||'Patient';});}catch(_){}}
     listEl.innerHTML=data.map(function(s){
       var d=new Date(s.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
       var col=s.status==='booked'?'#f59e0b':s.status==='available'?'#22c55e':'#ef4444';
-      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#e2e8f0">'+d+'</div><div style="font-size:12px;color:#94a3b8">'+s.from_time+' - '+s.to_time+' ('+s.duration_mins+' min)</div>'+(s.notes?'<div style="font-size:11px;color:#64748b">'+s.notes+'</div>':'')+'</div><div style="font-size:11px;font-weight:700;color:'+col+'">'+s.status+'</div>'+(s.status==='available'?'<button onclick="deleteDentSlot(\''+s.id+'\')" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:4px 8px;font-size:10px;cursor:pointer">Remove</button>':'')+'</div>';
+      var patInfo='';
+      if(s.status==='booked'&&s.booked_by_patient_id){var pname=patNames[String(s.booked_by_patient_id)]||'Patient';var bat='';try{if(s.booked_at)bat=' · booked '+new Date(s.booked_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}catch(_){}patInfo='<div style="font-size:11px;color:#fbbf24;margin-top:3px;font-weight:600">👤 '+pname+bat+'</div>';}
+      return '<div style="background:rgba(255,255,255,.04);border:1px solid '+(s.status==='booked'?'rgba(245,158,11,.3)':'rgba(255,255,255,.08)')+';border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#e2e8f0">'+d+'</div><div style="font-size:12px;color:#94a3b8">'+(s.from_time?s.from_time.slice(0,5):s.from_time)+' – '+(s.to_time?s.to_time.slice(0,5):s.to_time)+' ('+s.duration_mins+' min)</div>'+(s.notes?'<div style="font-size:11px;color:#64748b">'+s.notes+'</div>':'')+patInfo+'</div><div style="font-size:11px;font-weight:700;color:'+col+';text-transform:uppercase">'+s.status+'</div>'+(s.status==='available'?'<button onclick="deleteDentSlot(\''+s.id+'\')" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:4px 8px;font-size:10px;cursor:pointer">Remove</button>':'')+'</div>';
     }).join('');
-  }catch(e){listEl.innerHTML='<div style="color:#f87171;padding:8px">'+(e.message||'')+'</div>';}
+  }catch(e){console.warn('loadDentSlots error',e);listEl.innerHTML='<div style="text-align:center;padding:24px;color:#ef4444;font-size:13px">⚠️ Could not load slots.<br><button onclick="loadDentSlots()" style="margin-top:8px;background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:var(--font)">Retry</button></div>';}
 }
 async function deleteDentSlot(id) {
   var activeDb=db||window.__supaDb;if(!activeDb)return;
@@ -7866,7 +7892,7 @@ async function loadPatBookingSlots() {
       var btns='';
       ds.forEach(function(s){
         if(s.status==='booked'){
-          btns+='<div style="background:rgba(13,148,136,.15);border:1.5px solid rgba(13,148,136,.4);color:#99f6e4;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;margin:4px;display:inline-block">&#9989; '+s.from_time+' - '+s.to_time+'<div style="font-size:10px;color:#64748b">Booked &bull; '+s.duration_mins+' min</div></div>';
+          btns+='<div style="background:#dcfce7;border:1.5px solid #16a34a;color:#166534;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;margin:4px;display:inline-block">&#9989; '+(s.from_time?s.from_time.slice(0,5):s.from_time)+' - '+(s.to_time?s.to_time.slice(0,5):s.to_time)+'<div style="font-size:10px;color:#64748b">Booked &bull; '+s.duration_mins+' min</div></div>';
         } else {
           btns+='<button data-slot-id="'+s.id+'" data-slot-date="'+date+'" data-slot-time="'+s.from_time+'" class="slot-book-btn" style="background:rgba(13,148,136,.1);border:1.5px solid rgba(13,148,136,.3);color:#99f6e4;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;margin:4px;font-family:var(--font)">'+s.from_time+' - '+s.to_time+'<div style="font-size:10px;color:#64748b">'+s.duration_mins+' min'+(s.notes?' | '+s.notes:'')+'</div></button>';
         }
@@ -8086,7 +8112,7 @@ function generateReferralFromSummary() {
   var reason=reasonEl.value.trim()||'Please see for specialist assessment.';
   var patName=window._csDocketPatName||'the patient';
   var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'the referring dentist';
-  var clinic=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'our clinic';
+  var clinic=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Care Dental Clinic';
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   var L=[
     'Date: '+today,'',
@@ -8097,30 +8123,32 @@ function generateReferralFromSummary() {
     'This patient experiences dental anxiety. Their fear profile is available via SerenOra Care.','',
     'Yours sincerely,','Dr '+dentName,clinic
   ].join('\n');
-  preview.textContent=L;
+  // Render as proper clinic letterhead PDF
+  var dentName2=currentProfile&&currentProfile.full_name?currentProfile.full_name:'';
+  var clinicN2=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:(clinic||'SerenOra Clinic');
+  var joinC2=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
+  var licNo2=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
+  var regSt2=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
+  var contentHtml='<div style="white-space:pre-wrap;font-size:13px;line-height:1.9;color:#334155">'+L.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
+  preview.innerHTML='<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;font-size:12px;color:#1e293b;white-space:pre-wrap;line-height:1.8;margin-bottom:10px">'+L+'</div>'
+    +'<button onclick="openPrintWindow(buildPdfHtml('+JSON.stringify(contentHtml)+',\'Referral Letter\','+JSON.stringify(dentName2)+','+JSON.stringify(clinicN2)+','+JSON.stringify(joinC2)+','+JSON.stringify(licNo2)+','+JSON.stringify(regSt2)+',\'Referral Letter\',null),\'referral_letter\')" style="width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">🖨️ Print / Download PDF</button>';
   preview.style.display='block';
 }
 
 function generateConsentFromSummary() {
   var patName=window._csDocketPatName||'Patient';
   var dentName=currentProfile&&currentProfile.full_name?currentProfile.full_name:'your dentist';
+  var clinicN=currentProfile&&currentProfile.clinics&&currentProfile.clinics.name?currentProfile.clinics.name:'SerenOra Clinic';
+  var joinC=currentProfile&&currentProfile.clinics&&currentProfile.clinics.join_code?currentProfile.clinics.join_code:'';
+  var licNo=currentProfile&&currentProfile.license_number?currentProfile.license_number:'';
+  var regSt=currentProfile&&currentProfile.reg_state?currentProfile.reg_state:'';
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   var procs=[];
   document.querySelectorAll('.cs-procedure-performed-sel,.cs-procedure-advised-sel').forEach(function(s){if(s.value&&s.options[s.selectedIndex])procs.push(s.options[s.selectedIndex].text);});
   var procStr=procs.length?procs.join(', '):'the proposed procedures';
-  var L=[
-    'INFORMED CONSENT FORM','',
-    'Date: '+today,'Patient: '+patName,'Dentist: Dr '+dentName,'Procedures: '+procStr,'',
-    'I confirm that:',
-    '1. The procedures, risks and benefits have been explained to me in a language I understand.',
-    '2. I have been informed of alternative treatments available.',
-    '3. I understand I may withdraw consent at any time using hand signals.',
-    '4. I agree to proceed with '+procStr+'.','',
-    'Patient Signature: _______________________','','Date: '+today
-  ].join('\n');
-  var win=window.open('','_blank');
-  if(win){win.document.write('<html><body style="font-family:Arial;padding:40px;max-width:600px;margin:auto;white-space:pre-wrap">'+L+'<br><br><button onclick="window.print()" style="padding:10px 20px;font-size:14px;cursor:pointer">Print</button></body></html>');win.document.close();}
-  else showToast('Please allow popups');
+  var contentHtml='<div class="pdf-section"><div class="pdf-section-title">Informed Consent</div><div class="pdf-row"><span class="lbl">Date</span><span class="val">'+today+'</span></div><div class="pdf-row"><span class="lbl">Patient</span><span class="val">'+patName+'</span></div><div class="pdf-row"><span class="lbl">Dentist</span><span class="val">Dr '+dentName+'</span></div><div class="pdf-row"><span class="lbl">Procedures</span><span class="val">'+procStr+'</span></div></div><div class="pdf-section"><div class="pdf-section-title">Declaration</div><ol style="padding-left:18px;margin:0;line-height:2.2;font-size:12px;color:#334155"><li>The procedures, their purpose, risks and benefits have been explained to me in a language I understand.</li><li>I have been informed of alternative treatments available.</li><li>I understand I may withdraw consent at any time using hand signals.</li><li>I agree to proceed with <strong>'+procStr+'</strong>.</li></ol></div><div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px"><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Patient Signature &amp; Date</div></div><div><div style="border-top:1.5px solid #0f172a;padding-top:6px;font-size:12px;color:#64748b">Guardian Signature (if minor)</div></div></div>';
+  var html=buildPdfHtml(contentHtml,'Informed Consent Form',dentName,clinicN,joinC,licNo,regSt,'Patient: '+patName,null);
+  openPrintWindow(html,'consent_form_'+Date.now());
 }
 
 
@@ -8146,66 +8174,40 @@ function renderCaAnxietyAnalytics() {
   var stories  = (_caData && _caData.stories)  || [];
   var patients = (_caData && _caData.patients) || [];
   var records  = (_caData && _caData.records)  || [];
-  var dentists = (_caData && _caData.dentists) || [];
-
-  var totalWithStory = stories.length;
-  var pct = patients.length ? Math.round(totalWithStory/patients.length*100) : 0;
-
-  // Parse MDAS from cs_data
+  var dentists = (_caData && _caData.dentists).filter(function(d){return d.role==='dentist';}) || [];
+  var totalWithStory = stories.length, totalPatients = patients.length;
+  var pct = totalPatients ? Math.round(totalWithStory/totalPatients*100) : 0;
+  var PROC_LABELS = {filling:'Dental Filling',rct:'Root Canal (RCT)',rootcanal:'Root Canal',extraction:'Tooth Extraction',scaling:'Scaling & Polishing',crown:'Crown',implant:'Implant',whitening:'Teeth Whitening',ortho:'Orthodontics',denture:'Denture',flouride:'Fluoride',sealant:'Sealant',surgery:'Oral Surgery',xray_consult:'X-Ray / Consult',other:'Other'};
+  var LEVEL_SCORES = {calm:4,mild:12,moderate:18,high:23};
   var mdasScores = [];
-  records.forEach(function(r){
-    try{
-      var cs = typeof r.cs_data==='string'?JSON.parse(r.cs_data):r.cs_data;
-      if(cs&&cs.mdasScore&&!isNaN(Number(cs.mdasScore))) mdasScores.push({score:Number(cs.mdasScore),proc:r.procedure_type||'',dentId:r.dentist_id||null});
-    }catch(_){}
-  });
-  var avgMdas = mdasScores.length ? Math.round(mdasScores.reduce(function(a,b){return a+b.score;},0)/mdasScores.length) : null;
-  var highAnx = mdasScores.filter(function(s){return s.score>=19;}).length;
+  records.forEach(function(r){try{var cs=typeof r.cs_data==='string'?JSON.parse(r.cs_data):(r.cs_data||{});var score=null;if(cs.mdasScore&&!isNaN(Number(cs.mdasScore))){score=Number(cs.mdasScore);}else if(cs.anxietyInsight&&cs.anxietyInsight.level&&LEVEL_SCORES[cs.anxietyInsight.level]){score=LEVEL_SCORES[cs.anxietyInsight.level];}if(score!==null)mdasScores.push({score:score,proc:r.procedure_type||'other',dentId:r.dentist_id?String(r.dentist_id):null});}catch(_){}});
+  var avgMdas=mdasScores.length?Math.round(mdasScores.reduce(function(a,s){return a+s.score;},0)/mdasScores.length):null;
+  var highAnx=mdasScores.filter(function(s){return s.score>=19;}).length;
 
-  var kpiEl = document.getElementById('ca-anxiety-kpis');
-  if (kpiEl) kpiEl.innerHTML = [
-    {num:totalWithStory, lbl:'Anxiety Profiles', col:'#99f6e4'},
-    {num:pct+'%',        lbl:'Patients Anxious', col:'#f59e0b'},
-    {num:avgMdas!==null?avgMdas+'/25':'—', lbl:'Avg MDAS', col:'#a78bfa'},
-    {num:highAnx,        lbl:'High Anxiety Visits', col:'#f87171'}
-  ].map(function(k){return '<div class="ca-stat"><div class="num" style="color:'+k.col+'">'+k.num+'</div><div class="lbl">'+k.lbl+'</div></div>';}).join('');
+  // KPIs
+  var kpiEl=document.getElementById('ca-anxiety-kpis');
+  if(kpiEl){var avgColor=avgMdas===null?'#64748b':avgMdas>=19?'#f87171':avgMdas>=13?'#f59e0b':'#34d399';kpiEl.innerHTML=[{num:totalWithStory,sub:'of '+totalPatients+' patients',lbl:'Anxiety Profiles',col:'#99f6e4',icon:'🧠'},{num:pct+'%',sub:'have shared a fear profile',lbl:'Patients with Profile',col:'#f59e0b',icon:'📊'},{num:avgMdas!==null?avgMdas+'/25':'—',sub:avgMdas===null?'—':avgMdas>=19?'🔴 High':avgMdas>=13?'🟡 Moderate':'🟢 Low',lbl:'Avg MDAS Score',col:avgColor,icon:'📈'},{num:highAnx,sub:'scored ≥19/25',lbl:'High Anxiety Visits',col:'#f87171',icon:'⚠️'}].map(function(k){return '<div class="ca-stat"><div style="font-size:16px;margin-bottom:4px">'+k.icon+'</div><div style="font-size:24px;font-weight:900;color:'+k.col+'">'+k.num+'</div><div style="font-size:10px;color:#64748b;margin-top:2px">'+k.sub+'</div><div style="font-size:11px;font-weight:700;color:#94a3b8;margin-top:3px;text-transform:uppercase;letter-spacing:.4px">'+k.lbl+'</div></div>';}).join('');}
 
-  // Fears chart
-  var fearCount = {};
-  stories.forEach(function(s){
-    if(!s.fears)return;
-    s.fears.split(',').forEach(function(f){var ft=f.trim();if(ft)fearCount[ft]=(fearCount[ft]||0)+1;});
-  });
-  var sortedFears = Object.entries(fearCount).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
-  var maxF = sortedFears.length?sortedFears[0][1]:1;
-  var fColors = ['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee','#818cf8','#f472b6'];
-  var fearEl = document.getElementById('ca-fears-chart');
-  if (fearEl) fearEl.innerHTML = sortedFears.length ? sortedFears.map(function(entry,i){
-    var fear=entry[0], count=entry[1], col=fColors[i%fColors.length];
-    return '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;color:#cbd5e1">'+fear+'</span><span style="font-size:12px;font-weight:700;color:'+col+'">'+count+'</span></div><div class="ca-progress"><div class="ca-progress-fill" style="width:'+Math.round(count/maxF*100)+'%;background:'+col+'"></div></div></div>';
-  }).join('') : '<div style="color:#64748b;font-size:13px">No fear profiles shared yet.</div>';
+  // Fears
+  var FEAR_NORM={'needle':'Needles / Injections','injection':'Needles / Injections','injections':'Needles / Injections','needles':'Needles / Injections','drill':'Dental Drill Sounds','drilling':'Dental Drill Sounds','pain':'Fear of Pain','blood':'Blood / Bleeding','bleeding':'Blood / Bleeding','gagging':'Gagging / Choking','gag reflex':'Gagging / Choking','past trauma':'Past Trauma','bad experience':'Past Trauma'};
+  var fearCount={};stories.forEach(function(s){if(!s.fears)return;s.fears.split(',').forEach(function(f){var raw=f.trim().toLowerCase();if(!raw)return;var norm=FEAR_NORM[raw]||(raw.charAt(0).toUpperCase()+raw.slice(1));fearCount[norm]=(fearCount[norm]||0)+1;});});
+  var sortedFears=Object.entries(fearCount).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+  var maxF=sortedFears.length?sortedFears[0][1]:1;
+  var fPalette=['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee','#818cf8','#f472b6'];
+  var fearEl=document.getElementById('ca-fears-chart');
+  if(fearEl){fearEl.innerHTML=sortedFears.length?sortedFears.map(function(entry,i){var fear=entry[0],count=entry[1],col=fPalette[i%fPalette.length],pct2=Math.round(count/maxF*100),sp=totalWithStory?Math.round(count/totalWithStory*100):0;return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:12px;color:#cbd5e1">'+fear+'</span><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#64748b">'+sp+'%</span><span style="font-size:13px;font-weight:800;color:'+col+'">'+count+'</span></div></div><div class="ca-progress"><div class="ca-progress-fill" style="width:0%;background:'+col+';transition:width .6s ease" data-target="'+pct2+'"></div></div></div>';}).join(''):'<div style="text-align:center;padding:20px;color:#64748b;font-size:13px">No fear profiles shared yet.</div>';requestAnimationFrame(function(){fearEl.querySelectorAll('.ca-progress-fill[data-target]').forEach(function(el){el.style.width=el.getAttribute('data-target')+'%';});});}
 
   // MDAS by procedure
-  var procMap = {};
-  mdasScores.forEach(function(s){if(!s.proc)return;if(!procMap[s.proc])procMap[s.proc]=[];procMap[s.proc].push(s.score);});
-  var procAvgs = Object.entries(procMap).map(function(e){return {proc:e[0].replace(/_/g,' '),avg:Math.round(e[1].reduce(function(a,b){return a+b;},0)/e[1].length)};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,6);
-  var procEl = document.getElementById('ca-mdas-proc-chart');
-  if (procEl) procEl.innerHTML = procAvgs.length ? procAvgs.map(function(p){
-    var col=p.avg>=19?'#f87171':p.avg>=13?'#f59e0b':'#34d399';
-    return '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;color:#cbd5e1">'+p.proc+'</span><span style="font-size:12px;font-weight:700;color:'+col+'">'+p.avg+'/25</span></div><div class="ca-progress"><div class="ca-progress-fill" style="width:'+Math.round(p.avg/25*100)+'%;background:'+col+'"></div></div></div>';
-  }).join('') : '<div style="color:#64748b;font-size:13px">MDAS data will appear as records are added.</div>';
+  var procMap={};mdasScores.forEach(function(s){var k=s.proc||'other';if(!procMap[k])procMap[k]=[];procMap[k].push(s.score);});
+  var procAvgs=Object.entries(procMap).map(function(e){var avg=Math.round(e[1].reduce(function(a,b){return a+b;},0)/e[1].length);return{proc:PROC_LABELS[e[0]]||(e[0].replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();})),avg:avg,n:e[1].length};}).sort(function(a,b){return b.avg-a.avg;}).slice(0,8);
+  var procEl=document.getElementById('ca-mdas-proc-chart');
+  if(procEl){procEl.innerHTML=procAvgs.length?procAvgs.map(function(p){var col=p.avg>=19?'#f87171':p.avg>=13?'#f59e0b':'#34d399';var bg=p.avg>=19?'rgba(248,113,113,.08)':p.avg>=13?'rgba(245,158,11,.08)':'rgba(52,211,153,.08)';var badge=p.avg>=19?'🔴 High':p.avg>=13?'🟡 Moderate':'🟢 Low';var pct3=Math.round(p.avg/25*100);return '<div style="margin-bottom:10px;background:'+bg+';border-radius:10px;padding:10px 12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:#e2e8f0;font-weight:600">'+p.proc+'</span><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:10px;color:#64748b">'+p.n+' visit'+(p.n!==1?'s':'')+'</span><span style="font-size:10px;font-weight:700;color:'+col+'">'+badge+'</span><span style="font-size:14px;font-weight:900;color:'+col+'">'+p.avg+'/25</span></div></div><div class="ca-progress"><div class="ca-progress-fill" style="width:0%;background:'+col+';transition:width .6s ease" data-target="'+pct3+'"></div></div></div>';}).join(''):'<div style="text-align:center;padding:16px;color:#64748b;font-size:13px">MDAS data appears here as casesheets are saved.</div>';requestAnimationFrame(function(){procEl.querySelectorAll('.ca-progress-fill[data-target]').forEach(function(el){el.style.width=el.getAttribute('data-target')+'%';});});}
 
   // Dentist outcomes
-  var dentScores = {};
-  mdasScores.forEach(function(s){if(!s.dentId)return;if(!dentScores[s.dentId])dentScores[s.dentId]=[];dentScores[s.dentId].push(s.score);});
-  var dentEl = document.getElementById('ca-dent-anxiety-list');
-  if (dentEl) dentEl.innerHTML = dentists.map(function(d){
-    var sc=dentScores[String(d.id)]||[];
-    var avg=sc.length?Math.round(sc.reduce(function(a,b){return a+b;},0)/sc.length):null;
-    var col=avg===null?'#64748b':avg>=19?'#f87171':avg>=13?'#f59e0b':'#34d399';
-    var init=(d.full_name||'D').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
-    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)"><div class="patient-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0">'+init+'</div><div style="flex:1"><div style="font-size:13px;color:#e2e8f0;font-weight:600">'+(d.full_name||'—')+'</div><div style="font-size:11px;color:#64748b">'+sc.length+' scored visits</div></div><div style="font-size:16px;font-weight:800;color:'+col+'">'+(avg!==null?avg+'/25':'—')+'</div></div>';
-  }).join('');
+  var dentScores={},dentVisits={};records.forEach(function(r){if(!r.dentist_id)return;var dId=String(r.dentist_id);dentVisits[dId]=(dentVisits[dId]||0)+1;});mdasScores.forEach(function(s){if(!s.dentId)return;if(!dentScores[s.dentId])dentScores[s.dentId]=[];dentScores[s.dentId].push(s.score);});
+  var dentRows=dentists.map(function(d){var dId=String(d.id),sc=dentScores[dId]||[],avg=sc.length?(sc.reduce(function(a,b){return a+b;},0)/sc.length):null,visits=dentVisits[dId]||0;return{d:d,avg:avg,sc:sc,visits:visits};}).sort(function(a,b){if(a.avg===null&&b.avg===null)return 0;if(a.avg===null)return 1;if(b.avg===null)return -1;return a.avg-b.avg;});
+  var dentEl=document.getElementById('ca-dent-anxiety-list');
+  if(dentEl){dentEl.innerHTML=dentRows.length?dentRows.map(function(row,idx){var d=row.d,avg=row.avg,sc=row.sc,visits=row.visits,avg_r=avg!==null?Math.round(avg):null,col=avg_r===null?'#64748b':avg_r>=19?'#f87171':avg_r>=13?'#f59e0b':'#34d399',bg=avg_r===null?'rgba(255,255,255,.03)':avg_r>=19?'rgba(248,113,113,.07)':avg_r>=13?'rgba(245,158,11,.07)':'rgba(52,211,153,.07)',badgeTxt=avg_r===null?'No data':avg_r>=19?'High anxiety':avg_r>=13?'Moderate':'Low anxiety',init=(d.full_name||'D').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);var vsBadge='';if(avg_r!==null&&avgMdas!==null&&sc.length>=2){var diff=avg_r-avgMdas;if(diff<=-3)vsBadge='<span style="font-size:10px;background:rgba(52,211,153,.15);color:#34d399;border-radius:8px;padding:2px 7px;font-weight:700">↓ '+Math.abs(diff)+' vs avg</span>';else if(diff>=3)vsBadge='<span style="font-size:10px;background:rgba(248,113,113,.15);color:#f87171;border-radius:8px;padding:2px 7px;font-weight:700">↑ +'+diff+' vs avg</span>';else vsBadge='<span style="font-size:10px;background:rgba(255,255,255,.06);color:#94a3b8;border-radius:8px;padding:2px 7px;font-weight:700">≈ avg</span>';}var rank=idx===0&&avg_r!==null?'<span style="font-size:10px;margin-left:4px">🥇</span>':'';var barW=avg_r!==null?Math.round(avg_r/25*100):0;return '<div style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;background:'+bg+';border:1px solid rgba(255,255,255,.08);border-radius:14px"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,'+col+',#0f172a);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">'+init+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#e2e8f0">Dr. '+(d.full_name||'—')+rank+'</div><div style="font-size:10px;color:#64748b;margin-top:1px">'+visits+' visit'+(visits!==1?'s':'')+' · '+sc.length+' scored</div>'+(avg_r!==null?'<div style="margin-top:5px"><div class="ca-progress" style="height:5px"><div class="ca-progress-fill" style="width:0%;background:'+col+';transition:width .7s ease" data-target="'+barW+'"></div></div></div>':'')+'</div><div style="text-align:right;flex-shrink:0"><div style="font-size:20px;font-weight:900;color:'+col+';line-height:1">'+(avg_r!==null?avg_r+'/25':'—')+'</div><div style="font-size:10px;color:'+col+';font-weight:600;margin-top:2px">'+badgeTxt+'</div>'+(vsBadge?'<div style="margin-top:4px">'+vsBadge+'</div>':'')+'</div></div>';}).join(''):'<div style="color:#64748b;font-size:13px;text-align:center;padding:16px">No dentists yet.</div>';requestAnimationFrame(function(){dentEl.querySelectorAll('.ca-progress-fill[data-target]').forEach(function(el){el.style.width=el.getAttribute('data-target')+'%';});});}
 }
 
 // ── loadDentistInsight: shows dentist note on patient dashboard ───────────────
@@ -8233,22 +8235,54 @@ function showCpdTracker() {
   var modal = document.createElement('div');
   modal.id = 'dent-cpd-modal';
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center';
-  modal.innerHTML = '<div style="background:#0f172a;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:20px">'
-    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
-    + '<div style="font-size:16px;font-weight:700;color:#e2e8f0">&#127891; CPD Tracker</div>'
-    + '<button onclick="document.getElementById(\'dent-cpd-modal\').style.display=\'none\'" style="background:none;border:none;color:#64748b;font-size:20px;cursor:pointer">&#x2715;</button>'
-    + '</div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
-    + '<input id="cpd-title" placeholder="CPD activity title" style="background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)">'
-    + '<input id="cpd-hours" type="number" min="0.5" step="0.5" placeholder="Hours" style="background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)">'
-    + '<input id="cpd-date" type="date" style="background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)">'
-    + '<select id="cpd-category" style="background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font)">'
-    + '<option value="clinical">Clinical</option><option value="management">Practice Management</option><option value="communication">Communication</option><option value="legal">Legal/Ethics</option>'
-    + '</select></div>'
-    + '<button onclick="saveCpdEntry()" style="width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px">+ Log CPD Activity</button>'
-    + '<div id="cpd-stats" style="margin-bottom:12px"></div>'
-    + '<div id="cpd-log"></div>'
-    + '</div>';
+  var inner = document.createElement('div');
+  inner.style.cssText = 'background:#0f172a;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:20px';
+  // Header
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:16px';
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:16px;font-weight:700;color:#e2e8f0';
+  title.textContent = '📚 CPD Tracker';
+  var closeBtn = document.createElement('button');
+  closeBtn.style.cssText = 'background:none;border:none;color:#64748b;font-size:20px;cursor:pointer';
+  closeBtn.textContent = '✕';
+  closeBtn.addEventListener('click', function(){ modal.style.display='none'; });
+  header.appendChild(title); header.appendChild(closeBtn);
+  inner.appendChild(header);
+  // Form
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px';
+  var inputStyle = 'background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:12px;font-family:var(--font);width:100%;box-sizing:border-box';
+  var titleInput = document.createElement('input');
+  titleInput.id = 'cpd-title'; titleInput.placeholder = 'CPD activity title';
+  titleInput.setAttribute('style', inputStyle);
+  var hoursInput = document.createElement('input');
+  hoursInput.id = 'cpd-hours'; hoursInput.type = 'number';
+  hoursInput.min = '0.5'; hoursInput.step = '0.5'; hoursInput.placeholder = 'Hours';
+  hoursInput.setAttribute('style', inputStyle);
+  var dateInput = document.createElement('input');
+  dateInput.id = 'cpd-date'; dateInput.type = 'date';
+  dateInput.setAttribute('style', inputStyle);
+  var catSel = document.createElement('select');
+  catSel.id = 'cpd-category';
+  catSel.setAttribute('style', inputStyle);
+  [['clinical','Clinical'],['management','Practice Management'],['communication','Communication'],['legal','Legal/Ethics']].forEach(function(o){
+    var opt=document.createElement('option'); opt.value=o[0]; opt.textContent=o[1]; catSel.appendChild(opt);
+  });
+  grid.appendChild(titleInput); grid.appendChild(hoursInput);
+  grid.appendChild(dateInput); grid.appendChild(catSel);
+  inner.appendChild(grid);
+  var saveBtn = document.createElement('button');
+  saveBtn.setAttribute('style','width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px');
+  saveBtn.textContent = '+ Log CPD Activity';
+  saveBtn.addEventListener('click', saveCpdEntry);
+  inner.appendChild(saveBtn);
+  var statsDiv = document.createElement('div');
+  statsDiv.id = 'cpd-stats'; statsDiv.style.marginBottom = '12px';
+  var logDiv = document.createElement('div');
+  logDiv.id = 'cpd-log';
+  inner.appendChild(statsDiv); inner.appendChild(logDiv);
+  modal.appendChild(inner);
   document.body.appendChild(modal);
   loadCpdLog();
 }
@@ -8296,7 +8330,7 @@ async function loadPatTreatmentPlan() {
   if (!activeDb) return;
   try {
     var res = await activeDb.from('medical_records')
-      .select('cs_data,dentist_id,created_at')
+      .select('cs_data,dentist_id,created_at,treatment_summary,procedure_type')
       .eq('patient_id', String(currentUser.id))
       .order('created_at', {ascending:false})
       .limit(5);
@@ -8319,7 +8353,26 @@ async function loadPatTreatmentPlan() {
       } catch(_) {}
     });
 
-    if (!allAdvised.length) { card.style.display='none'; return; }
+    // Fallback: show treatment_summary text if no structured advised procedures
+    if (!allAdvised.length) {
+      var summaries = [];
+      records.forEach(function(r) {
+        try {
+          var cs = typeof r.cs_data==='string'?JSON.parse(r.cs_data):r.cs_data;
+          var advised = (cs && (cs.advisedNotes||cs.advisedProcedures)) ? (cs.advisedNotes||'') : (r.treatment_summary||r.procedure_type||'');
+          if (advised && advised.trim()) summaries.push({text:advised, date:r.created_at, dentId:r.dentist_id});
+        } catch(_) {}
+      });
+      if (!summaries.length) { card.style.display='none'; return; }
+      card.style.display='block';
+      content.innerHTML = summaries.slice(0,3).map(function(s,i){
+        var d='';try{d=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}catch(_){}
+        return '<div style="background:#ede9fe;border-radius:10px;padding:10px 12px;margin-bottom:8px"><div style="font-size:11px;color:#7c3aed;margin-bottom:4px">'+d+'</div><div style="font-size:13px;color:#4c1d95">'+s.text+'</div></div>';
+      }).join('');
+      var notesEl=document.getElementById('pat-plan-notes');
+      if(notesEl){notesEl.textContent='';var a=document.createElement('a');a.href='#';a.textContent='Procedures';a.style.color='#7c3aed';a.style.fontWeight='600';a.addEventListener('click',function(e){e.preventDefault();showScreen('screen-procedures');});notesEl.appendChild(document.createTextNode('💡 Tap '));notesEl.appendChild(a);notesEl.appendChild(document.createTextNode(' to simulate each step before your visit.'));}
+      return;
+    }
 
     // Get dentist name
     var dentName = '';
@@ -8365,6 +8418,36 @@ async function loadPatTreatmentPlan() {
       if (notesEl) notesEl.innerHTML = '💡 Tap <a href="#" onclick="showScreen(\'screen-procedures\');return false;" style="color:#7c3aed;font-weight:600;text-decoration:underline">Procedures</a> to learn what each step involves and simulate it before your visit.';
     }
   } catch(e) { if(card) card.style.display='none'; }
+}
+
+
+// ── Reminders screen countdown (separate from patient account countdown) ─────
+var _remCountdownInterval = null;
+function startRemCountdown(apptDate) {
+  if (_remCountdownInterval) clearInterval(_remCountdownInterval);
+  function tick() {
+    var now=new Date(), diff=apptDate-now;
+    if(diff<=0){clearInterval(_remCountdownInterval);return;}
+    var days=Math.floor(diff/86400000);
+    var hours=Math.floor((diff%86400000)/3600000);
+    var mins=Math.floor((diff%3600000)/60000);
+    var secs=Math.floor((diff%60000)/1000);
+    var d=document.getElementById('rem-cd-days');   if(d)d.textContent=days;
+    var h=document.getElementById('rem-cd-hours');  if(h)h.textContent=String(hours).padStart(2,'0');
+    var m=document.getElementById('rem-cd-mins');   if(m)m.textContent=String(mins).padStart(2,'0');
+    var s=document.getElementById('rem-cd-secs');   if(s)s.textContent=String(secs).padStart(2,'0');
+  }
+  tick();
+  _remCountdownInterval = setInterval(tick, 1000);
+}
+
+
+// ── Oral Cancer Screening Prompt ─────────────────────────────────────────────
+function checkOralCancerPrompt(age, smoker, drinker) {
+  var el = document.getElementById('cs-cancer-screen-prompt');
+  if (!el) return;
+  var risk = (age && parseInt(age) >= 40) || smoker || drinker;
+  el.style.display = risk ? 'block' : 'none';
 }
 
 // ── aliases for sign-out buttons across screens ──
@@ -9138,6 +9221,12 @@ async function populatePatientRecordsScreen() {
       var dEl=document.getElementById('pat-appt-date');
       if(dEl)dEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
       if(typeof startApptCountdown==='function')startApptCountdown(d);
+      // Also update reminders screen countdown
+      var remBanner=document.getElementById('rem-appt-banner');
+      var remDateEl=document.getElementById('rem-appt-date');
+      if(remBanner){remBanner.style.display='block';}
+      if(remDateEl){remDateEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+      if(typeof startRemCountdown==='function')startRemCountdown(d);
     } catch(_) { var dEl2=document.getElementById('pat-appt-date'); if(dEl2)dEl2.textContent=upcoming; }
   }
 
@@ -10146,6 +10235,41 @@ async function loadDentistInbox() {
   } catch(e) {
     listEl.innerHTML = `<div style="font-size:12px;color:#ef4444;padding:8px 0">Could not load inbox: ${safeMsg(e)}</div>`;
   }
+}
+
+async function loadDentMessagesTab() {
+  const listEl = document.getElementById('dent-messages-inbox-list');
+  if (!listEl) return;
+  listEl.innerHTML = '<div style="font-size:13px;color:#64748b;text-align:center;padding:24px">⏳ Loading…</div>';
+  if (!currentUser || !db) { listEl.innerHTML = '<div style="font-size:13px;color:#64748b;text-align:center;padding:24px">Not signed in.</div>'; return; }
+  const dentistId = String(currentUser.id);
+  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  try {
+    let pmRows = [];
+    if (clinicId) {
+      const { data: pmData } = await db.from('patient_messages').select('id,message,created_at,patient_id,sender_role').eq('clinic_id', clinicId).order('created_at', { ascending: false });
+      pmRows = pmData || [];
+    }
+    const { data: peerData } = await db.from('messages').select('sender_id,content,created_at').eq('recipient_id', dentistId).order('created_at', { ascending: false });
+    const peerRows = peerData || [];
+    if (pmRows.length === 0 && peerRows.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">💬</div><div style="font-weight:700;font-size:15px;color:#e2e8f0;margin-bottom:6px">No messages yet</div><div style="font-size:13px;color:#64748b">When patients send you messages, they\'ll appear here.</div></div>';
+      return;
+    }
+    const threadMap = {};
+    for (const m of pmRows) { const pid = String(m.patient_id); if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: m.message, created_at: m.created_at }; }
+    for (const m of peerRows) { const pid = String(m.sender_id); if (!threadMap[pid] || new Date(m.created_at) > new Date(threadMap[pid].created_at)) threadMap[pid] = { pid, content: m.content, created_at: m.created_at }; }
+    const threads = Object.values(threadMap).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+    let profiles = {};
+    try { const { data: pdata } = await db.from('profiles').select('id,full_name').in('id', threads.map(t=>t.pid)); if (pdata) pdata.forEach(p => { profiles[String(p.id)] = p.full_name || 'Patient'; }); } catch(_) {}
+    listEl.innerHTML = threads.map(t => {
+      const name = profiles[t.pid] || 'Patient';
+      const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      let timeStr = ''; try { timeStr = new Date(t.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); } catch(_) {}
+      const preview = t.content && t.content.length > 60 ? t.content.slice(0,60)+'…' : (t.content || '');
+      return `<div class="patient-row" onclick="openDentistReply('${t.pid}','${name.replace(/'/g,"\\'")}')"><div class="patient-avatar">${initials}</div><div style="flex:1;min-width:0"><div class="patient-name">${name}</div><div class="patient-meta" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${preview}</div></div><div style="font-size:11px;color:var(--muted);flex-shrink:0;margin-left:8px">${timeStr}</div></div>`;
+    }).join('');
+  } catch(e) { listEl.innerHTML = `<div style="font-size:12px;color:#ef4444;padding:12px">Could not load messages: ${e&&e.message?e.message:''}</div>`; }
 }
 
 async function openDentistReply(patientId, patientName) {
@@ -11875,6 +11999,16 @@ function makeDraggable(el, onTap) {
     </div>
 
     <!-- ── MY SPACE TAB ── -->
+    <!-- ── MESSAGES TAB ── -->
+    <div id="dent-messages" class="dent-tab-content" style="display:none">
+      <div class="page-content dent-page">
+        <div style="font-family:var(--display);font-weight:700;font-size:17px;color:#e2e8f0;margin-bottom:4px">Patient Messages</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:16px">Tap a patient to open the conversation.</div>
+        <div id="dent-messages-inbox-list"><div style="font-size:13px;color:#64748b;text-align:center;padding:24px">Loading…</div></div>
+        <div style="height:80px"></div>
+      </div>
+    </div>
+
     <div id="dent-myspace" class="dent-tab-content" style="display:none">
       <div class="page-content dent-page">
 
@@ -12201,6 +12335,7 @@ function makeDraggable(el, onTap) {
     <button class="dent-bnav-item" id="dbnav-wellbeing" onclick="showDentScreen('dent-wellbeing')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 4 14 4 8.5C4 5.4 6.4 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.6 3 20 5.4 20 8.5C20 14 12 21 12 21Z" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dent-bnav-label">Wellbeing</span></button>
     <button class="dent-bnav-item" id="dbnav-reminders" onclick="showDentScreen('dent-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="rgba(255,255,255,.4)" stroke-width="2"/></svg><span class="dent-bnav-label">Reminders</span></button>
     <button class="dent-bnav-item" id="dbnav-slots" onclick="showDentScreen('dent-slots');loadDentSlots()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="dent-bnav-label">Slots</span></button>
+    <button class="dent-bnav-item" id="dbnav-messages" onclick="showDentScreen('dent-messages');loadDentMessagesTab()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dent-bnav-label">Messages</span></button>
     <button class="dent-bnav-item" id="dbnav-myspace" onclick="showDentScreen('dent-myspace')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,.4)" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/></svg><span class="dent-bnav-label">My Space</span></button>
   </div>
 </div><!-- end screen-dentist-app -->
@@ -12255,6 +12390,7 @@ function showDentScreen(tabId) {
     'dent-winddown':   'dbnav-wellbeing',
     'dent-reminders':  'dbnav-reminders',
     'dent-slots':      'dbnav-slots',
+    'dent-messages':   'dbnav-messages',
     'dent-myspace':    'dbnav-myspace',
   };
   document.querySelectorAll('.dent-bnav-item').forEach(b => b.classList.remove('active'));
@@ -12279,6 +12415,8 @@ function showDentScreen(tabId) {
     'dent-exercises':  'Wellbeing',
     'dent-winddown':   'Wellbeing',
     'dent-reminders':  'Reminders',
+    'dent-slots':      'Appointment Slots',
+    'dent-messages':   'Messages',
     'dent-myspace':    'My Space',
   };
   const titleEl = document.getElementById('dent-screen-title');
@@ -12292,6 +12430,7 @@ function showDentScreen(tabId) {
   if (scroll) scroll.scrollTop = 0;
 
   // Load data for specific tabs
+  if (tabId === 'dent-messages') { loadDentMessagesTab(); }
   if (tabId === 'dent-myspace') { loadDentMySpace(); syncDentSettingsUI(); }
   if (tabId === 'dent-reminders') renderDentReminders();
   if (tabId === 'dent-dashboard') {
@@ -14200,6 +14339,43 @@ function continueAsGuest() {
     </div>
     <!-- SUMMARY TAB -->
     <div id="cs-tab-summary" style="display:none">
+      <!-- Anxiety Insight Section -->
+      <div class="cs-section" style="background:rgba(13,148,136,.06);border:1.5px solid rgba(13,148,136,.25)">
+        <div class="cs-section-title" style="color:#99f6e4">💡 Anxiety Insight for Next Visit</div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:12px;line-height:1.6">Pushed to the patient's dashboard so they arrive at the next visit knowing what worked.</div>
+        <div class="cs-field">
+          <div class="cs-label">What helped most this visit?</div>
+          <select class="cs-select" id="cs-anxiety-what-helped" style="background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:9px 12px;font-size:13px;font-family:var(--font);width:100%">
+            <option value="">— Select what helped —</option>
+            <option value="narrating">Narrating each step before doing it</option>
+            <option value="pause_breaks">Pause breaks on request</option>
+            <option value="slower_pace">Slower, gentler pace throughout</option>
+            <option value="hand_signals">Hand-signal stop system</option>
+            <option value="distraction">Distraction (music / conversation)</option>
+            <option value="topical_anaesthesia">Extra topical anaesthesia time</option>
+            <option value="breathing_cues">Breathing cues before injections</option>
+            <option value="warm_tone">Calm, warm tone of voice</option>
+            <option value="no_surprises">No surprise instruments shown</option>
+            <option value="short_appointments">Shorter appointment chunks</option>
+            <option value="positive_reinforcement">Positive reinforcement throughout</option>
+            <option value="other">Other (see note below)</option>
+          </select>
+        </div>
+        <div class="cs-field">
+          <div class="cs-label">Note for next visit <span style="font-weight:400;color:#64748b">(shown to patient)</span></div>
+          <textarea class="cs-textarea" id="cs-anxiety-next-note" rows="2" placeholder="e.g. Patient responded well to narration. Start slow, confirm comfort before each injection."></textarea>
+        </div>
+        <div class="cs-field">
+          <div class="cs-label">Overall anxiety level this visit</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#e2e8f0"><input type="radio" name="cs-anxiety-level" value="calm" style="accent-color:#22c55e"> 😌 Calm</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#e2e8f0"><input type="radio" name="cs-anxiety-level" value="mild" style="accent-color:#f59e0b"> 😐 Mild</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#e2e8f0"><input type="radio" name="cs-anxiety-level" value="moderate" style="accent-color:#f97316"> 😟 Moderate</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#e2e8f0"><input type="radio" name="cs-anxiety-level" value="high" style="accent-color:#ef4444"> 😰 High</label>
+          </div>
+        </div>
+      </div>
+
       <div class="cs-section">
         <div class="cs-section-title">📋 Visit Summary Preview</div>
         <div id="cs-summary-preview" style="background:#fff;border-radius:12px;padding:16px;color:#0f172a;font-size:12px">
@@ -14282,21 +14458,9 @@ function switchDocketTab(tab, btn) {
 }
 async function loadDocketPatientInfo(patientId) {
   window._csDocketPatientId = patientId;
-  window._docketCurrentPatientId = patientId; // separate from CS
-  // Fetch and store patient name for referral letters and consent forms
-  try {
-    var _pn = (window._dentPatientData || {})[String(patientId)];
-    window._csDocketPatName = _pn ? (_pn.full_name || 'Patient') : 'Patient';
-    window._csDocketMH = _pn && _pn.medical_history ? _pn.medical_history : {};
-    // Trigger oral cancer screening prompt for at-risk patients
-    var _age = _pn ? parseInt(_pn.age || 0) : 0;
-    var _mhData = window._csDocketMH || {};
-    var _smoker = !!((_mhData.conditions || []).some ? (_mhData.conditions||[]).some(function(c){var cs=String(c).toLowerCase();return cs.indexOf('smok')!==-1||cs.indexOf('tobacco')!==-1;}) : false);
-    var _drinker = !!((_mhData.conditions || []).some ? (_mhData.conditions||[]).some(function(c){var cs=String(c).toLowerCase();return cs.indexOf('alcohol')!==-1||cs.indexOf('drink')!==-1;}) : false);
-    if(typeof checkOralCancerPrompt==='function') checkOralCancerPrompt(_age, _smoker, _drinker);
-  } catch(_) {}
-  let p = (window._dentPatientData || {})[patientId];
-  // Always fetch fresh data from Supabase to ensure new patients are reflected
+  window._docketCurrentPatientId = patientId;
+  // ALWAYS fetch fresh data first — never use stale cache for history display
+  let p = null;
   if (db) {
     try {
       const { data } = await db.from('profiles')
@@ -14306,7 +14470,17 @@ async function loadDocketPatientInfo(patientId) {
         p = data;
         // Update cache
         if (!window._dentPatientData) window._dentPatientData = {};
-        window._dentPatientData[patientId] = data;
+        window._dentPatientData[String(patientId)] = data;
+        // Store for referral/consent
+        window._csDocketPatName = data.full_name || 'Patient';
+        window._csDocketMH = data.medical_history || {};
+        // Trigger oral cancer for age/risk
+        var _age2 = parseInt(data.age||0);
+        var _mh2 = data.medical_history || {};
+        var _conds = Array.isArray(_mh2.conditions) ? _mh2.conditions : [];
+        var _smoker2 = _conds.some(function(c){var cs=String(c).toLowerCase();return cs.indexOf('smok')!==-1||cs.indexOf('tobacco')!==-1;});
+        var _drinker2 = _conds.some(function(c){var cs=String(c).toLowerCase();return cs.indexOf('alcohol')!==-1||cs.indexOf('drink')!==-1;});
+        if(typeof checkOralCancerPrompt==='function') checkOralCancerPrompt(_age2, _smoker2, _drinker2);
       }
     } catch(_) {}
   }
@@ -15245,6 +15419,7 @@ async function saveCasesheetRecord() {
     investigations: g('cs-invest-notes'), treatment: treatNotes,
     procedureAdvised: allAdvised.join(', ') || procedureAdvised, advisedNotes, advisedCost,
     allPerformedProcedures: allPerformed, allAdvisedProcedures: allAdvised,
+    advisedProcedures: allAdvised.map(function(proc){ return { proc: proc, teeth: [], notes: advisedNotes || '' }; }),
     selectedTeeth: Array.from(_csSelectedTeeth), affectedTeeth: Array.from(_csAffectedTeeth),
     toothNotes: g('cs-tooth-notes'), toothDetails: _csToothDetails, billingStatus: _csBillingStatus,
     internalNotes: g('cs-internal-notes'), rx: _csRxList, rxNotes: g('cs-rx-notes'), postOp: postOpNotes
@@ -16160,16 +16335,31 @@ function closePickerModal() {
           <div style="display:flex;justify-content:space-around;margin-top:5px" id="ca-monthly-labels"></div>
         </div>
         <!-- Anxiety Analytics -->
-        <div class="ca-card" id="ca-anxiety-section" style="margin-top:12px">
-          <div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:4px">🧠 Anxiety Analytics</div>
-          <div style="font-size:11px;color:#64748b;margin-bottom:14px">Patient-reported data across your clinic</div>
-          <div class="ca-stat-grid" id="ca-anxiety-kpis" style="margin-bottom:16px"></div>
-          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Most Common Patient Fears</div>
-          <div id="ca-fears-chart" style="margin-bottom:16px"></div>
-          <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Avg Anxiety by Procedure</div>
-          <div id="ca-mdas-proc-chart" style="margin-bottom:16px"></div>
-          <div style="font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Dentist Anxiety Outcomes</div>
-          <div id="ca-dent-anxiety-list"></div>
+        <div class="ca-card" id="ca-anxiety-section" style="margin-top:12px;border:1px solid rgba(13,148,136,.25);background:rgba(13,148,136,.04)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div><div style="font-weight:800;font-size:15px;color:#e2e8f0">🧠 Anxiety Analytics</div><div style="font-size:11px;color:#64748b;margin-top:2px">Aggregated from patient profiles &amp; casesheet records</div></div>
+            <button onclick="renderCaAnxietyAnalytics()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);flex-shrink:0">↺</button>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px -16px;padding:14px 16px 0">
+            <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">📊 Overview</div>
+            <div class="ca-stat-grid" id="ca-anxiety-kpis" style="margin-bottom:0"></div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px -16px;padding:14px 16px 0">
+            <div style="font-size:11px;font-weight:700;color:#f87171;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">😰 Most Common Patient Fears</div>
+            <div style="font-size:11px;color:#64748b;margin-bottom:12px">Ranked by frequency across all shared fear profiles</div>
+            <div id="ca-fears-chart"></div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px -16px;padding:14px 16px 0">
+            <div style="font-size:11px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">🦷 Avg Anxiety Score by Procedure</div>
+            <div style="font-size:11px;color:#64748b;margin-bottom:12px"><span style="color:#34d399;font-weight:700">🟢 &lt;13 Low</span> <span style="margin:0 6px;color:#f59e0b;font-weight:700">🟡 13–18 Moderate</span> <span style="color:#f87171;font-weight:700">🔴 ≥19 High</span></div>
+            <div id="ca-mdas-proc-chart"></div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px -16px;padding:14px 16px 0">
+            <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">👨‍⚕️ Dentist Anxiety Outcomes</div>
+            <div style="font-size:11px;color:#64748b;margin-bottom:12px">Average patient MDAS per dentist — lower is better. 🥇 = best outcome.</div>
+            <div id="ca-dent-anxiety-list"></div>
+          </div>
+          <div style="height:8px"></div>
         </div>
         <div style="height:80px"></div>
       </div>
@@ -16527,7 +16717,7 @@ async function _caLoadAll() {
 
     // All records for this clinic
     const { data: records } = await activeDb.from('medical_records')
-      .select('id,patient_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
+      .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
       .eq('clinic_id', _caData.clinicId)
       .order('created_at', { ascending: false });
     _caData.records = records || [];
