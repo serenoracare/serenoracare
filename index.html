@@ -17643,7 +17643,31 @@ async function openCaPatDocket(patientId) {
   const name = p.full_name||'Patient';
   document.getElementById('ca-pat-sheet-title').textContent = name;
 
-  const recs = _caData.records.filter(r=>r.patient_id===patientId);
+  // Always fetch records fresh for this patient — don't rely on _caData.records cache
+  // which may be empty if the clinic_id filter didn't match or load timed out.
+  let recs = (_caData.records||[]).filter(r=>String(r.patient_id)===String(patientId));
+  try {
+    const activeDb = db || window.__supaDb;
+    if (activeDb) {
+      const { data: freshRecs } = await activeDb.from('medical_records')
+        .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
+        .eq('patient_id', String(patientId))
+        .order('created_at', { ascending: false });
+      if (freshRecs && freshRecs.length >= 0) {
+        recs = freshRecs;
+        // Also backfill global cache so other features (stats, bills) benefit
+        freshRecs.forEach(r => {
+          if (!(_caData.records||[]).find(x=>x.id===r.id)) {
+            if (!_caData.records) _caData.records = [];
+            _caData.records.push(r);
+          }
+          // Populate record cache for Summary button
+          window._caRecordCache = window._caRecordCache || {};
+          window._caRecordCache[String(r.id)] = r;
+        });
+      }
+    }
+  } catch(_) { /* use cached recs */ }
   const mh   = p.medical_history;
   const PROC = {filling:'Dental Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',scaling:'Scaling & Polishing',crown:'Crown',implant:'Implant',whitening:'Whitening',ortho:'Orthodontics',xray_consult:'X-Ray / Consult',other:'Treatment'};
 
@@ -18416,7 +18440,7 @@ function renderCaBills() {
           <button onclick="markCaBillWaived('${b.id}')" style="background:rgba(99,102,241,.2);border:1px solid #818cf8;color:#a5b4fc;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">🎁 Waive</button>
         `:b.status==='paid'?`<span style="font-size:12px;color:#4ade80;font-weight:600">✅ Paid ${b.paid_at?(new Date(b.paid_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})):''}</span>`:''}
         <button onclick="downloadReceipt(window._caBillCache['${b.id}'])" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📄 Receipt PDF</button>
-        <button onclick="downloadOPSummary('${b.record_id||''}','${b.patient_id||''}')" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>
+        ${b.record_id?`<button onclick="downloadOPSummary('${b.record_id}','${b.patient_id||''}')" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>`:''}
       </div>
     </div>`;
   }).join('');
