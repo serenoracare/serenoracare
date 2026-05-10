@@ -9500,44 +9500,12 @@ function renderMiniToothGrid(containerId, selectedSet, mode) {
 }
 
 function toggleMiniTooth(t, mode) {
-  const set  = mode === 'advised' ? _advisedTeeth : _performedTeeth;
-  const taId = mode === 'advised' ? 'cs-advised-notes' : 'cs-treatment-notes';
-  const selId= mode === 'advised' ? 'cs-procedure-advised' : 'cs-procedure';
-  const prevId= mode === 'advised' ? 'cs-advised-sentence-preview' : 'cs-performed-sentence-preview';
-
+  // Mini grid is a visual-only selector — each procedure row has its own tooth grid
+  // that already writes to the textarea. Mini grid just highlights selected teeth.
+  const set = mode === 'advised' ? _advisedTeeth : _performedTeeth;
   if (set.has(t)) { set.delete(t); } else { set.add(t); }
   renderMiniToothGrid(mode === 'advised' ? 'cs-advised-tooth-grid' : 'cs-performed-tooth-grid', set, mode);
-
-  // Build sentence and append to textarea
-  const procSel  = document.getElementById(selId);
-  const procVal  = procSel ? procSel.value : '';
-  const PROC_LABELS = { filling:'Dental Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',surgical_ext:'Surgical Extraction',scaling:'Scaling & Polishing',crown:'Crown',crown_prep:'Crown Preparation',implant:'Dental Implant',whitening:'Teeth Whitening',ortho:'Orthodontic Treatment',denture:'Denture',pulpotomy:'Pulpotomy',abscess_drain:'Abscess Drainage',flouride:'Fluoride Application',sealant:'Pit & Fissure Sealant',surgery:'Oral Surgery',xray_consult:'X-Ray / Consultation',other:'Treatment' };
-  const procLabel = procVal ? (PROC_LABELS[procVal] || procVal) : 'treatment';
-  const teethArr  = Array.from(set).sort((a,b)=>a-b);
-
-  if (teethArr.length === 0) {
-    const prevEl = document.getElementById(prevId); if (prevEl) prevEl.style.display='none';
-    // Remove mini-grid sentence from map and rebuild
-    if (!window._rowSentenceMap) window._rowSentenceMap = new Map();
-    window._rowSentenceMap.delete(`__row_mini_${mode}__`);
-    const ta2 = document.getElementById(taId);
-    if (ta2) _rebuildNotesTextarea(ta2, mode);
-    return;
-  }
-
-  const sentence = mode === 'advised'
-    ? `${procLabel} advised on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`
-    : `${procLabel} performed on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`;
-
-  const prevEl = document.getElementById(prevId);
-  if (prevEl) { prevEl.textContent = sentence; prevEl.style.display='block'; }
-
-  // Use _rowSentenceMap so mini-grid and row-grid sentences co-exist cleanly
-  if (!window._rowSentenceMap) window._rowSentenceMap = new Map();
-  const miniKey = `__row_mini_${mode}__`;
-  window._rowSentenceMap.set(miniKey, sentence);
-  const ta = document.getElementById(taId);
-  if (ta) _rebuildNotesTextarea(ta, mode);
+  // No textarea writing — per-row grids handle that via toggleRowTooth
 }
 
 function updateAdvisedTeethHint() {
@@ -14457,7 +14425,7 @@ function continueAsGuest() {
         <div id="cs-advised-procedures-list">
           <div class="cs-advised-proc-row" data-index="0">
             <div class="cs-field"><div class="cs-label">Procedure Advised</div>
-              <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint();initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">
+              <select class="cs-select cs-procedure-advised-sel" onchange="initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">
                 <option value="">— None —</option>
                 <option value="filling">🦷 Dental Filling (Composite)</option>
                 <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
@@ -14497,16 +14465,10 @@ function continueAsGuest() {
           </div>
         </div>
         <!-- Hidden primary select kept for backward compat with JS that reads cs-procedure-advised -->
-        <select id="cs-procedure-advised" style="display:none" onchange="updateAdvisedTeethHint()"><option value="">— None —</option></select>
+        <select id="cs-procedure-advised" style="display:none" onchange="syncProcedureSelects()"><option value="">— None —</option></select>
         <button onclick="addAdvisedProcedure()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px">+ Add Another Procedure</button>
         <div class="cs-field"><div class="cs-label">Advice / Treatment Plan Notes</div><textarea class="cs-textarea" id="cs-advised-notes" rows="3" placeholder="e.g. RCT advised on 26. Patient to review in 2 weeks. OPG pending…"></textarea></div>
 
-        <!-- Mini tooth grid for advised teeth -->
-        <div class="cs-field">
-          <div class="cs-label">Teeth Involved <span style="font-size:10px;color:#64748b;font-weight:400">(tap → appends to advised notes)</span></div>
-          <div id="cs-advised-tooth-grid" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
-          <div id="cs-advised-sentence-preview" style="font-size:12px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:8px;padding:8px 10px;display:none;line-height:1.5"></div>
-        </div>
         <div class="cs-field"><div class="cs-label">Estimated Cost Discussed</div><input class="cs-input" id="cs-advised-cost" placeholder="e.g. ₹5,000–₹8,000 (optional)"></div>
       </div>
       <!-- TREATMENT PERFORMED -->
@@ -14515,7 +14477,7 @@ function continueAsGuest() {
         <div id="cs-performed-procedures-list">
           <div class="cs-performed-proc-row" data-index="0">
             <div class="cs-field"><div class="cs-label">Procedure</div>
-              <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint();initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">
+              <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">
                 <option value="">— None —</option>
                 <option value="filling">🦷 Dental Filling (Composite)</option>
                 <option value="amalgam">🦷 Dental Filling (Amalgam)</option>
@@ -14554,24 +14516,10 @@ function continueAsGuest() {
           </div>
         </div>
         <!-- Hidden primary select kept for backward compat -->
-        <select id="cs-procedure" style="display:none" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint()"><option value="">— None —</option></select>
+        <select id="cs-procedure" style="display:none" onchange="applyProcedureTemplate(this.value);syncProcedureSelects()"><option value="">— None —</option></select>
         <button onclick="addPerformedProcedure()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px">+ Add Another Procedure</button>
         <div class="cs-field"><div class="cs-label">Treatment Notes</div><textarea class="cs-textarea" id="cs-treatment-notes" rows="4" placeholder="Detailed treatment notes will auto-fill when you select a procedure…"></textarea></div>
 
-        <!-- Mini tooth grid for performed teeth -->
-        <div class="cs-field">
-          <div class="cs-label">Teeth Treated <span style="font-size:10px;color:#64748b;font-weight:400">(tap → appends to treatment notes)</span></div>
-          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-            <select class="cs-select" id="cs-treatment-tooth-system" onchange="renderMiniToothGrids()" style="flex:1;margin-bottom:0;font-size:12px;padding:6px 10px">
-              <option value="fdi">FDI World System</option>
-              <option value="palmer">Palmer Notation</option>
-              <option value="universal">Universal (US)</option>
-            </select>
-            <button onclick="clearMiniGrids()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer;flex-shrink:0">Clear</button>
-          </div>
-          <div id="cs-performed-tooth-grid" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
-          <div id="cs-performed-sentence-preview" style="font-size:12px;color:#99f6e4;background:rgba(13,148,136,.1);border-radius:8px;padding:8px 10px;display:none;line-height:1.5"></div>
-        </div>
         <div class="cs-field"><div class="cs-label">Billing Status</div>
           <div style="display:flex;gap:8px">
             <button id="cs-bill-billed" onclick="setBillingStatus('billed')" style="flex:1;padding:10px;border-radius:10px;border:2px solid rgba(13,148,136,.4);background:rgba(13,148,136,.2);color:#99f6e4;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">✓ Billed</button>
@@ -15412,7 +15360,7 @@ function addAdvisedProcedure() {
   row.innerHTML = `<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
   <div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
     <div style="flex:1"><div class="cs-label">Procedure Advised #${idx+1}</div>
-      <select class="cs-select cs-procedure-advised-sel" onchange="updateAdvisedTeethHint();initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">${PROC_SELECT_HTML}</select>
+      <select class="cs-select cs-procedure-advised-sel" onchange="initRowToothGrid(this.closest('.cs-advised-proc-row'),'advised')">${PROC_SELECT_HTML}</select>
     </div>
     <button onclick="this.closest('.cs-advised-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
   </div>
@@ -15441,7 +15389,7 @@ function addPerformedProcedure() {
   row.innerHTML = `<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
   <div class="cs-field" style="display:flex;gap:8px;align-items:flex-end">
     <div style="flex:1"><div class="cs-label">Procedure #${idx+1}</div>
-      <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);updatePerformedTeethHint();initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">${PROC_SELECT_HTML}</select>
+      <select class="cs-select cs-procedure-performed-sel" onchange="applyProcedureTemplate(this.value);initRowToothGrid(this.closest('.cs-performed-proc-row'),'performed')">${PROC_SELECT_HTML}</select>
     </div>
     <button onclick="this.closest('.cs-performed-proc-row').remove();syncProcedureSelects()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:8px 10px;border-radius:10px;font-size:14px;cursor:pointer;flex-shrink:0;margin-bottom:0">✕</button>
   </div>
