@@ -9287,6 +9287,11 @@ async function populatePatientRecordsScreen() {
     else { codeRow.style.display = 'none'; }
   }
 
+  // Set queue clinic name label and load the queue card
+  const queueClinicLabel = document.getElementById('pat-queue-clinic-name');
+  if (queueClinicLabel && clinicName && clinicName !== '—') queueClinicLabel.textContent = clinicName;
+  if (typeof loadPatQueue === 'function') loadPatQueue();
+
   const mhBadge = document.getElementById('pat-med-history-badge');
   if (mhBadge) {
     const mh = currentProfile && currentProfile.medical_history;
@@ -18877,6 +18882,7 @@ async function downloadReceipt(billOrStr) {
 // Download OP Summary / Casesheet as PDF
 async function downloadOPSummary(recordId, patientId) {
   if (!recordId) { showToast('No visit record linked to this item'); return; }
+  try {
   let rec = null;
   // Try cache first (populated when docket opens)
   rec = (window._caRecordCache||{})[String(recordId)] || null;
@@ -18892,10 +18898,20 @@ async function downloadOPSummary(recordId, patientId) {
   } catch(e) {
     if (!rec) { showToast('Could not load visit record: ' + ((e&&e.message)||'unknown error')); return; }
   }
-  console.log('[SerenOra CA] downloadOPSummary rec:', rec, 'recordId:', recordId);
   if (!rec) { showToast('Visit record not found'); return; }
 
-  const pat = patientId ? ((_caData.patients||[]).find(p=>p.id===patientId) || (window._dentPatientData||{})[patientId]) : null;
+  // Pat lookup — try _caData.patients first, then fetch from DB if not found
+  let pat = patientId ? ((_caData.patients||[]).find(p=>String(p.id)===String(patientId)) || (window._dentPatientData||{})[patientId]) : null;
+  if (!pat && patientId) {
+    try {
+      const activeDb = db || window.__supaDb;
+      if (activeDb) {
+        const { data: pd } = await activeDb.from('profiles').select('id,full_name,age,sex').eq('id', String(patientId)).maybeSingle();
+        if (pd) pat = pd;
+      }
+    } catch(_) {}
+  }
+
   const dentName  = (currentProfile && currentProfile.full_name) || '';
   const clinicN   = (currentProfile && currentProfile.clinics && currentProfile.clinics.name) || _caData.clinicName || 'SerenOra Clinic';
   const joinC     = (currentProfile && currentProfile.clinics && currentProfile.clinics.join_code) || _caData.joinCode || '';
@@ -18939,6 +18955,10 @@ async function downloadOPSummary(recordId, patientId) {
 
   const html = buildPdfHtml(content, `OP Visit Summary — ${procLabel}`, dentName, clinicN, joinC, licNo, regSt, `Patient: ${pat?pat.full_name||'':''}`, sigUrl);
   openPrintWindow(html, `op_summary_${recordId||Date.now()}`);
+  } catch(e) {
+    console.error('[SerenOra] downloadOPSummary error:', e && e.message ? e.message : e);
+    showToast('Could not generate OP Summary: ' + (e && e.message ? e.message : 'unknown error'));
+  }
 }
 
 // Quick access download from patient portal
