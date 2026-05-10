@@ -17643,31 +17643,37 @@ async function openCaPatDocket(patientId) {
   const name = p.full_name||'Patient';
   document.getElementById('ca-pat-sheet-title').textContent = name;
 
-  // Always fetch records fresh for this patient — don't rely on _caData.records cache
-  // which may be empty if the clinic_id filter didn't match or load timed out.
-  let recs = (_caData.records||[]).filter(r=>String(r.patient_id)===String(patientId));
+  // Show overlay immediately with skeleton so user sees response
+  const body0 = document.getElementById('ca-pat-sheet-body');
+  if (body0) body0.innerHTML = [1,2].map(()=>`<div class="skeleton-card"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60 short"></div></div>`).join('');
+  document.getElementById('ca-pat-overlay').classList.add('open');
+
+  // Fetch records fresh directly from DB (same pattern as working loadDocketVisits)
+  let recs = [];
+  let fetchErr = null;
   try {
     const activeDb = db || window.__supaDb;
-    if (activeDb) {
-      const { data: freshRecs } = await activeDb.from('medical_records')
-        .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
-        .eq('patient_id', String(patientId))
-        .order('created_at', { ascending: false });
-      if (freshRecs && freshRecs.length >= 0) {
-        recs = freshRecs;
-        // Also backfill global cache so other features (stats, bills) benefit
-        freshRecs.forEach(r => {
-          if (!(_caData.records||[]).find(x=>x.id===r.id)) {
-            if (!_caData.records) _caData.records = [];
-            _caData.records.push(r);
-          }
-          // Populate record cache for Summary button
-          window._caRecordCache = window._caRecordCache || {};
-          window._caRecordCache[String(r.id)] = r;
-        });
+    if (!activeDb) throw new Error('No DB connection');
+    const { data: freshRecs, error: dbErr } = await activeDb.from('medical_records')
+      .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
+      .eq('patient_id', String(patientId))
+      .order('created_at', { ascending: false });
+    if (dbErr) throw new Error(dbErr.message || 'DB error');
+    recs = freshRecs || [];
+    // Backfill caches
+    recs.forEach(r => {
+      if (!(_caData.records||[]).find(x=>x.id===r.id)) {
+        if (!_caData.records) _caData.records = [];
+        _caData.records.push(r);
       }
-    }
-  } catch(_) { /* use cached recs */ }
+      window._caRecordCache = window._caRecordCache || {};
+      window._caRecordCache[String(r.id)] = r;
+    });
+  } catch(e) {
+    fetchErr = (e && e.message) ? e.message : 'Could not load records';
+    // Fall back to cached records
+    recs = (_caData.records||[]).filter(r=>String(r.patient_id)===String(patientId));
+  }
   const mh   = p.medical_history;
   const PROC = {filling:'Dental Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',scaling:'Scaling & Polishing',crown:'Crown',implant:'Implant',whitening:'Whitening',ortho:'Orthodontics',xray_consult:'X-Ray / Consult',other:'Treatment'};
 
@@ -17687,6 +17693,7 @@ async function openCaPatDocket(patientId) {
     ${medAlert}
     <div id="ca-pat-anxiety-block" style="margin-bottom:12px"><div class="skeleton-card"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60 short"></div></div></div>
     <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Visit History (${recs.length})</div>
+    ${fetchErr ? `<div style="font-size:12px;color:#f87171;padding:8px 12px;background:rgba(239,68,68,.08);border-radius:8px;margin-bottom:8px">⚠️ ${fetchErr}</div>` : ''}
     ${!recs.length ? '<div style="color:#64748b;font-size:13px;text-align:center;padding:16px">No visits on record yet.</div>' :
       (window._caRecordCache=window._caRecordCache||{},recs.forEach(r=>{window._caRecordCache[String(r.id)]=r;}),recs).map(r => {
         let dateStr='—'; try{dateStr=new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){}
@@ -17711,8 +17718,6 @@ async function openCaPatDocket(patientId) {
         </div>`;
       }).join('')
     }`;
-  document.getElementById('ca-pat-overlay').classList.add('open');
-
   // Async: load dental story + MDAS for this patient
   const activeDb = db || window.__supaDb;
   if (activeDb) {
@@ -18697,41 +18702,26 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 </body></html>`;
 }
 
-let _pdfWindowOpen = false;
-
 function openPrintWindow(html, filename) {
-  // Strategy: inject a hidden iframe, load the PDF HTML into it via srcdoc,
-  // then trigger print from that iframe. This NEVER opens a new window,
-  // NEVER fires blur/focus on the parent, and NEVER touches Supabase auth.
-  // Falls back to download link if iframe printing fails.
+  // Primary: open a new tab/window, write HTML, trigger print
+  // This is the most reliable cross-browser approach when called from a user gesture.
   try {
-    // Remove any previous PDF iframe
-    const old = document.getElementById('__serenora_pdf_frame__');
-    if (old) old.remove();
-
-    const iframe = document.createElement('iframe');
-    iframe.id = '__serenora_pdf_frame__';
-    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none';
-    document.body.appendChild(iframe);
-
-    iframe.onload = function() {
-      try {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-      } catch(e) {
-        // Safari blocks iframe.contentWindow.print() — fall back to download
-        _pdfDownloadFallback(html, filename);
-      }
-      // Clean up after print dialog closes (generous timeout)
-      setTimeout(() => { try { iframe.remove(); } catch(_) {} }, 30000);
-    };
-
-    // Write HTML via srcdoc — safe, no new window, no auth side effects
-    iframe.srcdoc = html;
-
-  } catch(e) {
-    _pdfDownloadFallback(html, filename);
-  }
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      // Give the browser a moment to render before printing
+      win.onload = function() { win.focus(); win.print(); };
+      // Fallback timer if onload doesn't fire (some browsers)
+      setTimeout(function() {
+        try { if (!win.closed) { win.focus(); win.print(); } } catch(_) {}
+      }, 600);
+      return;
+    }
+  } catch(e) {}
+  // Fallback: download as HTML file (popup was blocked or error)
+  _pdfDownloadFallback(html, filename);
 }
 
 function _pdfDownloadFallback(html, filename) {
@@ -18823,17 +18813,23 @@ async function downloadReceipt(billOrStr) {
 
 // Download OP Summary / Casesheet as PDF
 async function downloadOPSummary(recordId, patientId) {
+  if (!recordId) { showToast('No visit record linked to this item'); return; }
   let rec = null;
-  // Try from _caData.records first
-  if (recordId) rec = (_caData.records||[]).find(r=>r.id===recordId);
-  // Fall back to Supabase
-  if (!rec && recordId) {
-    try {
-      const activeDb = db||window.__supaDb;
-      const {data} = await activeDb.from('medical_records').select('*').eq('id', recordId).maybeSingle();
-      if (data) rec = data;
-    } catch(_){}
+  // Try cache first (populated when docket opens)
+  rec = (window._caRecordCache||{})[String(recordId)] || null;
+  // Try _caData.records
+  if (!rec) rec = (_caData.records||[]).find(r=>String(r.id)===String(recordId)) || null;
+  // Always fetch fresh from Supabase to get full cs_data
+  try {
+    const activeDb = db || window.__supaDb;
+    if (!activeDb) throw new Error('No DB');
+    const {data, error} = await activeDb.from('medical_records').select('*').eq('id', String(recordId)).maybeSingle();
+    if (error) throw new Error(error.message);
+    if (data) rec = data;
+  } catch(e) {
+    if (!rec) { showToast('Could not load visit record: ' + ((e&&e.message)||'unknown error')); return; }
   }
+  if (!rec) { showToast('Visit record not found'); return; }
 
   const pat = patientId ? ((_caData.patients||[]).find(p=>p.id===patientId) || (window._dentPatientData||{})[patientId]) : null;
   const dentName  = (currentProfile && currentProfile.full_name) || '';
