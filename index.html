@@ -15608,6 +15608,8 @@ async function createBillFromCasesheet() {
 }
 
 
+// Sync hidden selects (used by existing JS) with first visible select
+function syncProcedureSelects() {
   const firstAdvised = document.querySelector('.cs-procedure-advised-sel');
   const hiddenAdvised = document.getElementById('cs-procedure-advised');
   if (firstAdvised && hiddenAdvised) hiddenAdvised.value = firstAdvised.value;
