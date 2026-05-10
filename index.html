@@ -15228,6 +15228,16 @@ function openCasesheet(patientId) {
   const perfList = document.getElementById('cs-performed-procedures-list');
   if (advList)  { Array.from(advList.querySelectorAll('.cs-advised-proc-row')).slice(1).forEach(r=>r.remove()); const s=advList.querySelector('.cs-procedure-advised-sel'); if(s) s.value=''; }
   if (perfList) { Array.from(perfList.querySelectorAll('.cs-performed-proc-row')).slice(1).forEach(r=>r.remove()); const s=perfList.querySelector('.cs-procedure-performed-sel'); if(s) s.value=''; }
+  // Clear stale sentence map and textarea values for fresh record
+  window._rowSentenceMap = new Map();
+  const _taAdvised = document.getElementById('cs-advised-notes');
+  const _taPerformed = document.getElementById('cs-treatment-notes');
+  if (_taAdvised) _taAdvised.value = '';
+  if (_taPerformed) _taPerformed.value = '';
+  // Clear row tooth grids and previews
+  document.querySelectorAll('.cs-row-tooth-preview').forEach(p=>{ p.textContent=''; p.style.display='none'; });
+  // Clear per-row tooth sets (WeakMap — clear by iterating rows)
+  document.querySelectorAll('.cs-advised-proc-row, .cs-performed-proc-row').forEach(r=>_rowTeethMap.set(r, new Set()));
   // Hide tooth charts until a procedure is selected
   document.querySelectorAll('.cs-row-tooth-section').forEach(s=>s.style.display='none');
   renderPerToothDetails();
