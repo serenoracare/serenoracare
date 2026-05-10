@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SerenOra Care</title>
+<title>SerenOra Care v4</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <!-- Supabase loaded as ESM to avoid the BroadcastChannel/postMessage Headers clone bug -->
@@ -8156,7 +8156,7 @@ async function checkDentPreApptAlerts(){
     var now=new Date();
     var in45=new Date(now.getTime()+45*60000).toISOString();
     var in15=new Date(now.getTime()+15*60000).toISOString();
-    var res=await activeDb.from('medical_records').select('next_appointment,patient_id,procedure_type').gte('next_appointment',in15).lte('next_appointment',in45).eq('dentist_id',String(currentUser.id));
+    var res=await activeDb.from('medical_records').select('next_appointment,patient_id,procedure_type').gte('next_appointment',in15).lte('next_appointment',in45);
     var recs=res.data;if(!recs||!recs.length)return;
     for(var i=0;i<recs.length;i++){
       var rec=recs[i];var key=rec.next_appointment+rec.patient_id;
@@ -8339,7 +8339,7 @@ async function loadDentistInsight() {
   if(!el||!currentUser) return;
   var activeDb=db||window.__supaDb;if(!activeDb){el.style.display='none';return;}
   try{
-    var res=await activeDb.from('medical_records').select('anxiety_helped,anxiety_note,created_at,dentist_id').eq('patient_id',String(currentUser.id)).not('anxiety_helped','is',null).order('created_at',{ascending:false}).limit(1).maybeSingle();
+    var res=await activeDb.from('medical_records').select('anxiety_helped,anxiety_note,created_at').eq('patient_id',String(currentUser.id)).not('anxiety_helped','is',null).order('created_at',{ascending:false}).limit(1).maybeSingle();
     if(!res.data||!res.data.anxiety_helped){el.style.display='none';return;}
     var d=res.data;
     var dentName='Your dentist';
@@ -17249,7 +17249,7 @@ async function _caLoadAll() {
 
     // All records for this clinic
     const { data: records } = await activeDb.from('medical_records')
-      .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
+      .select('id,patient_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
       .eq('clinic_id', _caData.clinicId)
       .order('created_at', { ascending: false });
     _caData.records = records || [];
@@ -17654,12 +17654,15 @@ async function openCaPatDocket(patientId) {
   try {
     const activeDb = db || window.__supaDb;
     if (!activeDb) throw new Error('No DB connection');
+    console.log('[SerenOra CA] Fetching records for patient:', patientId, 'type:', typeof patientId);
     const { data: freshRecs, error: dbErr } = await activeDb.from('medical_records')
-      .select('id,patient_id,dentist_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
+      .select('id,patient_id,procedure_type,created_at,cs_data,treatment_summary,prescription_details,next_appointment')
       .eq('patient_id', String(patientId))
       .order('created_at', { ascending: false });
+    console.log('[SerenOra CA] Records result:', freshRecs, 'error:', dbErr);
     if (dbErr) throw new Error(dbErr.message || 'DB error');
     recs = freshRecs || [];
+    console.log('[SerenOra CA] recs count:', recs.length);
     // Backfill caches
     recs.forEach(r => {
       if (!(_caData.records||[]).find(x=>x.id===r.id)) {
@@ -18829,6 +18832,7 @@ async function downloadOPSummary(recordId, patientId) {
   } catch(e) {
     if (!rec) { showToast('Could not load visit record: ' + ((e&&e.message)||'unknown error')); return; }
   }
+  console.log('[SerenOra CA] downloadOPSummary rec:', rec, 'recordId:', recordId);
   if (!rec) { showToast('Visit record not found'); return; }
 
   const pat = patientId ? ((_caData.patients||[]).find(p=>p.id===patientId) || (window._dentPatientData||{})[patientId]) : null;
