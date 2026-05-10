@@ -14697,6 +14697,15 @@ function continueAsGuest() {
         </div>
         <button onclick="saveCasesheetRecord()" style="width:100%;background:transparent;border:2px solid #0d9488;color:#99f6e4;padding:12px;border-radius:12px;font-family:var(--font);font-weight:700;font-size:14px;cursor:pointer;margin-top:10px">💾 Save &amp; Push to Patient →</button>
         <div id="cs-save-status" style="margin-top:8px;font-size:12px;text-align:center"></div>
+        <!-- Quick bill creation from OP sheet -->
+        <div id="cs-quick-bill-panel" style="display:none;margin-top:12px;background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.3);border-radius:12px;padding:12px">
+          <div style="font-size:12px;font-weight:700;color:#99f6e4;margin-bottom:8px">💳 Create Bill for this Visit</div>
+          <input id="cs-bill-amount" type="number" placeholder="Amount (₹)" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#fff;font-family:var(--font);font-size:13px;margin-bottom:6px">
+          <input id="cs-bill-desc" type="text" placeholder="Description (e.g. RCT Tooth 22)" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#fff;font-family:var(--font);font-size:13px;margin-bottom:8px">
+          <button onclick="createBillFromCasesheet()" style="width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:9px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Create Bill →</button>
+          <div id="cs-bill-status" style="margin-top:6px;font-size:11px;text-align:center;color:#99f6e4"></div>
+        </div>
+        <button onclick="toggleCsQuickBill()" id="cs-quick-bill-toggle" style="width:100%;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:8px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;margin-top:8px">💳 Add Bill for this Visit</button>
       </div>
     </div>
     <div style="height:60px"></div>
@@ -15513,8 +15522,92 @@ function clearRowGrid(row, mode) {
   }
 }
 
-// Sync hidden selects (used by existing JS) with first visible select
-function syncProcedureSelects() {
+function toggleCsQuickBill() {
+  const panel = document.getElementById('cs-quick-bill-panel');
+  const btn   = document.getElementById('cs-quick-bill-toggle');
+  if (!panel) return;
+  const opening = panel.style.display === 'none';
+  panel.style.display = opening ? 'block' : 'none';
+  if (btn) btn.textContent = opening ? '✕ Cancel Bill' : '💳 Add Bill for this Visit';
+  if (opening) {
+    // Pre-fill description from first advised or performed procedure
+    const descEl = document.getElementById('cs-bill-desc');
+    if (descEl && !descEl.value) {
+      const PLABELS = {filling:'Dental Filling',amalgam:'Amalgam Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',surgical_ext:'Surgical Extraction',scaling:'Scaling & Root Planing',crown:'Crown',crown_prep:'Crown Preparation',implant:'Dental Implant',whitening:'Teeth Whitening',other:'Dental Treatment'};
+      const allPerf = getAllPerformedProcedures();
+      const allAdv  = getAllAdvisedProcedures();
+      const proc = allPerf[0] || allAdv[0];
+      if (proc) descEl.value = PLABELS[proc] || proc;
+    }
+  }
+}
+
+async function createBillFromCasesheet() {
+  const statusEl = document.getElementById('cs-bill-status');
+  const amtEl    = document.getElementById('cs-bill-amount');
+  const descEl   = document.getElementById('cs-bill-desc');
+  const amt = parseFloat((amtEl||{}).value||0);
+  const desc = ((descEl||{}).value||'').trim();
+  if (!amt || amt <= 0) { if(statusEl){statusEl.style.color='#f87171';statusEl.textContent='Enter a valid amount.';} return; }
+  if (!_csDocketPatientId) { if(statusEl){statusEl.style.color='#f87171';statusEl.textContent='No patient selected.';} return; }
+
+  const activeDb = db || window.__supaDb;
+  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  const pat = (_caData && _caData.patients || []).find(p => p.id === _csDocketPatientId);
+  const patName = pat ? (pat.full_name || 'Patient') : 'Patient';
+
+  const bill = {
+    id: 'bill_' + Date.now(),
+    patient_id:   _csDocketPatientId,
+    patient_name: patName,
+    record_id:    null,
+    procedure:    desc || 'Dental Treatment',
+    description:  desc,
+    amount:       amt,
+    due_date:     null,
+    status:       'pending',
+    created_at:   new Date().toISOString(),
+    clinic_id:    clinicId,
+    clinic_name:  currentProfile && currentProfile.clinics ? (currentProfile.clinics.name || '') : '',
+    join_code:    currentProfile && currentProfile.clinics ? (currentProfile.clinics.join_code || '') : '',
+    paid_at:      null
+  };
+
+  // Save to localStorage under the same key clinic admin uses
+  if (clinicId) {
+    const key = 'serenora_bills_' + clinicId;
+    try {
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      existing.unshift(bill);
+      localStorage.setItem(key, JSON.stringify(existing));
+    } catch(_) {}
+  }
+
+  // Save to Supabase
+  if (activeDb && clinicId) {
+    try {
+      await activeDb.from('bills').insert({
+        patient_id: _csDocketPatientId, clinic_id: clinicId,
+        record_id: null, procedure: bill.procedure, description: desc || null,
+        amount: amt, due_date: null, status: 'pending',
+        patient_name: patName, created_at: bill.created_at
+      });
+      if(statusEl){statusEl.style.color='#4ade80';statusEl.textContent='✅ Bill created and sent to patient!';}
+    } catch(e) {
+      if(statusEl){statusEl.style.color='#fbbf24';statusEl.textContent='Saved locally (DB sync failed — check connection).';}
+    }
+  } else {
+    if(statusEl){statusEl.style.color='#4ade80';statusEl.textContent='✅ Bill saved locally.';}
+  }
+
+  showToast(`Bill ₹${amt} created for ${patName} ✅`);
+  if (amtEl) amtEl.value = '';
+  if (descEl) descEl.value = '';
+  // Refresh CA bills cache
+  if (typeof loadCaBills === 'function') loadCaBills();
+}
+
+
   const firstAdvised = document.querySelector('.cs-procedure-advised-sel');
   const hiddenAdvised = document.getElementById('cs-procedure-advised');
   if (firstAdvised && hiddenAdvised) hiddenAdvised.value = firstAdvised.value;
@@ -15633,7 +15726,8 @@ function generateAndShowSummary() {
   const advisedLabel   = rawAdvised   ? (PROC_LABELS[rawAdvised]   || rawAdvised)   : '';
   const performedLabel = rawPerformed ? (PROC_LABELS[rawPerformed] || rawPerformed) : '';
 
-  const advisedNotes = g('cs-advised-notes'); const advisedCost = g('cs-advised-cost');
+  const _cleanRowTags = t => (t||'').replace(/__row_\d+_(advised|performed)__/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+  const advisedNotes = _cleanRowTags(g('cs-advised-notes')); const advisedCost = g('cs-advised-cost');
   const rx = _csRxList.map(r => '• '+r.name+': '+r.dose).join('\n');
 
   // ── Tooth chart — selected (treatment) + affected (problem) ──
@@ -16185,8 +16279,6 @@ function showVisitSummaryModal(id, proc, dateStr, recObj) {
     ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''}</div>`:''}
     ${csData.history?`<div class="vsm-item"><b>History:</b> ${csData.history}</div>`:''}
     ${csData.investigations?`<div class="vsm-item"><b>Investigations:</b> ${csData.investigations}</div>`:''}
-    ${selTeeth?`<div class="vsm-item"><b>Treatment teeth:</b> ${selTeeth}</div>`:''}
-    ${affTeeth?`<div class="vsm-item"><b>Affected teeth:</b> ${affTeeth}</div>`:''}
     ${buildPerToothTable(csData)}
     ${csData.softTissue?`<div class="vsm-item" style="margin-top:6px"><b>Soft tissue:</b> ${csData.softTissue}</div>`:''}
     ${csData.hardTissue?`<div class="vsm-item"><b>Hard tissue:</b> ${csData.hardTissue}</div>`:''}
@@ -16199,7 +16291,7 @@ function showVisitSummaryModal(id, proc, dateStr, recObj) {
       <div class="vsm-item">${csData.treatment||'—'}</div></div>
     ${advisedLabel||csData.advisedNotes?`<div style="margin-top:8px"><div class="vsm-col-title">Treatment Advised</div>
       ${advisedLabel?`<div class="vsm-item" style="font-weight:700;color:#134e4a">${advisedLabel}${csData.advisedCost?' (Est. '+csData.advisedCost+')':''}</div>`:''}
-      ${csData.advisedNotes?`<div class="vsm-item">${csData.advisedNotes}</div>`:''}</div>`:''}
+      ${csData.advisedNotes?`<div class="vsm-item">${(csData.advisedNotes||"").replace(/__row_\d+_(advised|performed)__/g,"").replace(/\s{2,}/g," ").trim()}</div>`:''}</div>`:''}
     ${csData.postOp?`<div style="margin-top:8px"><div class="vsm-col-title">Post-Op Instructions</div><div class="vsm-item">${csData.postOp}</div></div>`:''}
     ${nextApptStr?`<div style="margin-top:8px"><div class="vsm-col-title">Next Appointment</div><div class="vsm-item" style="color:#0d9488;font-weight:700">📅 ${nextApptStr}</div></div>`:''}
   </div></div>`:`<div>
@@ -16398,8 +16490,6 @@ function showPatientVisitSummary(rec) {
     <div class="vsm-col-title">Consultation</div>
     ${csData.complaint?`<div class="vsm-item">${csData.complaint}${durStr?' <span style="color:#64748b;font-size:11px">('+durStr+')</span>':''}</div>`:''}
     ${csData.history?`<div class="vsm-item"><b>History:</b> ${csData.history}</div>`:''}
-    ${selTeeth?`<div class="vsm-item"><b>Treatment teeth:</b> ${selTeeth}</div>`:''}
-    ${affTeeth?`<div class="vsm-item"><b>Affected teeth:</b> ${affTeeth}</div>`:''}
     ${perToothHtml}
     ${csData.softTissue?`<div class="vsm-item" style="margin-top:4px"><b>Soft tissue:</b> ${csData.softTissue}</div>`:''}
     ${csData.hardTissue?`<div class="vsm-item"><b>Hard tissue:</b> ${csData.hardTissue}</div>`:''}
@@ -16411,7 +16501,7 @@ function showPatientVisitSummary(rec) {
     <div class="vsm-item">${csData.treatment||rec.treatment_summary||'—'}</div>
     ${advisedLabel||csData.advisedNotes?`<div style="margin-top:8px"><div class="vsm-col-title">Treatment Advised</div>
       ${advisedLabel?`<div class="vsm-item" style="font-weight:700;color:#134e4a">${advisedLabel}${csData.advisedCost?' (Est. '+csData.advisedCost+')':''}</div>`:''}
-      ${csData.advisedNotes?`<div class="vsm-item">${csData.advisedNotes}</div>`:''}</div>`:''}
+      ${csData.advisedNotes?`<div class="vsm-item">${(csData.advisedNotes||"").replace(/__row_\d+_(advised|performed)__/g,"").replace(/\s{2,}/g," ").trim()}</div>`:''}</div>`:''}
     ${csData.postOp?`<div style="margin-top:8px"><div class="vsm-col-title">Post-Op Instructions</div><div class="vsm-item">${csData.postOp}</div></div>`:''}
     ${nextApptStr?`<div style="margin-top:8px"><div class="vsm-col-title">Next Appointment</div><div class="vsm-item" style="color:#0d9488;font-weight:700">📅 ${nextApptStr}</div></div>`:''}
   </div></div>`:`<div>
@@ -18603,7 +18693,7 @@ async function downloadOPSummary(recordId, patientId) {
     ${csData&&csData.toothDetails&&Object.keys(csData.toothDetails).length?`<div class="pdf-section"><div class="pdf-section-title">Per-Tooth Findings</div><table><tr><th>Tooth</th><th>Type</th><th>Condition</th><th>Notes</th></tr>${Object.entries(csData.toothDetails).map(([t,d])=>`<tr><td><strong>${t}</strong></td><td>${(csData.selectedTeeth||[]).includes(Number(t))?'Treatment':'Affected'}</td><td>${d.condition&&d.condition!=='— Select condition —'?d.condition:'—'}</td><td>${d.notes||'—'}</td></tr>`).join('')}</table></div>`:''}
     ${csData&&(csData.bp||csData.pulse)?`<div class="pdf-section"><div class="pdf-section-title">Vitals</div>${csData.bp?`<div class="pdf-row"><span class="lbl">Blood Pressure</span><span class="val">${csData.bp} mmHg</span></div>`:''}${csData.pulse?`<div class="pdf-row"><span class="lbl">Pulse</span><span class="val">${csData.pulse} bpm</span></div>`:''}</div>`:''}
     ${csData&&csData.treatment?`<div class="pdf-section"><div class="pdf-section-title">Treatment Performed</div><p style="margin:0;color:#334155">${csData.treatment.charAt(0).toUpperCase()+csData.treatment.slice(1)}</p></div>`:''}
-    ${csData&&(csData.procedureAdvised||csData.advisedNotes)?`<div class="pdf-section"><div class="pdf-section-title">Treatment Advised</div>${csData.procedureAdvised?`<p style="margin:0 0 4px;font-weight:700;color:#0f172a">${PROC[csData.procedureAdvised]||csData.procedureAdvised}${csData.advisedCost?' — Est. ₹'+csData.advisedCost:''}</p>`:''}${csData.advisedNotes?`<p style="margin:0;color:#334155">${csData.advisedNotes}</p>`:''}</div>`:''}
+    ${csData&&(csData.procedureAdvised||csData.advisedNotes)?`<div class="pdf-section"><div class="pdf-section-title">Treatment Advised</div>${csData.procedureAdvised?`<p style="margin:0 0 4px;font-weight:700;color:#0f172a">${PROC[csData.procedureAdvised]||csData.procedureAdvised}${csData.advisedCost?' — Est. ₹'+csData.advisedCost:''}</p>`:''}${csData.advisedNotes?`<p style="margin:0;color:#334155">${(csData.advisedNotes||"").replace(/__row_\d+_(advised|performed)__/g,"").replace(/\s{2,}/g," ").trim()}</p>`:''}</div>`:''}
     ${csData&&csData.rx&&csData.rx.length?`<div class="pdf-section"><div class="pdf-section-title">Prescription</div><table><tr><th>Medicine</th><th>Dosage / Instructions</th></tr>${csData.rx.map(r=>`<tr><td><strong>${r.name}</strong></td><td>${r.dose}</td></tr>`).join('')}</table></div>`:''}
     ${csData&&csData.postOp?`<div class="pdf-section"><div class="pdf-section-title">Post-Operative Instructions</div><p style="margin:0;color:#334155">${csData.postOp}</p></div>`:''}
     ${rec&&rec.next_appointment?`<div style="background:#f0fdfa;border:1.5px solid #0d9488;border-radius:10px;padding:12px 14px;margin-top:8px"><span style="font-weight:700;color:#0d9488">📅 Next Appointment: </span><span style="font-weight:700;color:#0f172a">${(()=>{try{return new Date(rec.next_appointment).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch(_){return rec.next_appointment;}})()}</span></div>`:''}`;
