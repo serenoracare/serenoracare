@@ -8340,7 +8340,7 @@ async function loadDentistInsight() {
   var activeDb=db||window.__supaDb;if(!activeDb){el.style.display='none';return;}
   try{
     var res=await activeDb.from('medical_records').select('anxiety_helped,anxiety_note,created_at').eq('patient_id',String(currentUser.id)).not('anxiety_helped','is',null).order('created_at',{ascending:false}).limit(1).maybeSingle();
-    if(!res.data||!res.data.anxiety_helped){el.style.display='none';return;}
+    if(!res||res.error||!res.data||!res.data.anxiety_helped){el.style.display='none';return;}
     var d=res.data;
     var dentName='Your dentist';
     try{var dr=await activeDb.from('profiles').select('full_name').eq('id',d.dentist_id).maybeSingle();if(dr.data&&dr.data.full_name)dentName=dr.data.full_name;}catch(_){}
@@ -18081,6 +18081,9 @@ async function caApprovePatient(patientId) {
 
 // _caBills is a local cache; source of truth is both localStorage + Supabase `bills` table
 let _caBills = [];
+window._caBillCache = window._caBillCache || {};
+window._patBillCache = window._patBillCache || {};
+window._caRecordCache = window._caRecordCache || {};
 
 function getCaBillsKey() { return 'serenora_bills_' + (_caData.clinicId || 'default'); }
 
@@ -18408,7 +18411,6 @@ function renderCaBillStats() {
   set('ca-bill-unset',   0);
 }
 
-window._caBillCache = window._caBillCache || {};
 function renderCaBills() {
   const list = document.getElementById('ca-bills-list'); if (!list) return;
   const dentFil = (document.getElementById('ca-bill-dent-filter')||{}).value||'';
@@ -18447,7 +18449,7 @@ function renderCaBills() {
           <button onclick="markCaBillPaid('${b.id}')" style="background:rgba(34,197,94,.2);border:1px solid #4ade80;color:#4ade80;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">✓ Mark Paid</button>
           <button onclick="markCaBillWaived('${b.id}')" style="background:rgba(99,102,241,.2);border:1px solid #818cf8;color:#a5b4fc;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">🎁 Waive</button>
         `:b.status==='paid'?`<span style="font-size:12px;color:#4ade80;font-weight:600">✅ Paid ${b.paid_at?(new Date(b.paid_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})):''}</span>`:''}
-        <button onclick="downloadReceipt(window._caBillCache['${b.id}'])" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📄 Receipt PDF</button>
+        <button onclick="downloadReceipt(window._caBillCache[String('${b.id}')])" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📄 Receipt PDF</button>
         ${b.record_id?`<button onclick="downloadOPSummary('${b.record_id}','${b.patient_id||''}')" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>`:''}
       </div>
     </div>`;
@@ -18506,7 +18508,7 @@ async function loadPatBills() {
       </div>
       <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:10px">₹${Number(b.amount||0).toLocaleString('en-IN')}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onclick="downloadReceipt(_patBillCache['${b.id}'])" style="flex:1;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 ${b.status==='paid'?'Download Receipt':'View Bill'}</button>
+        <button onclick="downloadReceipt(window._patBillCache[String('${b.id}')])" style="flex:1;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 ${b.status==='paid'?'Download Receipt':'View Bill'}</button>
         ${b.record_id?`<button onclick="downloadOPSummary('${b.record_id}','${String(activeUser.id)}')" style="background:rgba(13,148,136,.1);color:var(--teal);border:1.5px solid var(--teal);padding:10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>`:''}
       </div>
     </div>`;
@@ -18706,25 +18708,42 @@ function buildPdfHtml(contentHtml, title, dentistName, clinicName, joinCode, lic
 }
 
 function openPrintWindow(html, filename) {
-  // Primary: open a new tab/window, write HTML, trigger print
-  // This is the most reliable cross-browser approach when called from a user gesture.
+  // Use a visible full-screen overlay iframe so the app stays intact
+  // and no new window/tab is opened. Print dialog fires from the iframe.
   try {
-    const win = window.open('', '_blank');
-    if (win) {
-      win.document.open();
-      win.document.write(html);
-      win.document.close();
-      // Give the browser a moment to render before printing
-      win.onload = function() { win.focus(); win.print(); };
-      // Fallback timer if onload doesn't fire (some browsers)
-      setTimeout(function() {
-        try { if (!win.closed) { win.focus(); win.print(); } } catch(_) {}
-      }, 600);
-      return;
-    }
-  } catch(e) {}
-  // Fallback: download as HTML file (popup was blocked or error)
-  _pdfDownloadFallback(html, filename);
+    // Remove any existing PDF overlay
+    const existing = document.getElementById('__pdf_overlay__');
+    if (existing) existing.remove();
+
+    // Create a full-screen overlay with the iframe + close button
+    const overlay = document.createElement('div');
+    overlay.id = '__pdf_overlay__';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column';
+
+    const toolbar = document.createElement('div');
+    toolbar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#0f172a;flex-shrink:0';
+    toolbar.innerHTML = '<span style="color:#99f6e4;font-weight:700;font-size:14px;font-family:sans-serif">📄 ' + (filename||'Document') + '</span>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button onclick="try{document.getElementById('__pdf_frame__').contentWindow.print();}catch(e){}" style="background:#0d9488;border:none;color:#fff;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:sans-serif">🖨️ Print / Save PDF</button>' +
+      '<button onclick="document.getElementById('__pdf_overlay__').remove()" style="background:rgba(255,255,255,.1);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif">✕ Close</button>' +
+      '</div>';
+
+    const iframe = document.createElement('iframe');
+    iframe.id = '__pdf_frame__';
+    iframe.style.cssText = 'flex:1;border:none;width:100%';
+    iframe.srcdoc = html;
+
+    overlay.appendChild(toolbar);
+    overlay.appendChild(iframe);
+    document.body.appendChild(overlay);
+
+    // Auto-trigger print after iframe loads
+    iframe.onload = function() {
+      try { iframe.contentWindow.focus(); iframe.contentWindow.print(); } catch(e) {}
+    };
+  } catch(e) {
+    _pdfDownloadFallback(html, filename);
+  }
 }
 
 function _pdfDownloadFallback(html, filename) {
@@ -18764,7 +18783,9 @@ async function fetchClinicSignature(clinicId) {
 
 async function downloadReceipt(billOrStr) {
   let b;
+  if (!billOrStr) { showToast('Bill data not available — try reloading the page'); return; }
   try { b = typeof billOrStr === 'string' ? JSON.parse(billOrStr) : billOrStr; } catch(_) { showToast('Could not load bill data'); return; }
+  if (!b || !b.id) { showToast('Bill data missing — please reload the bills tab'); return; }
 
   const dentName  = (currentProfile && currentProfile.full_name) || (b.dentist_name) || '';
   const clinicN   = b.clinic_name || (currentProfile && currentProfile.clinics && currentProfile.clinics.name) || 'SerenOra Clinic';
