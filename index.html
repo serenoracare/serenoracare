@@ -1990,13 +1990,14 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
       <button class="btn-primary" style="margin-bottom:10px" onclick="showScreen('screen-debrief')">Complete Post-Visit Debrief →</button>
     </div>
   </div>
-    <div class="bottom-nav">
-    <button class="bnav-item active" onclick="showScreen('screen-main')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal)">Dashboard</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-dental-care')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label">Dental Care</span></button>
-    <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
-    <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
-    <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
+    <div class="bottom-nav" style="padding:6px 2px 4px">
+    <button class="bnav-item" onclick="showScreen('screen-main')" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#0d9488" stroke-width="2"/></svg><span class="bnav-label" style="color:var(--teal);font-size:8px">Dashboard</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-dental-care')" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.5 2 6 5 6 8c0 5 2 9 3 12h6c1-3 3-7 3-12 0-3-2.5-6-6-6z" stroke="#94a3b8" stroke-width="2" stroke-linejoin="round"/></svg><span class="bnav-label" style="font-size:8px">Dental</span></button>
+    <button class="bnav-item" onclick="openGamesWithAgeCheck()" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="font-size:8px">Games</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-reminders')" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label" style="font-size:8px">Reminders</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-procedures')" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label" style="font-size:8px">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label" style="font-size:8px">In Clinic</span></button>
+    <button class="bnav-item" onclick="openMySpace()" style="padding:4px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="font-size:8px">My Space</span></button>
   </div>
 </div>
 
@@ -2397,6 +2398,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">In Clinic</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2465,6 +2467,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
     <button class="bnav-item active" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0d9488" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#0d9488" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label" style="color:var(--teal)">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">In Clinic</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2725,6 +2728,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">In Clinic</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -2918,6 +2922,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">In Clinic</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -3178,6 +3183,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
     <button class="bnav-item" onclick="openGamesWithAgeCheck()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">Games</span></button>
     <button class="bnav-item" onclick="showScreen('screen-reminders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#94a3b8" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Reminders</span></button>
     <button class="bnav-item" onclick="showScreen('screen-procedures')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">Procedures</span></button>
+    <button class="bnav-item" onclick="showScreen('screen-in-clinic')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#94a3b8" stroke-width="2"/><path d="M9 22V12h6v10" stroke="#94a3b8" stroke-width="2"/></svg><span class="bnav-label">In Clinic</span></button>
     <button class="bnav-item" onclick="openMySpace()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#94a3b8" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/></svg><span class="bnav-label">My Space</span></button>
   </div>
 </div>
@@ -4004,7 +4010,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
         </div>
       </div>
 
-      <select class="tv-proc-select" id="tv-proc-select" onchange="renderTreatmentVisualiser(this.value)">
+      <select class="tv-proc-select" id="tv-proc-select">
         <option value="">— Choose your treatment today —</option>
         <option value="scaling">Scaling &amp; Polishing (Cleaning)</option>
         <option value="filling">Dental Filling</option>
@@ -4019,6 +4025,167 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
 
       <div id="tv-steps-wrap" class="tv-steps-wrap"></div>
     </div>
+<script>
+const TV_DATA = {
+  checkup: {
+    icon: '🔍', title: 'Routine Check-up', duration: '20–30 min',
+    fear: "Check-ups are the least invasive visits. Nothing will be done without explaining it first.",
+    steps: [
+      { title: 'Warm Welcome & Seating', desc: 'You\'ll be led to the dental chair, reclined comfortably, and given a bib. The dentist will greet you and ask how you\'ve been.', time: '2 min' },
+      { title: 'Visual Examination', desc: 'The dentist uses a small mirror and light to look at all your teeth, gums, and soft tissues. No tools touch you at this stage — it\'s just a look.', time: '5 min' },
+      { title: 'Probing (if needed)', desc: 'A thin, blunt probe gently checks the gap between teeth and gums. You may feel mild pressure — it\'s not sharp or cutting.', time: '5 min' },
+      { title: 'X-rays (if needed)', desc: 'Small sensors or films are placed inside your mouth to take pictures. No pain, just a brief hold-still moment.', time: '5 min' },
+      { title: 'Findings & Discussion', desc: 'The dentist explains exactly what they found, what it means, and what (if anything) needs to be done next. You can ask questions freely.', time: '5 min' },
+    ],
+    tips: ['You can ask the dentist to narrate every step as they go.', 'Raise your hand at any point to pause — that\'s always respected.', 'Nothing will be treated at this visit without your consent.']
+  },
+  scaling: {
+    icon: '✨', title: 'Scaling & Polishing', duration: '30–45 min',
+    fear: "The scraping sounds are louder than the sensation. Most people describe it as pressure, not pain. The taste is chalky and clean.",
+    steps: [
+      { title: 'Numbing (optional)', desc: 'If you\'re sensitive, the dentist may apply a topical gel to your gums. This works within 1–2 minutes and makes the next steps more comfortable.', time: '2 min' },
+      { title: 'Ultrasonic Scaling', desc: 'A vibrating tip (like a tiny electric toothbrush) uses water spray and vibration to break up tartar. You\'ll hear a high-pitched whirring and feel water. The suction tube removes it instantly.', time: '15 min' },
+      { title: 'Hand Scaling', desc: 'Curved metal instruments scrape remaining deposits from between teeth and below the gumline. Pressure, not pain — but tell your dentist if it\'s uncomfortable.', time: '10 min' },
+      { title: 'Polishing', desc: 'A spinning rubber cup with gritty paste buffs each tooth surface. It feels like a gentle vibrating tickle and tastes minty.', time: '5 min' },
+      { title: 'Rinse & Review', desc: 'You\'ll rinse thoroughly, and the dentist will show you areas to focus on when brushing at home. You\'re done!', time: '5 min' },
+    ],
+    tips: ['Use a hand signal to pause if the sound or sensation is too much.', 'Breathing through your nose slowly helps you stay calm.', 'The taste is not blood — it\'s the cleaning solution and old plaque.']
+  },
+  filling: {
+    icon: '🪨', title: 'Dental Filling', duration: '30–60 min',
+    fear: "The injection is the only part that may sting — for about 3 seconds. After that, the area is completely numb and you will only feel pressure, not pain.",
+    steps: [
+      { title: 'Topical Anaesthetic', desc: 'A numbing gel is dabbed onto your gum. This takes 1–2 minutes to work and makes the injection nearly painless.', time: '2 min' },
+      { title: 'Local Anaesthetic Injection', desc: 'The dentist injects anaesthetic into the gum. You\'ll feel brief pressure or a slight sting for 3–5 seconds, then warmth spreading through your jaw.', time: '3 min' },
+      { title: 'Waiting for Numbness', desc: 'You sit and wait. Your lip, cheek, or tongue may feel fat or tingly — this is normal and means it\'s working. Tell the dentist if you feel anything sharp later.', time: '5 min' },
+      { title: 'Decay Removal (Drilling)', desc: 'The drill removes the decayed part of the tooth. You\'ll hear buzzing and smell something like burning — this is normal and not harmful. You should not feel pain, only vibration.', time: '10–15 min' },
+      { title: 'Acid Etching & Bonding', desc: 'A mild gel is applied to roughen the tooth surface, then rinsed. A thin bonding liquid is brushed on and hardened with a blue light in seconds.', time: '5 min' },
+      { title: 'Filling Placement', desc: 'Tooth-coloured composite is packed in layers. Each layer is hardened with the light. You\'ll feel pressure but no pain.', time: '10 min' },
+      { title: 'Bite Adjustment & Polish', desc: 'You bite on carbon paper to check alignment. Any high spots are filed down. The filling is polished smooth.', time: '5 min' },
+    ],
+    tips: ['The numbness lasts 1–3 hours after. Avoid hot drinks and chewing on that side until it wears off.', 'Some sensitivity in the days after is normal and fades on its own.', 'You will not feel pain during the procedure — only pressure and vibration.']
+  },
+  rct: {
+    icon: '🩺', title: 'Root Canal Treatment', duration: '60–90 min (may need 2 visits)',
+    fear: "Root canal has an unfair reputation. With modern anaesthesia, it's no more uncomfortable than a filling. You're treating the source of pain — not creating it.",
+    steps: [
+      { title: 'X-ray & Planning', desc: 'An X-ray confirms the extent of infection and maps the root canals. The dentist explains the process and answers your questions.', time: '5 min' },
+      { title: 'Local Anaesthetic', desc: 'The area is numbed thoroughly. You will feel nothing sharp during the procedure — only occasional pressure.', time: '5 min' },
+      { title: 'Rubber Dam Placement', desc: 'A small rubber sheet isolates the tooth, keeping it dry and clean. It may feel unfamiliar but is not uncomfortable.', time: '2 min' },
+      { title: 'Access Opening', desc: 'A small hole is drilled through the crown to reach the pulp chamber. Fully numb — you\'ll feel vibration only.', time: '5 min' },
+      { title: 'Canal Cleaning', desc: 'Tiny flexible files remove infected pulp and shape each canal. Irrigation with antiseptic solution keeps everything clean. This is the core of the procedure.', time: '30–45 min' },
+      { title: 'Canal Filling (Obturation)', desc: 'Canals are dried and filled with a rubber-like material called gutta-percha. This seals them permanently.', time: '15 min' },
+      { title: 'Temporary or Permanent Seal', desc: 'A temporary filling protects the tooth until your crown is placed (if needed). Or a permanent filling is placed immediately.', time: '5 min' },
+    ],
+    tips: ['Mild soreness for 2–3 days after is normal — over-the-counter painkillers help.', 'Avoid chewing on the treated tooth until the crown is fitted.', 'A crown after RCT protects the tooth long-term — don\'t skip it.']
+  },
+  extraction: {
+    icon: '🦷', title: 'Tooth Extraction', duration: '20–45 min',
+    fear: "The injection numbs everything completely. The dentist rocks the tooth back and forth — you'll feel pressure and movement, but not pain. It's often faster than patients expect.",
+    steps: [
+      { title: 'X-ray Check', desc: 'A quick X-ray confirms the tooth\'s root shape to plan the safest removal technique.', time: '3 min' },
+      { title: 'Topical Gel & Injection', desc: 'Numbing gel first, then the anaesthetic injection. Mild sting for seconds, then the area goes numb within 3–5 minutes.', time: '5 min' },
+      { title: 'Loosening with Elevator', desc: 'A small instrument (elevator) is pressed into the gum beside the tooth to widen the socket. You feel significant pressure — this is expected and normal.', time: '5 min' },
+      { title: 'Forceps & Removal', desc: 'The dentist grips the tooth with forceps and rocks it back and forth to break the ligament. You feel strong pressure and movement. The tooth pops out — often quickly.', time: '5–15 min' },
+      { title: 'Gauze & Clotting', desc: 'Gauze is placed over the socket. Bite down firmly for 20–30 minutes. This pressure helps form a blood clot — the key to healing.', time: '30 min' },
+      { title: 'Aftercare Instructions', desc: 'The dentist explains what to eat, what to avoid, and warning signs to watch for. A follow-up may be scheduled if stitches are placed.', time: '5 min' },
+    ],
+    tips: ['Do not rinse, spit, or use a straw for 24 hours — this protects the blood clot.', 'Soft foods only: yogurt, dal, idli, bananas. Nothing crunchy or hot.', 'Some oozing for a few hours is normal. Soak it up — don\'t rinse it away.']
+  },
+  crown: {
+    icon: '👑', title: 'Crown / Cap', duration: '60–90 min (first visit), 30 min (fitting)',
+    fear: "Crown preparation involves drilling, but you'll be numb throughout. The temporary crown protects you between visits. Most people find the fitting visit painless.",
+    steps: [
+      { title: 'Anaesthetic', desc: 'Local anaesthetic ensures the tooth and surrounding gum are completely numb.', time: '5 min' },
+      { title: 'Tooth Reshaping', desc: 'The dentist files the tooth down on all sides to create space for the crown. You\'ll feel vibration and hear drilling — no pain.', time: '20 min' },
+      { title: 'Impression', desc: 'A digital scan or putty mould captures the exact shape of your prepared tooth and bite. This goes to the lab to make your crown.', time: '10 min' },
+      { title: 'Temporary Crown', desc: 'A plastic temporary crown is fitted with soft cement to protect the tooth while your permanent crown is made (usually 1–2 weeks).', time: '10 min' },
+      { title: 'Permanent Crown Fitting', desc: 'The temporary is removed, the permanent crown is tried in, checked for fit and colour, then cemented permanently. Minor adjustments may be made.', time: '30 min' },
+    ],
+    tips: ['Avoid sticky or hard foods with the temporary crown — it can come off.', 'Sensitivity after preparation is normal and fades once the permanent crown is placed.', 'With good care, crowns last 10–15 years.']
+  },
+  implant: {
+    icon: '🔩', title: 'Dental Implant', duration: 'Multiple visits over 3–6 months',
+    fear: "Implant surgery sounds intense, but you're fully numb. Most patients report it's far less uncomfortable than they expected — comparable to an extraction.",
+    steps: [
+      { title: 'Consultation & Planning', desc: 'X-rays and a 3D CBCT scan map your bone. The dentist plans the exact angle and position. You discuss options and timeline.', time: 'Visit 1' },
+      { title: 'Implant Placement Surgery', desc: 'Under local anaesthetic, a small incision opens the gum. A titanium screw is placed into the jawbone and the gum is stitched. You feel pressure, not pain.', time: 'Visit 2 (45–90 min)' },
+      { title: 'Osseointegration (Healing)', desc: 'The implant fuses with your bone over 3–6 months. You wear a temporary tooth if needed. This is the longest phase — but it\'s passive.', time: '3–6 months' },
+      { title: 'Abutment Placement', desc: 'A connector piece (abutment) is screwed onto the implant under local anaesthetic. Quick and simple.', time: 'Visit 3 (30 min)' },
+      { title: 'Crown Fitting', desc: 'Your custom-made crown is attached to the abutment. Bite is checked and adjusted. Your permanent tooth is in place.', time: 'Visit 4 (30 min)' },
+    ],
+    tips: ['Eat soft foods for 1 week after surgery.', 'Don\'t smoke — it significantly reduces implant success rates.', 'Implants can last a lifetime with proper brushing, flossing, and check-ups.']
+  },
+  whitening: {
+    icon: '🌟', title: 'Teeth Whitening', duration: '60–90 min',
+    fear: "Some sensitivity during or after is common, but the procedure itself is painless. The blue light doesn't heat your teeth.",
+    steps: [
+      { title: 'Pre-treatment Check', desc: 'The dentist checks your teeth and gums are healthy enough for whitening. Fillings and crowns won\'t whiten — this is noted so you have realistic expectations.', time: '5 min' },
+      { title: 'Gum Protection', desc: 'A barrier gel or rubber shield is placed over your gums to protect them from the whitening gel.', time: '5 min' },
+      { title: 'Whitening Gel Application', desc: 'Hydrogen peroxide gel is applied to all visible teeth. It begins breaking down stain molecules immediately.', time: '5 min' },
+      { title: 'Light Activation', desc: 'A blue LED or laser light activates the gel in 15–20 minute intervals. You rest with your mouth open and eyes shielded. 2–3 rounds total.', time: '45–60 min' },
+      { title: 'Rinse & Results', desc: 'Gel is removed, you rinse, and the dentist assesses the shade change. Results are usually immediate — 2–8 shades lighter.', time: '5 min' },
+    ],
+    tips: ['Avoid coffee, tea, red wine, and curries for 48 hours after — your teeth are most porous now.', 'Sensitivity for 1–2 days is normal. Avoid very hot or cold food.', 'Top-up treatments maintain results every 6–12 months.']
+  },
+  xray: {
+    icon: '📡', title: 'Dental X-Ray', duration: '5–10 min',
+    fear: "X-rays are completely painless. The radiation dose is tiny — less than a day of natural background radiation.",
+    steps: [
+      { title: 'Protective Apron', desc: 'A heavy lead apron is draped over your chest and lap to protect your body. A thyroid collar may also be placed.', time: '1 min' },
+      { title: 'Sensor or Film Placement', desc: 'A small sensor or film card is placed inside your mouth, positioned against specific teeth. It may feel slightly bulky — breathe through your nose.', time: '2 min' },
+      { title: 'Image Capture', desc: 'The machine is positioned outside your cheek. The dentist steps briefly out of the room. You\'ll hear a short beep — that\'s the X-ray. Done.', time: '1 min' },
+      { title: 'Review', desc: 'Images appear on screen within seconds. The dentist shows you exactly what they\'re looking at and explains any findings.', time: '5 min' },
+    ],
+    tips: ['Tell the dentist if you\'re pregnant before taking X-rays.', 'If the sensor feels uncomfortable, let the dentist know — positioning can be adjusted.', 'Digital X-rays use 80% less radiation than traditional film.']
+  }
+};
+
+function renderTreatmentVisualiser(procKey) {
+  const wrap = document.getElementById('tv-steps-wrap');
+  if (!wrap) return;
+  if (!procKey || !TV_DATA[procKey]) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  const d = TV_DATA[procKey];
+  const stepsHtml = d.steps.map((s, i) => `
+    <div class="tv-step">
+      <div class="tv-step-num">${i + 1}</div>
+      <div class="tv-step-body">
+        <div class="tv-step-title">${s.title}</div>
+        <div class="tv-step-desc">${s.desc}</div>
+        <span class="tv-step-duration">⏱ ${s.time}</span>
+      </div>
+    </div>`).join('');
+  const tipsHtml = d.tips.map(t => `
+    <div class="tv-tip-row">
+      <span class="tv-tip-icon">💡</span>
+      <span class="tv-tip-text">${t}</span>
+    </div>`).join('');
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px 14px;background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:12px">
+      <span style="font-size:28px">${d.icon}</span>
+      <div>
+        <div style="font-weight:800;font-size:15px;color:var(--navy)">${d.title}</div>
+        <div style="font-size:12px;color:var(--teal);font-weight:600">⏱ Total time: ${d.duration}</div>
+      </div>
+    </div>
+    <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px">What Will Happen</div>
+    ${stepsHtml}
+    <div class="tv-fear-box">
+      <div class="tv-fear-title">💬 What to Expect (Honestly)</div>
+      <div class="tv-fear-text">${d.fear}</div>
+    </div>
+    <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.6px">Tips for a Calmer Visit</div>
+    ${tipsHtml}`;
+
+(function(){
+  var sel = document.getElementById('tv-proc-select');
+  if(sel){
+    sel.addEventListener('change', function(){ renderTreatmentVisualiser(this.value); });
+    sel.addEventListener('input',  function(){ renderTreatmentVisualiser(this.value); });
+  }
+})();
+</script>
 
     <div style="height:30px"></div>
   </div>
@@ -4610,7 +4777,8 @@ function showScreen(id){
     'screen-diagnosis':2, 'screen-mindvmouth':2, 'screen-apptmap':2, 'screen-rhythmbreathe':2,
     'screen-reminders':3,
     'screen-procedures':4,
-    'screen-dashboard':5, 'screen-patient-account':5
+    'screen-in-clinic':5,
+    'screen-dashboard':6, 'screen-patient-account':6
   };
   const _bnavIdx = _bnavMap[id];
   if (_bnavIdx !== undefined) {
@@ -19178,7 +19346,6 @@ document.addEventListener('keydown', function(e) {
 
 // ── IN CLINIC SCREEN ─────────────────────────────────────────────────────────
 function openInClinic() {
-  showScreen('screen-in-clinic');
   const clinicName = (currentProfile && currentProfile.clinics && currentProfile.clinics.name) || '';
   if (clinicName) {
     const el = document.getElementById('in-clinic-clinic-label');
@@ -19270,158 +19437,6 @@ async function icLeaveQueue() {
   } catch(e) { console.warn(e); }
 }
 
-// Treatment Visualiser data
-const TV_DATA = {
-  checkup: {
-    icon: '🔍', title: 'Routine Check-up', duration: '20–30 min',
-    fear: "Check-ups are the least invasive visits. Nothing will be done without explaining it first.",
-    steps: [
-      { title: 'Warm Welcome & Seating', desc: 'You\'ll be led to the dental chair, reclined comfortably, and given a bib. The dentist will greet you and ask how you\'ve been.', time: '2 min' },
-      { title: 'Visual Examination', desc: 'The dentist uses a small mirror and light to look at all your teeth, gums, and soft tissues. No tools touch you at this stage — it\'s just a look.', time: '5 min' },
-      { title: 'Probing (if needed)', desc: 'A thin, blunt probe gently checks the gap between teeth and gums. You may feel mild pressure — it\'s not sharp or cutting.', time: '5 min' },
-      { title: 'X-rays (if needed)', desc: 'Small sensors or films are placed inside your mouth to take pictures. No pain, just a brief hold-still moment.', time: '5 min' },
-      { title: 'Findings & Discussion', desc: 'The dentist explains exactly what they found, what it means, and what (if anything) needs to be done next. You can ask questions freely.', time: '5 min' },
-    ],
-    tips: ['You can ask the dentist to narrate every step as they go.', 'Raise your hand at any point to pause — that\'s always respected.', 'Nothing will be treated at this visit without your consent.']
-  },
-  scaling: {
-    icon: '✨', title: 'Scaling & Polishing', duration: '30–45 min',
-    fear: "The scraping sounds are louder than the sensation. Most people describe it as pressure, not pain. The taste is chalky and clean.",
-    steps: [
-      { title: 'Numbing (optional)', desc: 'If you\'re sensitive, the dentist may apply a topical gel to your gums. This works within 1–2 minutes and makes the next steps more comfortable.', time: '2 min' },
-      { title: 'Ultrasonic Scaling', desc: 'A vibrating tip (like a tiny electric toothbrush) uses water spray and vibration to break up tartar. You\'ll hear a high-pitched whirring and feel water. The suction tube removes it instantly.', time: '15 min' },
-      { title: 'Hand Scaling', desc: 'Curved metal instruments scrape remaining deposits from between teeth and below the gumline. Pressure, not pain — but tell your dentist if it\'s uncomfortable.', time: '10 min' },
-      { title: 'Polishing', desc: 'A spinning rubber cup with gritty paste buffs each tooth surface. It feels like a gentle vibrating tickle and tastes minty.', time: '5 min' },
-      { title: 'Rinse & Review', desc: 'You\'ll rinse thoroughly, and the dentist will show you areas to focus on when brushing at home. You\'re done!', time: '5 min' },
-    ],
-    tips: ['Use a hand signal to pause if the sound or sensation is too much.', 'Breathing through your nose slowly helps you stay calm.', 'The taste is not blood — it\'s the cleaning solution and old plaque.']
-  },
-  filling: {
-    icon: '🪨', title: 'Dental Filling', duration: '30–60 min',
-    fear: "The injection is the only part that may sting — for about 3 seconds. After that, the area is completely numb and you will only feel pressure, not pain.",
-    steps: [
-      { title: 'Topical Anaesthetic', desc: 'A numbing gel is dabbed onto your gum. This takes 1–2 minutes to work and makes the injection nearly painless.', time: '2 min' },
-      { title: 'Local Anaesthetic Injection', desc: 'The dentist injects anaesthetic into the gum. You\'ll feel brief pressure or a slight sting for 3–5 seconds, then warmth spreading through your jaw.', time: '3 min' },
-      { title: 'Waiting for Numbness', desc: 'You sit and wait. Your lip, cheek, or tongue may feel fat or tingly — this is normal and means it\'s working. Tell the dentist if you feel anything sharp later.', time: '5 min' },
-      { title: 'Decay Removal (Drilling)', desc: 'The drill removes the decayed part of the tooth. You\'ll hear buzzing and smell something like burning — this is normal and not harmful. You should not feel pain, only vibration.', time: '10–15 min' },
-      { title: 'Acid Etching & Bonding', desc: 'A mild gel is applied to roughen the tooth surface, then rinsed. A thin bonding liquid is brushed on and hardened with a blue light in seconds.', time: '5 min' },
-      { title: 'Filling Placement', desc: 'Tooth-coloured composite is packed in layers. Each layer is hardened with the light. You\'ll feel pressure but no pain.', time: '10 min' },
-      { title: 'Bite Adjustment & Polish', desc: 'You bite on carbon paper to check alignment. Any high spots are filed down. The filling is polished smooth.', time: '5 min' },
-    ],
-    tips: ['The numbness lasts 1–3 hours after. Avoid hot drinks and chewing on that side until it wears off.', 'Some sensitivity in the days after is normal and fades on its own.', 'You will not feel pain during the procedure — only pressure and vibration.']
-  },
-  rct: {
-    icon: '🩺', title: 'Root Canal Treatment', duration: '60–90 min (may need 2 visits)',
-    fear: "Root canal has an unfair reputation. With modern anaesthesia, it's no more uncomfortable than a filling. You're treating the source of pain — not creating it.",
-    steps: [
-      { title: 'X-ray & Planning', desc: 'An X-ray confirms the extent of infection and maps the root canals. The dentist explains the process and answers your questions.', time: '5 min' },
-      { title: 'Local Anaesthetic', desc: 'The area is numbed thoroughly. You will feel nothing sharp during the procedure — only occasional pressure.', time: '5 min' },
-      { title: 'Rubber Dam Placement', desc: 'A small rubber sheet isolates the tooth, keeping it dry and clean. It may feel unfamiliar but is not uncomfortable.', time: '2 min' },
-      { title: 'Access Opening', desc: 'A small hole is drilled through the crown to reach the pulp chamber. Fully numb — you\'ll feel vibration only.', time: '5 min' },
-      { title: 'Canal Cleaning', desc: 'Tiny flexible files remove infected pulp and shape each canal. Irrigation with antiseptic solution keeps everything clean. This is the core of the procedure.', time: '30–45 min' },
-      { title: 'Canal Filling (Obturation)', desc: 'Canals are dried and filled with a rubber-like material called gutta-percha. This seals them permanently.', time: '15 min' },
-      { title: 'Temporary or Permanent Seal', desc: 'A temporary filling protects the tooth until your crown is placed (if needed). Or a permanent filling is placed immediately.', time: '5 min' },
-    ],
-    tips: ['Mild soreness for 2–3 days after is normal — over-the-counter painkillers help.', 'Avoid chewing on the treated tooth until the crown is fitted.', 'A crown after RCT protects the tooth long-term — don\'t skip it.']
-  },
-  extraction: {
-    icon: '🦷', title: 'Tooth Extraction', duration: '20–45 min',
-    fear: "The injection numbs everything completely. The dentist rocks the tooth back and forth — you'll feel pressure and movement, but not pain. It's often faster than patients expect.",
-    steps: [
-      { title: 'X-ray Check', desc: 'A quick X-ray confirms the tooth\'s root shape to plan the safest removal technique.', time: '3 min' },
-      { title: 'Topical Gel & Injection', desc: 'Numbing gel first, then the anaesthetic injection. Mild sting for seconds, then the area goes numb within 3–5 minutes.', time: '5 min' },
-      { title: 'Loosening with Elevator', desc: 'A small instrument (elevator) is pressed into the gum beside the tooth to widen the socket. You feel significant pressure — this is expected and normal.', time: '5 min' },
-      { title: 'Forceps & Removal', desc: 'The dentist grips the tooth with forceps and rocks it back and forth to break the ligament. You feel strong pressure and movement. The tooth pops out — often quickly.', time: '5–15 min' },
-      { title: 'Gauze & Clotting', desc: 'Gauze is placed over the socket. Bite down firmly for 20–30 minutes. This pressure helps form a blood clot — the key to healing.', time: '30 min' },
-      { title: 'Aftercare Instructions', desc: 'The dentist explains what to eat, what to avoid, and warning signs to watch for. A follow-up may be scheduled if stitches are placed.', time: '5 min' },
-    ],
-    tips: ['Do not rinse, spit, or use a straw for 24 hours — this protects the blood clot.', 'Soft foods only: yogurt, dal, idli, bananas. Nothing crunchy or hot.', 'Some oozing for a few hours is normal. Soak it up — don\'t rinse it away.']
-  },
-  crown: {
-    icon: '👑', title: 'Crown / Cap', duration: '60–90 min (first visit), 30 min (fitting)',
-    fear: "Crown preparation involves drilling, but you'll be numb throughout. The temporary crown protects you between visits. Most people find the fitting visit painless.",
-    steps: [
-      { title: 'Anaesthetic', desc: 'Local anaesthetic ensures the tooth and surrounding gum are completely numb.', time: '5 min' },
-      { title: 'Tooth Reshaping', desc: 'The dentist files the tooth down on all sides to create space for the crown. You\'ll feel vibration and hear drilling — no pain.', time: '20 min' },
-      { title: 'Impression', desc: 'A digital scan or putty mould captures the exact shape of your prepared tooth and bite. This goes to the lab to make your crown.', time: '10 min' },
-      { title: 'Temporary Crown', desc: 'A plastic temporary crown is fitted with soft cement to protect the tooth while your permanent crown is made (usually 1–2 weeks).', time: '10 min' },
-      { title: 'Permanent Crown Fitting', desc: 'The temporary is removed, the permanent crown is tried in, checked for fit and colour, then cemented permanently. Minor adjustments may be made.', time: '30 min' },
-    ],
-    tips: ['Avoid sticky or hard foods with the temporary crown — it can come off.', 'Sensitivity after preparation is normal and fades once the permanent crown is placed.', 'With good care, crowns last 10–15 years.']
-  },
-  implant: {
-    icon: '🔩', title: 'Dental Implant', duration: 'Multiple visits over 3–6 months',
-    fear: "Implant surgery sounds intense, but you're fully numb. Most patients report it's far less uncomfortable than they expected — comparable to an extraction.",
-    steps: [
-      { title: 'Consultation & Planning', desc: 'X-rays and a 3D CBCT scan map your bone. The dentist plans the exact angle and position. You discuss options and timeline.', time: 'Visit 1' },
-      { title: 'Implant Placement Surgery', desc: 'Under local anaesthetic, a small incision opens the gum. A titanium screw is placed into the jawbone and the gum is stitched. You feel pressure, not pain.', time: 'Visit 2 (45–90 min)' },
-      { title: 'Osseointegration (Healing)', desc: 'The implant fuses with your bone over 3–6 months. You wear a temporary tooth if needed. This is the longest phase — but it\'s passive.', time: '3–6 months' },
-      { title: 'Abutment Placement', desc: 'A connector piece (abutment) is screwed onto the implant under local anaesthetic. Quick and simple.', time: 'Visit 3 (30 min)' },
-      { title: 'Crown Fitting', desc: 'Your custom-made crown is attached to the abutment. Bite is checked and adjusted. Your permanent tooth is in place.', time: 'Visit 4 (30 min)' },
-    ],
-    tips: ['Eat soft foods for 1 week after surgery.', 'Don\'t smoke — it significantly reduces implant success rates.', 'Implants can last a lifetime with proper brushing, flossing, and check-ups.']
-  },
-  whitening: {
-    icon: '🌟', title: 'Teeth Whitening', duration: '60–90 min',
-    fear: "Some sensitivity during or after is common, but the procedure itself is painless. The blue light doesn't heat your teeth.",
-    steps: [
-      { title: 'Pre-treatment Check', desc: 'The dentist checks your teeth and gums are healthy enough for whitening. Fillings and crowns won\'t whiten — this is noted so you have realistic expectations.', time: '5 min' },
-      { title: 'Gum Protection', desc: 'A barrier gel or rubber shield is placed over your gums to protect them from the whitening gel.', time: '5 min' },
-      { title: 'Whitening Gel Application', desc: 'Hydrogen peroxide gel is applied to all visible teeth. It begins breaking down stain molecules immediately.', time: '5 min' },
-      { title: 'Light Activation', desc: 'A blue LED or laser light activates the gel in 15–20 minute intervals. You rest with your mouth open and eyes shielded. 2–3 rounds total.', time: '45–60 min' },
-      { title: 'Rinse & Results', desc: 'Gel is removed, you rinse, and the dentist assesses the shade change. Results are usually immediate — 2–8 shades lighter.', time: '5 min' },
-    ],
-    tips: ['Avoid coffee, tea, red wine, and curries for 48 hours after — your teeth are most porous now.', 'Sensitivity for 1–2 days is normal. Avoid very hot or cold food.', 'Top-up treatments maintain results every 6–12 months.']
-  },
-  xray: {
-    icon: '📡', title: 'Dental X-Ray', duration: '5–10 min',
-    fear: "X-rays are completely painless. The radiation dose is tiny — less than a day of natural background radiation.",
-    steps: [
-      { title: 'Protective Apron', desc: 'A heavy lead apron is draped over your chest and lap to protect your body. A thyroid collar may also be placed.', time: '1 min' },
-      { title: 'Sensor or Film Placement', desc: 'A small sensor or film card is placed inside your mouth, positioned against specific teeth. It may feel slightly bulky — breathe through your nose.', time: '2 min' },
-      { title: 'Image Capture', desc: 'The machine is positioned outside your cheek. The dentist steps briefly out of the room. You\'ll hear a short beep — that\'s the X-ray. Done.', time: '1 min' },
-      { title: 'Review', desc: 'Images appear on screen within seconds. The dentist shows you exactly what they\'re looking at and explains any findings.', time: '5 min' },
-    ],
-    tips: ['Tell the dentist if you\'re pregnant before taking X-rays.', 'If the sensor feels uncomfortable, let the dentist know — positioning can be adjusted.', 'Digital X-rays use 80% less radiation than traditional film.']
-  }
-};
-
-function renderTreatmentVisualiser(procKey) {
-  const wrap = document.getElementById('tv-steps-wrap');
-  if (!wrap) return;
-  if (!procKey || !TV_DATA[procKey]) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
-  const d = TV_DATA[procKey];
-  const stepsHtml = d.steps.map((s, i) => `
-    <div class="tv-step">
-      <div class="tv-step-num">${i + 1}</div>
-      <div class="tv-step-body">
-        <div class="tv-step-title">${s.title}</div>
-        <div class="tv-step-desc">${s.desc}</div>
-        <span class="tv-step-duration">⏱ ${s.time}</span>
-      </div>
-    </div>`).join('');
-  const tipsHtml = d.tips.map(t => `
-    <div class="tv-tip-row">
-      <span class="tv-tip-icon">💡</span>
-      <span class="tv-tip-text">${t}</span>
-    </div>`).join('');
-  wrap.style.display = 'block';
-  wrap.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px 14px;background:linear-gradient(135deg,#f0fdfa,#eff6ff);border-radius:12px">
-      <span style="font-size:28px">${d.icon}</span>
-      <div>
-        <div style="font-weight:800;font-size:15px;color:var(--navy)">${d.title}</div>
-        <div style="font-size:12px;color:var(--teal);font-weight:600">⏱ Total time: ${d.duration}</div>
-      </div>
-    </div>
-    <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px">What Will Happen</div>
-    ${stepsHtml}
-    <div class="tv-fear-box">
-      <div class="tv-fear-title">💬 What to Expect (Honestly)</div>
-      <div class="tv-fear-text">${d.fear}</div>
-    </div>
-    <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.6px">Tips for a Calmer Visit</div>
-    ${tipsHtml}`;
 }
 
 // Initialise In Clinic screen when opened from nav
