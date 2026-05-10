@@ -17616,7 +17616,15 @@ function renderCaPatientList() {
   }).join('');
 }
 
-function openCaVisitSummaryModal(rec) {
+// ── Safe record cache for visit summary modal (avoids inline JSON in onclick) ─
+window._caRecordCache = window._caRecordCache || {};
+
+function openCaVisitSummaryModal(recOrId) {
+  // Accept either a record object (legacy) or a string record ID (safe path)
+  const rec = (typeof recOrId === 'string')
+    ? window._caRecordCache[recOrId]
+    : recOrId;
+  if (!rec) { if (typeof showToast==='function') showToast('Could not load visit record'); return; }
   // Reuse the existing showVisitSummaryModal if available (patient portal function)
   if (typeof showVisitSummaryModal === 'function') {
     const procLabels = { filling:'Dental Filling', rct:'Root Canal (RCT)', extraction:'Extraction', scaling:'Scaling', crown:'Crown', implant:'Implant', other:'Treatment' };
@@ -17656,7 +17664,7 @@ async function openCaPatDocket(patientId) {
     <div id="ca-pat-anxiety-block" style="margin-bottom:12px"><div class="skeleton-card"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60 short"></div></div></div>
     <div style="font-size:11px;font-weight:700;color:#99f6e4;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Visit History (${recs.length})</div>
     ${!recs.length ? '<div style="color:#64748b;font-size:13px;text-align:center;padding:16px">No visits on record yet.</div>' :
-      recs.map(r => {
+      (window._caRecordCache=window._caRecordCache||{},recs.forEach(r=>{window._caRecordCache[String(r.id)]=r;}),recs).map(r => {
         let dateStr='—'; try{dateStr=new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){}
         const proc = PROC[r.procedure_type]||r.procedure_type||'Dental Visit';
         let cs=null; try{cs=JSON.parse(r.cs_data||'{}');}catch(_){}
@@ -17674,7 +17682,7 @@ async function openCaPatDocket(patientId) {
           ${r.next_appointment?`<div style="font-size:11px;color:#0d9488;margin-top:4px;font-weight:600">📅 Next: ${(()=>{try{return new Date(r.next_appointment).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){return r.next_appointment;}})()}</div>`:''}
           <div style="display:flex;gap:6px;margin-top:8px">
             <button onclick="downloadOPSummary('${r.id}','${patientId}')" style="flex:1;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:#99f6e4;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 PDF</button>
-            <button onclick="openCaVisitSummaryModal(${JSON.stringify({id:r.id,procedure_type:r.procedure_type,created_at:r.created_at,treatment_summary:r.treatment_summary,prescription_details:r.prescription_details,next_appointment:r.next_appointment,cs_data:r.cs_data}).replace(/"/g,'&quot;')})" style="flex:1;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">👁 Summary</button>
+            <button onclick="openCaVisitSummaryModal('${String(r.id)}')" style="flex:1;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">👁 Summary</button>
           </div>
         </div>`;
       }).join('')
@@ -18368,6 +18376,7 @@ function renderCaBillStats() {
   set('ca-bill-unset',   0);
 }
 
+window._caBillCache = window._caBillCache || {};
 function renderCaBills() {
   const list = document.getElementById('ca-bills-list'); if (!list) return;
   const dentFil = (document.getElementById('ca-bill-dent-filter')||{}).value||'';
@@ -18383,6 +18392,8 @@ function renderCaBills() {
   }
   if (!bills.length) { list.innerHTML='<div style="text-align:center;padding:28px;color:#64748b;font-size:13px">No bills match this filter.</div>'; return; }
 
+  // Populate bill cache so onclick can safely reference by ID
+  bills.forEach(b => { window._caBillCache[String(b.id)] = b; });
   list.innerHTML = bills.map(b => {
     const bc   = b.status==='paid'?'ca-badge-green':b.status==='waived'?'ca-badge-blue':'ca-badge-amber';
     const bl   = b.status==='paid'?'✅ Paid':b.status==='waived'?'🎁 Waived':'⏳ Pending';
@@ -18404,7 +18415,7 @@ function renderCaBills() {
           <button onclick="markCaBillPaid('${b.id}')" style="background:rgba(34,197,94,.2);border:1px solid #4ade80;color:#4ade80;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">✓ Mark Paid</button>
           <button onclick="markCaBillWaived('${b.id}')" style="background:rgba(99,102,241,.2);border:1px solid #818cf8;color:#a5b4fc;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">🎁 Waive</button>
         `:b.status==='paid'?`<span style="font-size:12px;color:#4ade80;font-weight:600">✅ Paid ${b.paid_at?(new Date(b.paid_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})):''}</span>`:''}
-        <button onclick="downloadReceipt(decodeURIComponent('${safeBill}'))" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📄 Receipt PDF</button>
+        <button onclick="downloadReceipt(window._caBillCache['${b.id}'])" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📄 Receipt PDF</button>
         <button onclick="downloadOPSummary('${b.record_id||''}','${b.patient_id||''}')" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>
       </div>
     </div>`;
@@ -18445,6 +18456,9 @@ async function loadPatBills() {
     list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">No bills yet. They will appear here after your clinic creates one.</div>';
     return;
   }
+  // Populate patient bill cache so onclick can safely reference by ID
+  window._patBillCache = window._patBillCache || {};
+  bills.forEach(b => { window._patBillCache[String(b.id)] = b; });
   list.innerHTML = bills.map(b => {
     const bc = b.status==='paid'?'#22c55e':b.status==='waived'?'#93c5fd':'#fbbf24';
     const bl = b.status==='paid'?'✅ Paid':b.status==='waived'?'🎁 Waived':'⏳ Pending';
@@ -18460,7 +18474,7 @@ async function loadPatBills() {
       </div>
       <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:10px">₹${Number(b.amount||0).toLocaleString('en-IN')}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onclick="downloadReceipt(decodeURIComponent('${safeBill}'))" style="flex:1;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 ${b.status==='paid'?'Download Receipt':'View Bill'}</button>
+        <button onclick="downloadReceipt(_patBillCache['${b.id}'])" style="flex:1;background:var(--grad);color:#fff;border:none;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">📄 ${b.status==='paid'?'Download Receipt':'View Bill'}</button>
         ${b.record_id?`<button onclick="downloadOPSummary('${b.record_id}','${String(activeUser.id)}')" style="background:rgba(13,148,136,.1);color:var(--teal);border:1.5px solid var(--teal);padding:10px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">📋 OP Summary</button>`:''}
       </div>
     </div>`;
