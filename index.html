@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SerenOra Care v4</title>
+<title>SerenOra Care</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <!-- Supabase loaded as ESM to avoid the BroadcastChannel/postMessage Headers clone bug -->
@@ -18722,11 +18722,28 @@ function openPrintWindow(html, filename) {
 
     const toolbar = document.createElement('div');
     toolbar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#0f172a;flex-shrink:0';
-    toolbar.innerHTML = '<span style="color:#99f6e4;font-weight:700;font-size:14px;font-family:sans-serif">📄 ' + (filename||'Document') + '</span>' +
-      '<div style="display:flex;gap:8px">' +
-      '<button onclick="try{document.getElementById('__pdf_frame__').contentWindow.print();}catch(e){}" style="background:#0d9488;border:none;color:#fff;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:sans-serif">🖨️ Print / Save PDF</button>' +
-      '<button onclick="document.getElementById('__pdf_overlay__').remove()" style="background:rgba(255,255,255,.1);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif">✕ Close</button>' +
-      '</div>';
+
+    const printBtn = document.createElement('button');
+    printBtn.style.cssText = 'background:#0d9488;border:none;color:#fff;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:sans-serif';
+    printBtn.textContent = '🖨️ Print / Save PDF';
+    printBtn.onclick = function() { try { document.getElementById('__pdf_frame__').contentWindow.print(); } catch(e) {} };
+
+    const closeBtn = document.createElement('button');
+    closeBtn.style.cssText = 'background:rgba(255,255,255,.1);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:sans-serif';
+    closeBtn.textContent = '✕ Close';
+    closeBtn.onclick = function() { var ov = document.getElementById('__pdf_overlay__'); if (ov) ov.remove(); };
+
+    const label = document.createElement('span');
+    label.style.cssText = 'color:#99f6e4;font-weight:700;font-size:14px;font-family:sans-serif';
+    label.textContent = '📄 ' + (filename || 'Document');
+
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:8px';
+    btnRow.appendChild(printBtn);
+    btnRow.appendChild(closeBtn);
+
+    toolbar.appendChild(label);
+    toolbar.appendChild(btnRow);
 
     const iframe = document.createElement('iframe');
     iframe.id = '__pdf_frame__';
