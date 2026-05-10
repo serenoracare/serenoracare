@@ -15586,7 +15586,7 @@ async function submitDentBill() {
 
   const bill = {
     id: 'bill_' + Date.now(), patient_id: patId, patient_name: patName,
-    record_id: null, procedure: desc||'Dental Treatment', description: desc,
+    record_id: null, procedure: desc||'Dental Treatment', description: null,
     amount: amt, due_date: null, status: 'pending',
     created_at: new Date().toISOString(), clinic_id: clinicId,
     clinic_name: currentProfile&&currentProfile.clinics ? (currentProfile.clinics.name||'') : '',
@@ -15609,7 +15609,7 @@ async function submitDentBill() {
     try {
       await activeDb.from('bills').insert({
         patient_id: patId, clinic_id: clinicId, record_id: null,
-        procedure: bill.procedure, description: desc||null,
+        procedure: bill.procedure, description: null,
         amount: amt, due_date: null, status: 'pending',
         patient_name: patName, created_at: bill.created_at
       });
