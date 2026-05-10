@@ -9517,28 +9517,27 @@ function toggleMiniTooth(t, mode) {
 
   if (teethArr.length === 0) {
     const prevEl = document.getElementById(prevId); if (prevEl) prevEl.style.display='none';
+    // Remove mini-grid sentence from map and rebuild
+    if (!window._rowSentenceMap) window._rowSentenceMap = new Map();
+    window._rowSentenceMap.delete(`__row_mini_${mode}__`);
+    const ta2 = document.getElementById(taId);
+    if (ta2) _rebuildNotesTextarea(ta2, mode);
     return;
   }
 
   const sentence = mode === 'advised'
-    ? `${procLabel} advised on tooth${teethArr.length>1?'':''}${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`
-    : `${procLabel} performed on tooth${teethArr.length>1?'':''}${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`;
+    ? `${procLabel} advised on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`
+    : `${procLabel} performed on tooth${teethArr.length>1?'s':''} ${teethArr.join(', ')}.`;
 
   const prevEl = document.getElementById(prevId);
   if (prevEl) { prevEl.textContent = sentence; prevEl.style.display='block'; }
 
-  // Update textarea — replace the first line if it looks like a previous tooth sentence
+  // Use _rowSentenceMap so mini-grid and row-grid sentences co-exist cleanly
+  if (!window._rowSentenceMap) window._rowSentenceMap = new Map();
+  const miniKey = `__row_mini_${mode}__`;
+  window._rowSentenceMap.set(miniKey, sentence);
   const ta = document.getElementById(taId);
-  if (ta) {
-    const lines = ta.value.split('\n');
-    const isToothLine = l => /tooth[\w\s,]+\d+/.test(l) || /advised on|performed on/.test(l);
-    if (lines.length > 0 && isToothLine(lines[0])) {
-      lines[0] = sentence;
-      ta.value = lines.join('\n');
-    } else {
-      ta.value = sentence + (ta.value.trim() ? '\n' + ta.value.trim() : '');
-    }
-  }
+  if (ta) _rebuildNotesTextarea(ta, mode);
 }
 
 function updateAdvisedTeethHint() {
@@ -12396,6 +12395,21 @@ function makeDraggable(el, onTap) {
         <!-- Docket / Casesheet buttons -->
         <button onclick="openClinicalRecordMP()" style="width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:12px;border-radius:12px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:8px">📋 New Clinical Record →</button>
         <button onclick="openDocketMP()" style="width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(13,148,136,.4);color:#99f6e4;padding:12px;border-radius:12px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:12px;text-align:center">📁 Open Patient Docket →</button>
+
+        <!-- Bills for this patient -->
+        <div class="dent-card" style="margin-bottom:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-size:12px;font-weight:700;color:#99f6e4">💳 Bills</div>
+            <button onclick="toggleDentBillForm()" id="dent-bill-toggle-btn" style="background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.4);color:#99f6e4;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">+ New Bill</button>
+          </div>
+          <div id="dent-bill-form" style="display:none;margin-bottom:10px">
+            <input id="dent-bill-amount" type="number" placeholder="Amount (₹)" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#fff;font-family:var(--font);font-size:13px;margin-bottom:6px">
+            <input id="dent-bill-desc" type="text" placeholder="Description (e.g. RCT Tooth 22)" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#fff;font-family:var(--font);font-size:13px;margin-bottom:8px">
+            <button onclick="submitDentBill()" style="width:100%;background:linear-gradient(135deg,#0d9488,#3b82f6);border:none;color:#fff;padding:9px;border-radius:8px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Create Bill →</button>
+            <div id="dent-bill-status" style="margin-top:6px;font-size:11px;text-align:center;color:#99f6e4"></div>
+          </div>
+          <div id="dent-patient-bills-list"><div style="font-size:12px;color:#475569;text-align:center;padding:8px">Select a patient to see bills.</div></div>
+        </div>
 
         <!-- Today's Visit note form -->
         <div class="dent-card">
@@ -15491,20 +15505,33 @@ function toggleRowTooth(t, btn, mode) {
 
   if (preview) { preview.textContent = sentence; preview.style.display = 'block'; }
 
-  // Append to textarea — replace this row's previous sentence if it exists, otherwise append
-  if (ta) {
-    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
-    // Look for existing line from this row
-    const lines = ta.value.split('\n');
-    const existIdx = lines.findIndex(l => l.includes(rowKey));
-    const tagged   = `${sentence} ${rowKey}`;
-    if (existIdx >= 0) {
-      lines[existIdx] = tagged;
-      ta.value = lines.join('\n');
-    } else {
-      ta.value = ta.value.trim() ? ta.value.trim() + '\n' + tagged : tagged;
-    }
+  // Use a hidden map to track each row's sentence — never embed tags in the visible textarea
+  if (!window._rowSentenceMap) window._rowSentenceMap = new Map();
+  const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+  window._rowSentenceMap.set(rowKey, sentence);
+  if (ta) _rebuildNotesTextarea(ta, mode);
+}
+
+// Rebuild textarea from the hidden sentence map (no tags ever shown to user)
+function _rebuildNotesTextarea(ta, mode) {
+  if (!ta) return;
+  const keyPattern = `_${mode}__`;
+  // Collect all manually-typed lines (lines that don't contain any __row_ tag)
+  const manualLines = ta.value.split('\n').filter(l => !/__row_\d+_(advised|performed)__/.test(l));
+  // Collect all auto-generated sentences for this mode, in row-index order
+  const autoLines = [];
+  if (window._rowSentenceMap) {
+    const entries = Array.from(window._rowSentenceMap.entries())
+      .filter(([k]) => k.includes(keyPattern))
+      .sort(([a],[b]) => {
+        const ai = parseInt(a.replace('__row_','')) || 0;
+        const bi = parseInt(b.replace('__row_','')) || 0;
+        return ai - bi;
+      });
+    entries.forEach(([,v]) => { if (v) autoLines.push(v); });
   }
+  const combined = [...manualLines.filter(Boolean), ...autoLines].join('\n').trim();
+  ta.value = combined;
 }
 
 function clearRowGrid(row, mode) {
@@ -15513,13 +15540,158 @@ function clearRowGrid(row, mode) {
   renderRowToothGrid(row, mode);
   const preview = row.querySelector('.cs-row-tooth-preview');
   if (preview) preview.style.display = 'none';
-  // Remove this row's tagged sentence from the textarea
+  // Remove this row's sentence from the hidden map and rebuild textarea cleanly
   const taId = mode === 'advised' ? 'cs-advised-notes' : 'cs-treatment-notes';
   const ta   = document.getElementById(taId);
-  if (ta) {
-    const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
-    ta.value = ta.value.split('\n').filter(l => !l.includes(rowKey)).join('\n').trim();
+  const rowKey = `__row_${row.getAttribute('data-index')}_${mode}__`;
+  if (window._rowSentenceMap) window._rowSentenceMap.delete(rowKey);
+  if (ta) _rebuildNotesTextarea(ta, mode);
+}
+
+// ── DENTIST PORTAL BILLS ─────────────────────────────────────────────────────
+function toggleDentBillForm() {
+  const form = document.getElementById('dent-bill-form');
+  const btn  = document.getElementById('dent-bill-toggle-btn');
+  if (!form) return;
+  const opening = form.style.display === 'none';
+  form.style.display = opening ? 'block' : 'none';
+  if (btn) btn.textContent = opening ? '✕ Cancel' : '+ New Bill';
+  if (opening) {
+    // Pre-fill from casesheet procedure if open
+    const descEl = document.getElementById('dent-bill-desc');
+    if (descEl && !descEl.value) {
+      const PLABELS = {filling:'Dental Filling',amalgam:'Amalgam Filling',rct:'Root Canal Treatment (RCT)',rootcanal:'Root Canal Treatment (RCT)',extraction:'Tooth Extraction',surgical_ext:'Surgical Extraction',scaling:'Scaling & Root Planing',crown:'Crown',implant:'Dental Implant',whitening:'Teeth Whitening',other:'Dental Treatment'};
+      const allPerf = typeof getAllPerformedProcedures==='function' ? getAllPerformedProcedures() : [];
+      const allAdv  = typeof getAllAdvisedProcedures==='function'  ? getAllAdvisedProcedures()  : [];
+      const proc = allPerf[0] || allAdv[0];
+      if (proc) descEl.value = PLABELS[proc] || proc;
+    }
   }
+}
+
+async function submitDentBill() {
+  const statusEl = document.getElementById('dent-bill-status');
+  const amtEl    = document.getElementById('dent-bill-amount');
+  const descEl   = document.getElementById('dent-bill-desc');
+  const amt  = parseFloat((amtEl||{}).value||0);
+  const desc = ((descEl||{}).value||'').trim();
+  const patId = window._mpCurrentPatientId || (typeof _mpCurrentPatientId!=='undefined' ? _mpCurrentPatientId : null);
+  if (!patId) { if(statusEl){statusEl.style.color='#f87171';statusEl.textContent='No patient selected.';} return; }
+  if (!amt||amt<=0) { if(statusEl){statusEl.style.color='#f87171';statusEl.textContent='Enter a valid amount.';} return; }
+
+  const activeDb = db || window.__supaDb;
+  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  const patData  = (window._dentPatientData||{})[patId] || {};
+  const patName  = patData.full_name || 'Patient';
+
+  const bill = {
+    id: 'bill_' + Date.now(), patient_id: patId, patient_name: patName,
+    record_id: null, procedure: desc||'Dental Treatment', description: desc,
+    amount: amt, due_date: null, status: 'pending',
+    created_at: new Date().toISOString(), clinic_id: clinicId,
+    clinic_name: currentProfile&&currentProfile.clinics ? (currentProfile.clinics.name||'') : '',
+    join_code:   currentProfile&&currentProfile.clinics ? (currentProfile.clinics.join_code||'') : '',
+    paid_at: null
+  };
+
+  // Save to localStorage (shared key with clinic admin)
+  if (clinicId) {
+    try {
+      const key = 'serenora_bills_' + clinicId;
+      const existing = JSON.parse(localStorage.getItem(key)||'[]');
+      existing.unshift(bill);
+      localStorage.setItem(key, JSON.stringify(existing));
+    } catch(_) {}
+  }
+
+  // Save to Supabase
+  if (activeDb && clinicId) {
+    try {
+      await activeDb.from('bills').insert({
+        patient_id: patId, clinic_id: clinicId, record_id: null,
+        procedure: bill.procedure, description: desc||null,
+        amount: amt, due_date: null, status: 'pending',
+        patient_name: patName, created_at: bill.created_at
+      });
+      if(statusEl){statusEl.style.color='#4ade80';statusEl.textContent='✅ Bill sent to patient!';}
+    } catch(e) {
+      if(statusEl){statusEl.style.color='#fbbf24';statusEl.textContent='Saved (sync failed — check connection).';}
+    }
+  } else {
+    if(statusEl){statusEl.style.color='#4ade80';statusEl.textContent='✅ Bill saved locally.';}
+  }
+  showToast('Bill ₹'+amt+' created for '+patName+' ✅');
+  if (amtEl) amtEl.value='';
+  if (descEl) descEl.value='';
+  toggleDentBillForm();
+  loadDentPatientBills(patId);
+  if (typeof loadCaBills==='function') loadCaBills();
+}
+
+async function loadDentPatientBills(patId) {
+  const listEl = document.getElementById('dent-patient-bills-list');
+  if (!listEl) return;
+  if (!patId) { listEl.innerHTML='<div style="font-size:12px;color:#475569;text-align:center;padding:8px">Select a patient to see bills.</div>'; return; }
+  listEl.innerHTML='<div style="font-size:12px;color:#475569;text-align:center;padding:8px">Loading…</div>';
+
+  let bills = [];
+  const activeDb = db || window.__supaDb;
+  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+
+  if (activeDb) {
+    try {
+      const {data} = await activeDb.from('bills').select('*').eq('patient_id', patId).order('created_at',{ascending:false});
+      if (data && data.length) bills = data;
+    } catch(_) {}
+  }
+  if (!bills.length && clinicId) {
+    try {
+      const all = JSON.parse(localStorage.getItem('serenora_bills_'+clinicId)||'[]');
+      bills = all.filter(b=>b.patient_id===patId);
+    } catch(_) {}
+  }
+
+  if (!bills.length) {
+    listEl.innerHTML='<div style="font-size:12px;color:#475569;text-align:center;padding:8px">No bills yet for this patient.</div>';
+    return;
+  }
+
+  listEl.innerHTML = bills.slice(0,5).map(b=>{
+    const bc = b.status==='paid'?'#22c55e':b.status==='waived'?'#93c5fd':'#fbbf24';
+    const bl = b.status==='paid'?'✅ Paid':b.status==='waived'?'🎁 Waived':'⏳ Pending';
+    let d='';try{d=new Date(b.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(_){}
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0">${b.procedure||'Treatment'}${b.description&&b.description!==b.procedure?' — '+b.description:''}</div>
+        <div style="font-size:11px;color:#475569">${d}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div style="font-size:14px;font-weight:800;color:#e2e8f0">₹${Number(b.amount||0).toLocaleString('en-IN')}</div>
+        <span style="font-size:10px;font-weight:700;color:${bc}">${bl}</span>
+        ${b.status==='pending'?`<button onclick="markDentBillPaid('${b.id||''}','${patId}')" style="display:block;margin-top:3px;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font)">Mark Paid</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function markDentBillPaid(billId, patId) {
+  const activeDb = db || window.__supaDb;
+  const clinicId = currentProfile && currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  const paidAt = new Date().toISOString();
+  if (activeDb && billId && !billId.startsWith('bill_')) {
+    try { await activeDb.from('bills').update({status:'paid',paid_at:paidAt}).eq('id',billId); } catch(_) {}
+  }
+  if (clinicId) {
+    try {
+      const key = 'serenora_bills_'+clinicId;
+      const all = JSON.parse(localStorage.getItem(key)||'[]');
+      const b = all.find(x=>x.id===billId); if(b){b.status='paid';b.paid_at=paidAt;}
+      localStorage.setItem(key, JSON.stringify(all));
+    } catch(_) {}
+  }
+  showToast('Bill marked as paid ✅');
+  loadDentPatientBills(patId);
+  if (typeof loadCaBills==='function') loadCaBills();
 }
 
 function toggleCsQuickBill() {
@@ -15953,6 +16125,8 @@ async function loadDentPatientContextMP(patientId) {
   const contextEl = document.getElementById('dent-patient-context-mp');
   if (!patientId) { if (contextEl) contextEl.style.display = 'none'; return; }
   if (contextEl) contextEl.style.display = 'block';
+  // Load bills for this patient
+  loadDentPatientBills(patientId);
   // Reuse the existing loadDentPatientContext if available
   if (typeof loadDentPatientContext === 'function') {
     // Mirror data to MP elements
