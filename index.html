@@ -3151,13 +3151,11 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
       <div id="rem-appt-prep-tip" style="margin-top:10px;font-size:11px;color:#4b5563;line-height:1.5"></div>
     </div>
 
-    <!-- Clinic-uploaded reminders -->
+    <!-- Clinic-uploaded reminders — spinner shown until JS populates it -->
     <div id="personalised-reminders-list">
       <div style="text-align:center;padding:32px 20px;color:var(--muted)">
-        <div style="font-size:48px;margin-bottom:14px">🏥</div>
-        <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">No reminders yet</div>
-        <div style="font-size:13px;line-height:1.7;margin-bottom:20px">After your dentist uploads your visit record, post-op instructions, medication reminders and appointment prep will appear here automatically.</div>
-        <button onclick="openPortalAs('patient','login')" class="btn-primary" style="max-width:260px;margin:0 auto">Sign in to see your reminders →</button>
+        <div style="font-size:32px;margin-bottom:12px">⏳</div>
+        <div style="font-size:13px;color:var(--muted)">Loading your reminders…</div>
       </div>
     </div>
 
@@ -5949,8 +5947,8 @@ var _apptCountdownMs   = Infinity;
 
 function startApptCountdown(apptDate) {
   var ms = (apptDate instanceof Date) ? apptDate.getTime() : Number(apptDate);
-  if (isNaN(ms) || ms <= Date.now()) return;
-  // Only replace the existing target if this date is sooner
+  if (isNaN(ms)) return;
+  if (ms <= Date.now()) { _showApptPassed(new Date(ms)); return; }
   if (ms >= _apptCountdownMs) return;
   _apptCountdownMs = ms;
   _startCountdownTick();
@@ -5959,9 +5957,32 @@ function startApptCountdown(apptDate) {
 // Allow any source (booking, dentist record) to push a potentially earlier date
 window._updateApptCountdown = function(dateOrMs) {
   var ms = (dateOrMs instanceof Date) ? dateOrMs.getTime() : Number(dateOrMs);
-  if (isNaN(ms) || ms <= Date.now()) return;
+  if (isNaN(ms)) return;
+  if (ms <= Date.now()) { _showApptPassed(new Date(ms)); return; }
   if (ms < _apptCountdownMs) { _apptCountdownMs = ms; _startCountdownTick(); }
 };
+
+// Shows a static "appointment passed" state — banner stays visible with the date
+function _showApptPassed(dateObj) {
+  var bannerEl = document.getElementById('rem-appt-banner');
+  var dateEl   = document.getElementById('rem-appt-date');
+  var urgEl    = document.getElementById('rem-appt-urgency');
+  var dEl      = document.getElementById('rem-cd-days');
+  var hEl      = document.getElementById('rem-cd-hours');
+  var mEl      = document.getElementById('rem-cd-mins');
+  var sEl      = document.getElementById('rem-cd-secs');
+  var tipEl    = document.getElementById('rem-appt-prep-tip');
+  if (bannerEl) bannerEl.style.display = 'block';
+  if (dateEl) {
+    try { dateEl.textContent = dateObj.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); } catch(_) {}
+  }
+  if (urgEl) { urgEl.textContent = 'PASSED'; urgEl.style.background = 'rgba(100,116,139,.12)'; urgEl.style.color = '#64748b'; }
+  if (dEl) dEl.textContent = '—';
+  if (hEl) hEl.textContent = '—';
+  if (mEl) mEl.textContent = '—';
+  if (sEl) sEl.textContent = '—';
+  if (tipEl) tipEl.textContent = 'This appointment date has passed. Your dentist will update your next visit soon.';
+}
 
 function _startCountdownTick() {
   if (_countdownInterval) clearInterval(_countdownInterval);
@@ -6430,7 +6451,7 @@ function renderDashboardProgress() {
   if (bestEl) bestEl.textContent = 'Best: ' + (p.bestStreak || 0) + ' days';
   if (pillEl) pillEl.textContent = (p.streak >= 3) ? '🔥 On track!' : 'Keep going!';
 
-  // Recent wins
+  // Recent wins — persist; only show placeholder if genuinely empty
   const winsEl = document.getElementById('wins-container');
   if (winsEl) {
     if (!p.wins || p.wins.length === 0) {
@@ -6447,6 +6468,20 @@ function renderDashboardProgress() {
   // Session count in stat chips (if they exist)
   const sessEl = document.getElementById('dash-sessions-count');
   if (sessEl) sessEl.textContent = p.sessions || 0;
+
+  // Latest Score Breakdown — restore from mdasHistory on every dashboard render
+  // so the card is populated even when the user hasn't just taken the quiz.
+  const lc = document.getElementById('mdas-latest-content');
+  if (lc) {
+    const hist = (typeof mdasHistory !== 'undefined' && Array.isArray(mdasHistory)) ? mdasHistory : [];
+    if (hist.length > 0) {
+      const total = hist[hist.length - 1];
+      const col = total <= 10 ? '#22c55e' : total <= 18 ? '#f59e0b' : total <= 24 ? '#f97316' : '#ef4444';
+      const lbl = total <= 10 ? 'Low Anxiety' : total <= 18 ? 'Moderate Anxiety' : total <= 24 ? 'High Anxiety' : 'Severe Anxiety';
+      lc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="font-size:36px;font-weight:800;color:${col}">${total}<span style="font-size:14px;color:var(--muted)">/25</span></div><div><div style="font-weight:700;color:${col}">${lbl}</div><div style="font-size:12px;color:var(--muted)">Last recorded score</div></div></div><div class="progress-bar-container" style="margin:0"><div class="progress-bar-fill" style="width:${Math.round(total/25*100)}%;background:${col}"></div></div>`;
+    }
+    // If hist is empty, leave the default placeholder text in place.
+  }
 }
 
 async function updateDashReminderBtn() {
@@ -6536,7 +6571,8 @@ async function loadPersonalisedReminders() {
       _reminderRetries++;
       if (_reminderRetries < 8) { setTimeout(_reminderRetryFn, 800); }
       else {
-        listEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">No reminders yet</div><div style="font-size:13px;line-height:1.6">After your dentist uploads your visit record, post-op instructions will appear here.</div></div>';
+        // Auth truly not available — show the correct sign-in prompt
+        listEl.innerHTML = '<div style="text-align:center;padding:32px 20px;color:var(--muted)"><div style="font-size:48px;margin-bottom:14px">🏥</div><div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px">Sign in to see your reminders</div><div style="font-size:13px;line-height:1.7;margin-bottom:20px">After your dentist uploads your visit record, personalised post-op instructions and appointment prep will appear here.</div><button onclick="openPortalAs('patient','login')" class="btn-primary" style="max-width:260px;margin:0 auto">Sign In →</button></div>';
       }
     };
     setTimeout(_reminderRetryFn, 600);
@@ -9093,10 +9129,23 @@ function syncAppProgressToAccount() {
   try {
     const guestProgressKey = 'serenora_progress_guest';
     const userProgressKey  = 'serenora_progress_' + currentUser.id;
-    const guestData = localStorage.getItem(guestProgressKey);
-    const userData  = localStorage.getItem(userProgressKey);
-    if (guestData && !userData) {
-      localStorage.setItem(userProgressKey, guestData);
+    const guestRaw = localStorage.getItem(guestProgressKey);
+    if (guestRaw) {
+      const guestProg = JSON.parse(guestRaw);
+      const userRaw   = localStorage.getItem(userProgressKey);
+      if (!userRaw) {
+        // No existing user data — adopt guest data wholesale
+        localStorage.setItem(userProgressKey, guestRaw);
+      } else {
+        // User already has data — merge any new guest wins in (avoids duplicates)
+        const uProg = JSON.parse(userRaw);
+        if (guestProg.wins && guestProg.wins.length > 0) {
+          const seen = new Set((uProg.wins || []).map(w => w.text + '|' + (w.date || '').slice(0,10)));
+          const fresh = guestProg.wins.filter(w => !seen.has(w.text + '|' + (w.date || '').slice(0,10)));
+          uProg.wins = [...fresh, ...(uProg.wins || [])].slice(0, 20);
+          localStorage.setItem(userProgressKey, JSON.stringify(uProg));
+        }
+      }
       localStorage.removeItem(guestProgressKey);
     }
   } catch(e) {}
@@ -11657,7 +11706,10 @@ function playSfx(type){
 // ── INIT ────────────────────────────────────────────────────────────────────────
 initAfterChecks();
 renderMDASTrend();
-renderDashboardProgress();
+// NOTE: renderDashboardProgress() is intentionally NOT called here at boot.
+// currentUser is not yet established at this point, so getProgressKey() would
+// return 'serenora_progress_guest' and wipe streak/wins from the UI.
+// It is called after login (onAfterLogin → line ~9154) and on screen transitions.
 // lang/theme bars embedded in hero — always visible
 currentQuizSet=QUIZ_BANK.slice(0,10);
 </script>
