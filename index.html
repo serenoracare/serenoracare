@@ -4731,7 +4731,7 @@ function showScreen(id){
     // lang/theme bars are embedded in the home hero — no show/hide needed
   }
   if(id==='screen-during')enterAppointmentMode();
-  if(id==='screen-reminders') loadPersonalisedReminders();
+  if(id==='screen-reminders') { loadPersonalisedReminders(); restoreNotifToggles(); }
   if(id==='screen-main') updateDashReminderBtn();
   if(id!=='screen-during' && _duringAudioOn) stopDuringAudio();
   if(id!=='screen-dentist-messages' && _msgPollInterval) {
@@ -6660,6 +6660,8 @@ async function _doLoadReminders() {
         if (remBanner2) remBanner2.style.display = 'block';
         if (remDateEl2) remDateEl2.textContent = new Date(latestRecord.next_appointment).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
         window._updateApptCountdown(new Date(latestRecord.next_appointment));
+        // Register dates so notification scheduler can use them
+        _registerApptDatesForNotifs(new Date(latestRecord.next_appointment), latestRecord.created_at ? new Date(latestRecord.created_at) : null);
       } catch(_) {}
       if (daysUntil > 0 && daysUntil <= 7) {
         html += `<div style="font-weight:700;font-size:15px;color:var(--navy);margin:14px 0 10px">🗓️ Prep for Your Visit (${daysUntil} day${daysUntil===1?'':'s'} away)</div>`;
@@ -10056,7 +10058,156 @@ function showPatientDetail(name,anxLevel,prepSessions,mdasTrend,procedure,ready)
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function updateNotifPref(){showToast('Preferences updated!');}
+// ══════════════════════════════════════════════════════════
+// NOTIFICATION PREFERENCES
+// ══════════════════════════════════════════════════════════
+
+// Keys for the four toggles (must match aria-label on each toggle)
+var NOTIF_KEYS = ['48h_prep', 'medication', 'morning_checkin', 'post_debrief'];
+
+// Map aria-label → storage key
+var NOTIF_LABEL_MAP = {
+  '48h appointment prep':  '48h_prep',
+  'Medication reminders':  'medication',
+  'Morning check-in':      'morning_checkin',
+  'Post-visit debrief':    'post_debrief'
+};
+
+function _notifStorageKey() {
+  return currentUser ? 'serenora_notif_prefs_' + currentUser.id : 'serenora_notif_prefs_guest';
+}
+
+function loadNotifPrefs() {
+  try { return JSON.parse(localStorage.getItem(_notifStorageKey())) || {}; }
+  catch(_) { return {}; }
+}
+
+function saveNotifPrefs(prefs) {
+  try { localStorage.setItem(_notifStorageKey(), JSON.stringify(prefs)); } catch(_) {}
+}
+
+// Restore toggle states from localStorage when the reminders screen opens
+function restoreNotifToggles() {
+  var prefs = loadNotifPrefs();
+  document.querySelectorAll('.notif-toggle .toggle-switch input[type="checkbox"]').forEach(function(cb) {
+    var label = cb.closest('label') && cb.closest('.notif-toggle').querySelector('.nt-label');
+    if (!label) return;
+    var key = NOTIF_LABEL_MAP[label.textContent.trim()];
+    if (!key) return;
+    // Default ON if never saved
+    cb.checked = (prefs[key] !== undefined) ? prefs[key] : true;
+  });
+}
+
+// Called by every toggle's onchange
+function updateNotifPref() {
+  var prefs = {};
+  document.querySelectorAll('.notif-toggle .toggle-switch input[type="checkbox"]').forEach(function(cb) {
+    var label = cb.closest('.notif-toggle') && cb.closest('.notif-toggle').querySelector('.nt-label');
+    if (!label) return;
+    var key = NOTIF_LABEL_MAP[label.textContent.trim()];
+    if (!key) return;
+    prefs[key] = cb.checked;
+  });
+  saveNotifPrefs(prefs);
+
+  // Request browser notification permission if any toggle is ON
+  var anyOn = Object.values(prefs).some(Boolean);
+  if (anyOn && 'Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().then(function(perm) {
+      if (perm === 'granted') {
+        showToast('Notifications enabled ✓');
+        scheduleNotifications(prefs);
+      } else {
+        showToast('Preferences saved — enable browser notifications for alerts');
+      }
+    });
+  } else {
+    showToast('Preferences saved ✓');
+    if ('Notification' in window && Notification.permission === 'granted') {
+      scheduleNotifications(prefs);
+    }
+  }
+}
+
+// Cancel all pending notification timeouts
+var _notifTimeouts = [];
+function _clearNotifTimeouts() {
+  _notifTimeouts.forEach(function(t) { clearTimeout(t); });
+  _notifTimeouts = [];
+}
+
+function _sendNotif(title, body, icon) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try { new Notification(title, { body: body, icon: icon || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🦷</text></svg>' }); }
+  catch(_) {}
+}
+
+function _scheduleAt(ms, title, body) {
+  var delay = ms - Date.now();
+  if (delay <= 0) return; // already passed
+  var t = setTimeout(function() { _sendNotif(title, body); }, delay);
+  _notifTimeouts.push(t);
+}
+
+// Main scheduling function — call whenever prefs change or appointment data loads
+function scheduleNotifications(prefs, apptDateObj, visitDateObj) {
+  _clearNotifTimeouts();
+  prefs = prefs || loadNotifPrefs();
+
+  // Try to read appointment/visit dates from already-loaded data if not passed in
+  if (!apptDateObj && window._lastApptDate) apptDateObj = window._lastApptDate;
+  if (!visitDateObj && window._lastVisitDate) visitDateObj = window._lastVisitDate;
+
+  var now = Date.now();
+
+  // ── 48h appointment prep ────────────────────────────────────────────────────
+  if (prefs['48h_prep'] !== false && apptDateObj) {
+    var apptMs = apptDateObj.getTime();
+    var prep48 = apptMs - (48 * 60 * 60 * 1000);
+    var prep24 = apptMs - (24 * 60 * 60 * 1000);
+    var prep2  = apptMs - (2  * 60 * 60 * 1000);
+    _scheduleAt(prep48, '🫧 48h Appointment Prep', 'Your appointment is in 2 days. Try the breathing exercise now to start calming your nervous system.');
+    _scheduleAt(prep24, '🪑 Tomorrow is the day!', 'Run through the Chair Simulation tonight so nothing surprises you. You\'ve got this.');
+    _scheduleAt(prep2,  '💙 Almost time!', 'Your appointment is in 2 hours. Take 3 deep breaths — you\'ve prepared well.');
+  }
+
+  // ── Morning check-in (7am each day of appointment week) ────────────────────
+  if (prefs['morning_checkin'] !== false && apptDateObj) {
+    var apptMs2 = apptDateObj.getTime();
+    for (var d = -6; d <= 0; d++) {
+      var checkInMs = apptMs2 + (d * 86400000);
+      // Set to 7am on that day
+      var checkInDate = new Date(checkInMs);
+      checkInDate.setHours(7, 0, 0, 0);
+      _scheduleAt(checkInDate.getTime(), '🌅 Morning Check-in', 'How are you feeling today? Log your mood in SerenOra to track your calm before the appointment.');
+    }
+  }
+
+  // ── Post-visit debrief (2h after appointment) ───────────────────────────────
+  if (prefs['post_debrief'] !== false && apptDateObj) {
+    var debriefMs = apptDateObj.getTime() + (2 * 60 * 60 * 1000);
+    _scheduleAt(debriefMs, '✅ How did it go?', 'Take 2 minutes to complete your post-visit debrief. Your honest rating helps track your progress over time.');
+  }
+
+  // ── Medication reminders (daily 8am for 5 days after visit) ────────────────
+  if (prefs['medication'] !== false && visitDateObj) {
+    for (var i = 1; i <= 5; i++) {
+      var medDate = new Date(visitDateObj.getTime() + (i * 86400000));
+      medDate.setHours(8, 0, 0, 0);
+      _scheduleAt(medDate.getTime(), '💊 Medication Reminder', 'Day ' + i + ' post-visit: take any prescribed antibiotics or pain relief as directed by your dentist.');
+    }
+  }
+}
+
+// Called from _doLoadReminders after appointment data is resolved
+function _registerApptDatesForNotifs(apptDate, visitDate) {
+  window._lastApptDate  = apptDate  || null;
+  window._lastVisitDate = visitDate || null;
+  if ('Notification' in window && Notification.permission === 'granted') {
+    scheduleNotifications(loadNotifPrefs(), apptDate, visitDate);
+  }
+}
 
 // (legacy stubs removed — Supabase versions at lines above supersede them)
 
