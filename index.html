@@ -19439,9 +19439,9 @@ async function icLeaveQueue() {
 }
 
 // Initialise In Clinic screen when opened from nav
-const _origShowScreen = showScreen;
+const _origShowScreenInClinic = showScreen;
 showScreen = function(id) {
-  _origShowScreen(id);
+  _origShowScreenInClinic(id);
   if (id === 'screen-in-clinic') openInClinic();
 };
 
