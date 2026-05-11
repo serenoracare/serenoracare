@@ -4177,6 +4177,7 @@ function renderTreatmentVisualiser(procKey) {
     </div>
     <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.6px">Tips for a Calmer Visit</div>
     ${tipsHtml}`;
+}
 
 (function(){
   var sel = document.getElementById('tv-proc-select');
@@ -9207,7 +9208,7 @@ async function loadDentistDashboard() {
       .select('id, full_name, role, friendly_id')
       .eq('clinic_id', clinicId);
     if (error) throw new Error(safeMsg(error, 'Failed to load patients'));
-    const dentistRoles = ['dentist', 'dentist_pending', 'dentist_rejected'];
+    const dentistRoles = ['dentist', 'dentist_pending', 'dentist_rejected', 'clinic_admin'];
     const myId2 = currentUser ? String(currentUser.id) : null;
     patients = (data || [])
       .filter(p => !dentistRoles.includes(p.role) && String(p.id) !== myId2)
@@ -19435,8 +19436,6 @@ async function icLeaveQueue() {
     showToast('Left the queue');
     icLoadQueue();
   } catch(e) { console.warn(e); }
-}
-
 }
 
 // Initialise In Clinic screen when opened from nav
