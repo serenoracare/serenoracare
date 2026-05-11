@@ -3137,14 +3137,18 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
 
     <!-- Next appointment countdown in reminders -->
     <div id="rem-appt-banner" style="display:none;background:linear-gradient(135deg,#e0f7fa,#e8f4fd);border:1.5px solid #0d9488;border-radius:16px;padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📅 Next Appointment</div>
-      <div id="rem-appt-date" style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:8px">—</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:.5px">📅 Next Appointment</div>
+        <div id="rem-appt-urgency" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(13,148,136,.2);color:#0d9488"></div>
+      </div>
+      <div id="rem-appt-date" style="font-family:var(--display);font-size:16px;font-weight:800;color:#1e293b;margin-bottom:8px">—</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
         <div style="background:#e0f2fe;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-days" style="font-size:20px;font-weight:800;color:#0d9488;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Days</div></div>
         <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-hours" style="font-size:20px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Hours</div></div>
         <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-mins" style="font-size:20px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Mins</div></div>
         <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="rem-cd-secs" style="font-size:20px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Secs</div></div>
       </div>
+      <div id="rem-appt-prep-tip" style="margin-top:10px;font-size:11px;color:#4b5563;line-height:1.5"></div>
     </div>
 
     <!-- Clinic-uploaded reminders -->
@@ -3744,21 +3748,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
 
 
 
-    <!-- Next appointment countdown -->
-    <div id="pat-appt-banner" style="display:none;background:linear-gradient(135deg,#e0f7fa,#e8f4fd);border:1.5px solid #0d9488;border-radius:16px;padding:14px 16px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:.5px">Next Appointment</div>
-        <div id="pat-appt-urgency" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(13,148,136,.2);color:#99f6e4"></div>
-      </div>
-      <div id="pat-appt-date" style="font-family:var(--display);font-size:16px;font-weight:800;color:#1e293b;margin-bottom:8px">—</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
-        <div style="background:#e0f2fe;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-days" style="font-size:22px;font-weight:800;color:#0d9488;font-family:var(--display)">—</div><div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase">Days</div></div>
-        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-hours" style="font-size:22px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Hours</div></div>
-        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-mins" style="font-size:22px;font-weight:800;color:#1e293b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Mins</div></div>
-        <div style="background:#f8fafc;border-radius:10px;padding:8px 4px;text-align:center"><div id="pat-cd-secs" style="font-size:22px;font-weight:800;color:#64748b;font-family:var(--display)">—</div><div style="font-size:9px;color:#64748b;font-weight:700;text-transform:uppercase">Secs</div></div>
-      </div>
-      <div id="pat-appt-prep-tip" style="margin-top:10px;font-size:11px;color:#4b5563;line-height:1.5"></div>
-    </div>
+
 
     <!-- Wellness Tracking Cards -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
@@ -5951,38 +5941,57 @@ async function shareStoryWithDentist() {
 
 
 // ── Appointment Countdown ─────────────────────────────────────────────────────
-let _countdownInterval = null;
+// ── Unified appointment countdown — drives only the Reminders banner ──────────
+// Always call with the soonest known appointment date.
+// _apptCountdownMs tracks the current target so callers can push an earlier date.
+var _countdownInterval = null;
+var _apptCountdownMs   = Infinity;
+
 function startApptCountdown(apptDate) {
+  var ms = (apptDate instanceof Date) ? apptDate.getTime() : Number(apptDate);
+  if (isNaN(ms) || ms <= Date.now()) return;
+  // Only replace the existing target if this date is sooner
+  if (ms >= _apptCountdownMs) return;
+  _apptCountdownMs = ms;
+  _startCountdownTick();
+}
+
+// Allow any source (booking, dentist record) to push a potentially earlier date
+window._updateApptCountdown = function(dateOrMs) {
+  var ms = (dateOrMs instanceof Date) ? dateOrMs.getTime() : Number(dateOrMs);
+  if (isNaN(ms) || ms <= Date.now()) return;
+  if (ms < _apptCountdownMs) { _apptCountdownMs = ms; _startCountdownTick(); }
+};
+
+function _startCountdownTick() {
   if (_countdownInterval) clearInterval(_countdownInterval);
   function tick() {
-    const now = new Date(), diff = apptDate - now;
-    if (diff <= 0) { clearInterval(_countdownInterval); return; }
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000)  / 60000);
-    const secs  = Math.floor((diff % 60000)    / 1000);
-    const dEl=document.getElementById('pat-cd-days');   if(dEl)dEl.textContent=days;
-    const hEl=document.getElementById('pat-cd-hours');  if(hEl)hEl.textContent=String(hours).padStart(2,'0');
-    const mEl=document.getElementById('pat-cd-mins');   if(mEl)mEl.textContent=String(mins).padStart(2,'0');
-    const sEl=document.getElementById('pat-cd-secs');   if(sEl)sEl.textContent=String(secs).padStart(2,'0');
-    const urgEl=document.getElementById('pat-appt-urgency');
+    var now  = Date.now();
+    var diff = _apptCountdownMs - now;
+    if (diff <= 0) { clearInterval(_countdownInterval); _countdownInterval = null; _apptCountdownMs = Infinity; return; }
+    var days  = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins  = Math.floor((diff % 3600000)  / 60000);
+    var secs  = Math.floor((diff % 60000)    / 1000);
+    var dEl = document.getElementById('rem-cd-days');   if (dEl) dEl.textContent = days;
+    var hEl = document.getElementById('rem-cd-hours');  if (hEl) hEl.textContent = String(hours).padStart(2,'0');
+    var mEl = document.getElementById('rem-cd-mins');   if (mEl) mEl.textContent = String(mins).padStart(2,'0');
+    var sEl = document.getElementById('rem-cd-secs');   if (sEl) sEl.textContent = String(secs).padStart(2,'0');
+    var urgEl = document.getElementById('rem-appt-urgency');
     if (urgEl) {
-      if      (days===0) { urgEl.textContent='TODAY';     urgEl.style.background='rgba(239,68,68,.2)';   urgEl.style.color='#f87171'; }
-      else if (days<=1)  { urgEl.textContent='TOMORROW';  urgEl.style.background='rgba(245,158,11,.2)';  urgEl.style.color='#fbbf24'; }
-      else if (days<=7)  { urgEl.textContent='THIS WEEK'; urgEl.style.background='rgba(13,148,136,.2)';  urgEl.style.color='#99f6e4'; }
-      else               { urgEl.textContent=days+' DAYS AWAY'; urgEl.style.background='#f1f5f9'; urgEl.style.color='#475569'; }
+      if      (days === 0) { urgEl.textContent = 'TODAY';         urgEl.style.background = 'rgba(239,68,68,.15)';  urgEl.style.color = '#dc2626'; }
+      else if (days <= 1)  { urgEl.textContent = 'TOMORROW';      urgEl.style.background = 'rgba(245,158,11,.15)'; urgEl.style.color = '#b45309'; }
+      else if (days <= 7)  { urgEl.textContent = 'THIS WEEK';     urgEl.style.background = 'rgba(13,148,136,.15)'; urgEl.style.color = '#0d9488'; }
+      else                 { urgEl.textContent = days + ' DAYS';  urgEl.style.background = '#f1f5f9';              urgEl.style.color = '#475569'; }
     }
-    const tipEl=document.getElementById('pat-appt-prep-tip');
+    var tipEl = document.getElementById('rem-appt-prep-tip');
     if (tipEl) {
-      const tips = [
-        "Today is the day. Breathe slowly.",
-        "Today is the day. Try the breathing exercise before you go.",
-        "Tomorrow is the day. Chair Simulation tonight can help.",
-        "A good time to do your MDAS check.",
-        "Try Sound Desensitization this week.",
-        "Log any fears in My Dental Story so your dentist knows."
-      ];
-      tipEl.textContent = days===0 ? tips[0] : days<=1 ? tips[1] : days<=2 ? tips[2] : days<=3 ? tips[3] : days<=7 ? tips[4] : tips[5];
+      tipEl.textContent = days === 0 ? 'Today is the day. Try the breathing exercise before you go. 🫧' :
+                          days <= 1  ? 'Tomorrow is the day. Run the Chair Simulation tonight to feel prepared. 🪑' :
+                          days <= 2  ? 'A good time to do your MDAS anxiety check. 📊' :
+                          days <= 3  ? 'Try Sound Desensitization today — it only takes 5 minutes. 🎵' :
+                          days <= 7  ? 'Log any fears in My Dental Story so your dentist can help. 💭' :
+                                       'Keep logging your check-ins. Consistency builds calm. 🌿';
     }
   }
   tick();
@@ -6609,6 +6618,14 @@ async function _doLoadReminders() {
     if (latestRecord.next_appointment) {
       const apptMs = new Date(latestRecord.next_appointment).getTime();
       const daysUntil = Math.ceil((apptMs - Date.now()) / (1000 * 60 * 60 * 24));
+      // Push to unified countdown — picks soonest between this and any booked slot
+      try {
+        var remBanner2 = document.getElementById('rem-appt-banner');
+        var remDateEl2 = document.getElementById('rem-appt-date');
+        if (remBanner2) remBanner2.style.display = 'block';
+        if (remDateEl2) remDateEl2.textContent = new Date(latestRecord.next_appointment).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+        window._updateApptCountdown(new Date(latestRecord.next_appointment));
+      } catch(_) {}
       if (daysUntil > 0 && daysUntil <= 7) {
         html += `<div style="font-weight:700;font-size:15px;color:var(--navy);margin:14px 0 10px">🗓️ Prep for Your Visit (${daysUntil} day${daysUntil===1?'':'s'} away)</div>`;
         [
@@ -8314,8 +8331,14 @@ async function bookSlot(slotId,date,time) {
     await activeDb.from('appointment_slots').update({status:'booked',booked_by_patient_id:String(currentUser.id),booked_at:new Date().toISOString()}).eq('id',slotId);
     showToast('Appointment booked for '+date+' at '+time);
     loadPatBookingSlots();
-    var banner=document.getElementById('pat-appt-banner'),dateEl=document.getElementById('pat-appt-date');
-    if(banner&&dateEl){banner.style.display='block';var d=new Date(date+'T'+time);dateEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});if(typeof startApptCountdown==='function')startApptCountdown(d);}
+    try {
+      var d = new Date(date+'T'+time);
+      var remBanner = document.getElementById('rem-appt-banner');
+      var remDateEl = document.getElementById('rem-appt-date');
+      if (remBanner) remBanner.style.display = 'block';
+      if (remDateEl) remDateEl.textContent = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      window._updateApptCountdown(d);
+    } catch(_) {}
   }catch(e){showToast('Booking failed: '+(e.message||''));}
 }
 
@@ -8844,25 +8867,9 @@ async function loadPatTreatmentPlan() {
 }
 
 
-// ── Reminders screen countdown (separate from patient account countdown) ─────
-var _remCountdownInterval = null;
-function startRemCountdown(apptDate) {
-  if (_remCountdownInterval) clearInterval(_remCountdownInterval);
-  function tick() {
-    var now=new Date(), diff=apptDate-now;
-    if(diff<=0){clearInterval(_remCountdownInterval);return;}
-    var days=Math.floor(diff/86400000);
-    var hours=Math.floor((diff%86400000)/3600000);
-    var mins=Math.floor((diff%3600000)/60000);
-    var secs=Math.floor((diff%60000)/1000);
-    var d=document.getElementById('rem-cd-days');   if(d)d.textContent=days;
-    var h=document.getElementById('rem-cd-hours');  if(h)h.textContent=String(hours).padStart(2,'0');
-    var m=document.getElementById('rem-cd-mins');   if(m)m.textContent=String(mins).padStart(2,'0');
-    var s=document.getElementById('rem-cd-secs');   if(s)s.textContent=String(secs).padStart(2,'0');
-  }
-  tick();
-  _remCountdownInterval = setInterval(tick, 1000);
-}
+// startRemCountdown is now an alias — the unified startApptCountdown drives everything
+var _remCountdownInterval = null; // kept for safety; unified fn uses _countdownInterval
+function startRemCountdown(apptDate) { startApptCountdown(apptDate); }
 
 
 // ── Oral Cancer Screening Prompt ─────────────────────────────────────────────
@@ -9642,20 +9649,15 @@ async function populatePatientRecordsScreen() {
 
   const upcoming = records.filter(r => r.next_appointment).map(r => r.next_appointment).sort()[0];
   if (upcoming) {
-    const banner = document.getElementById('pat-appt-banner');
-    if (banner) banner.style.display = 'block';
     try {
       const d = new Date(upcoming);
-      var dEl=document.getElementById('pat-appt-date');
-      if(dEl)dEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-      if(typeof startApptCountdown==='function')startApptCountdown(d);
-      // Also update reminders screen countdown
-      var remBanner=document.getElementById('rem-appt-banner');
-      var remDateEl=document.getElementById('rem-appt-date');
-      if(remBanner){remBanner.style.display='block';}
-      if(remDateEl){remDateEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
-      if(typeof startRemCountdown==='function')startRemCountdown(d);
-    } catch(_) { var dEl2=document.getElementById('pat-appt-date'); if(dEl2)dEl2.textContent=upcoming; }
+      // Show and populate the Reminders screen banner (single source of truth)
+      var remBanner  = document.getElementById('rem-appt-banner');
+      var remDateEl  = document.getElementById('rem-appt-date');
+      if (remBanner)  remBanner.style.display = 'block';
+      if (remDateEl)  remDateEl.textContent = d.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+      window._updateApptCountdown(d);
+    } catch(_) {}
   }
 
   listEl.innerHTML = records.map(r => {
