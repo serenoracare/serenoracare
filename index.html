@@ -3742,25 +3742,7 @@ body.night-mode .tv-proc-select{background:#1e2d40!important;color:#e2e8f0!impor
       <button class="btn-primary" id="pat-join-btn" onclick="patientJoinClinic()">Join Clinic →</button>
     </div>
 
-    <!-- Queue card -->
-    <div id="pat-queue-card" style="display:none;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.08));border:1px solid rgba(139,92,246,.25);border-radius:16px;padding:14px 16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div><div style="font-size:12px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.5px">Today Queue</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px" id="pat-queue-clinic-name"></div></div>
-        <div id="pat-queue-status-badge" style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(139,92,246,.2);color:#a78bfa">Not in queue</div>
-      </div>
-      <div id="pat-queue-position-block" style="display:none;margin-bottom:10px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;text-align:center"><div id="pat-queue-pos" style="font-size:28px;font-weight:800;color:#a78bfa;font-family:var(--display)">-</div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase">Position</div></div>
-          <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;text-align:center"><div id="pat-queue-wait" style="font-size:28px;font-weight:800;color:#e2e8f0;font-family:var(--display)">-</div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase">Est. Wait (min)</div></div>
-        </div>
-        <div id="pat-queue-msg" style="font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;line-height:1.5;text-align:center"></div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button id="pat-queue-join-btn" onclick="patJoinQueue()" style="flex:1;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:10px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer">Join Queue</button>
-        <button id="pat-queue-leave-btn" onclick="patLeaveQueue()" style="display:none;flex:1;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:10px;border-radius:10px;font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer">Leave Queue</button>
-        <button onclick="loadPatQueue()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:13px;cursor:pointer">&#8635;</button>
-      </div>
-    </div>
+
 
     <!-- Next appointment countdown -->
     <div id="pat-appt-banner" style="display:none;background:linear-gradient(135deg,#e0f7fa,#e8f4fd);border:1.5px solid #0d9488;border-radius:16px;padding:14px 16px;margin-bottom:16px">
@@ -19346,6 +19328,8 @@ document.addEventListener('keydown', function(e) {
 
 
 // ── IN CLINIC SCREEN ─────────────────────────────────────────────────────────
+var _icQueueId = null;
+var _icQueueInterval = null;
 function openInClinic() {
   const clinicName = (currentProfile && currentProfile.clinics && currentProfile.clinics.name) || '';
   if (clinicName) {
@@ -19360,79 +19344,107 @@ function openInClinic() {
 async function icLoadQueue() {
   const activeDb = db || window.__supaDb;
   const activeUser = currentUser || window.currentUser;
-  if (!activeDb || !activeUser) return;
+  if (!activeDb || !activeUser || !currentProfile) return;
+  const clinicId = currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  const posEl    = document.getElementById('ic-queue-pos');
+  const waitEl   = document.getElementById('ic-queue-wait');
+  const msgEl    = document.getElementById('ic-queue-msg');
+  const badgeEl  = document.getElementById('ic-queue-status-badge');
+  const joinBtn  = document.getElementById('ic-queue-join-btn');
+  const leaveBtn = document.getElementById('ic-queue-leave-btn');
+  const posBlock = document.getElementById('ic-queue-position-block');
+  const idleBlock= document.getElementById('ic-queue-idle');
+  if (!clinicId) {
+    if (idleBlock) idleBlock.style.display = 'block';
+    if (posBlock)  posBlock.style.display  = 'none';
+    if (joinBtn)   joinBtn.style.display   = 'none';
+    if (leaveBtn)  leaveBtn.style.display  = 'none';
+    if (badgeEl)   { badgeEl.textContent = 'No clinic linked'; badgeEl.className = 'cq-status-badge'; }
+    return;
+  }
   try {
-    const { data: prof } = await activeDb.from('profiles').select('clinic_id').eq('id', activeUser.id).maybeSingle();
-    if (!prof || !prof.clinic_id) return;
     const today = new Date().toISOString().slice(0, 10);
-    const { data: qData } = await activeDb.from('queue').select('*')
-      .eq('clinic_id', prof.clinic_id)
-      .eq('date', today)
-      .order('position', { ascending: true });
-    if (!qData) return;
-    const myEntry = qData.find(q => q.patient_id === activeUser.id);
-    const totalAhead = myEntry ? qData.filter(q => q.position < myEntry.position && q.status !== 'done').length : 0;
-    const estWait = totalAhead * 15;
-    const posEl = document.getElementById('ic-queue-pos');
-    const waitEl = document.getElementById('ic-queue-wait');
-    const msgEl = document.getElementById('ic-queue-msg');
-    const badgeEl = document.getElementById('ic-queue-status-badge');
-    const joinBtn = document.getElementById('ic-queue-join-btn');
-    const leaveBtn = document.getElementById('ic-queue-leave-btn');
-    const posBlock = document.getElementById('ic-queue-position-block');
-    const idleBlock = document.getElementById('ic-queue-idle');
-    if (myEntry && myEntry.status !== 'done') {
-      posBlock.style.display = 'block';
-      idleBlock.style.display = 'none';
-      joinBtn.style.display = 'none';
-      leaveBtn.style.display = 'block';
-      if (posEl) posEl.textContent = myEntry.position || '–';
-      if (waitEl) waitEl.textContent = estWait > 0 ? estWait : '<5';
-      const msgs = totalAhead === 0 ? "You're next! Please make your way to the chair 🪑" :
-                   totalAhead === 1 ? "One patient ahead of you — get ready!" :
-                   `${totalAhead} patients ahead of you. Stay relaxed, we'll call you soon.`;
-      if (msgEl) msgEl.textContent = msgs;
-      if (badgeEl) { badgeEl.textContent = myEntry.status === 'called' ? '📣 Called!' : '✅ In Queue'; badgeEl.className = myEntry.status === 'called' ? 'cq-status-badge called' : 'cq-status-badge active'; }
+    const res = await activeDb.from('clinic_queue').select('*')
+      .eq('patient_id', String(activeUser.id))
+      .eq('clinic_id', clinicId)
+      .gte('joined_at', today + 'T00:00:00')
+      .in('status', ['waiting', 'in_chair'])
+      .maybeSingle();
+    const entry = res.data;
+    if (entry) {
+      _icQueueId = entry.id;
+      if (entry.status === 'in_chair') {
+        if (badgeEl)  { badgeEl.textContent = '🪑 In Chair!'; badgeEl.className = 'cq-status-badge active'; }
+        if (posBlock)  posBlock.style.display = 'block';
+        if (idleBlock) idleBlock.style.display = 'none';
+        if (posEl)    posEl.textContent = 'Now';
+        if (waitEl)   waitEl.textContent = '0';
+        if (msgEl)    msgEl.textContent = 'The dentist is ready for you. You\'ve got this! 💪';
+        if (joinBtn)  joinBtn.style.display  = 'none';
+        if (leaveBtn) leaveBtn.style.display = 'none';
+      } else {
+        const aheadRes = await activeDb.from('clinic_queue').select('id')
+          .eq('clinic_id', clinicId)
+          .eq('status', 'waiting')
+          .lt('joined_at', entry.joined_at)
+          .gte('joined_at', today + 'T00:00:00');
+        const pos  = (aheadRes.data ? aheadRes.data.length : 0) + 1;
+        const wait = pos * 15;
+        if (badgeEl)  { badgeEl.textContent = pos === 1 ? '📣 Next!' : '#' + pos + ' in queue'; badgeEl.className = 'cq-status-badge active'; }
+        if (posBlock)  posBlock.style.display = 'block';
+        if (idleBlock) idleBlock.style.display = 'none';
+        if (posEl)    posEl.textContent = pos;
+        if (waitEl)   waitEl.textContent = wait;
+        if (msgEl)    msgEl.textContent = pos === 1 ? 'Almost your turn! Please make your way to the chair 🪑' :
+                                          pos === 2 ? 'One patient ahead of you — get ready!' :
+                                          'About ' + wait + ' minutes. Try the breathing exercise while you wait.';
+        if (joinBtn)  joinBtn.style.display  = 'none';
+        if (leaveBtn) leaveBtn.style.display = 'block';
+      }
     } else {
-      posBlock.style.display = 'none';
-      idleBlock.style.display = 'block';
-      joinBtn.style.display = 'block';
-      leaveBtn.style.display = 'none';
-      if (badgeEl) { badgeEl.textContent = 'Not in queue'; badgeEl.className = 'cq-status-badge'; }
+      _icQueueId = null;
+      if (posBlock)  posBlock.style.display  = 'none';
+      if (idleBlock) idleBlock.style.display = 'block';
+      if (joinBtn)   joinBtn.style.display   = 'block';
+      if (leaveBtn)  leaveBtn.style.display  = 'none';
+      if (badgeEl)   { badgeEl.textContent = 'Not in queue'; badgeEl.className = 'cq-status-badge'; }
     }
   } catch(e) { console.warn('[SerenOra] icLoadQueue:', e && e.message); }
 }
 
 async function icJoinQueue() {
-  const activeDb = db || window.__supaDb;
+  const activeDb  = db || window.__supaDb;
   const activeUser = currentUser || window.currentUser;
-  if (!activeDb || !activeUser) { showToast('Please sign in first'); return; }
+  if (!activeDb || !activeUser || !currentProfile) { showToast('Please sign in first'); return; }
+  const clinicId = currentProfile.clinic_id ? String(currentProfile.clinic_id) : null;
+  if (!clinicId) { showToast('No clinic linked — please join a clinic first'); return; }
   const joinBtn = document.getElementById('ic-queue-join-btn');
   if (joinBtn) { joinBtn.textContent = 'Joining…'; joinBtn.disabled = true; }
   try {
-    const { data: prof } = await activeDb.from('profiles').select('clinic_id,full_name').eq('id', activeUser.id).maybeSingle();
-    if (!prof || !prof.clinic_id) { showToast('No clinic linked — please join a clinic first'); if (joinBtn) { joinBtn.textContent = 'Join Queue'; joinBtn.disabled = false; } return; }
-    const today = new Date().toISOString().slice(0, 10);
-    const { data: existing } = await activeDb.from('queue').select('id').eq('clinic_id', prof.clinic_id).eq('patient_id', activeUser.id).eq('date', today).maybeSingle();
-    if (existing) { showToast('You\'re already in the queue!'); icLoadQueue(); if (joinBtn) { joinBtn.textContent = 'Join Queue'; joinBtn.disabled = false; } return; }
-    const { data: allQ } = await activeDb.from('queue').select('position').eq('clinic_id', prof.clinic_id).eq('date', today).order('position', { ascending: false }).limit(1);
-    const nextPos = allQ && allQ.length > 0 ? (allQ[0].position + 1) : 1;
-    await activeDb.from('queue').insert({ clinic_id: prof.clinic_id, patient_id: activeUser.id, patient_name: prof.full_name || 'Patient', date: today, position: nextPos, status: 'waiting' });
+    const res = await activeDb.from('clinic_queue').insert({
+      clinic_id:  clinicId,
+      patient_id: String(activeUser.id),
+      patient_name: currentProfile.full_name || 'Patient',
+      joined_at:  new Date().toISOString(),
+      status:     'waiting',
+      dentist_id: currentProfile.assigned_dentist_id ? String(currentProfile.assigned_dentist_id) : null
+    }).select().maybeSingle();
+    if (res.data) _icQueueId = res.data.id;
     showToast('Joined the queue ✓');
     icLoadQueue();
-  } catch(e) { showToast('Could not join queue'); console.warn(e); }
+    if (!_icQueueInterval) _icQueueInterval = setInterval(icLoadQueue, 30000);
+  } catch(e) { showToast('Could not join queue: ' + (e.message || '')); }
   if (joinBtn) { joinBtn.textContent = 'Join Queue'; joinBtn.disabled = false; }
 }
 
 async function icLeaveQueue() {
+  if (!_icQueueId) return;
   const activeDb = db || window.__supaDb;
-  const activeUser = currentUser || window.currentUser;
-  if (!activeDb || !activeUser) return;
+  if (!activeDb) return;
   try {
-    const { data: prof } = await activeDb.from('profiles').select('clinic_id').eq('id', activeUser.id).maybeSingle();
-    if (!prof || !prof.clinic_id) return;
-    const today = new Date().toISOString().slice(0, 10);
-    await activeDb.from('queue').delete().eq('clinic_id', prof.clinic_id).eq('patient_id', activeUser.id).eq('date', today);
+    await activeDb.from('clinic_queue').update({ status: 'left' }).eq('id', _icQueueId);
+    _icQueueId = null;
+    if (_icQueueInterval) { clearInterval(_icQueueInterval); _icQueueInterval = null; }
     showToast('Left the queue');
     icLoadQueue();
   } catch(e) { console.warn(e); }
