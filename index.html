@@ -1,2 +1,1069 @@
-<h1>Hello World!</h1>
-<p>Testing Vercel and GitHub connection.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>SerenOra Care — Calmer clinics, clearer patients</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&display=swap" rel="stylesheet">
+
+<style>
+/* ─── TOKENS ────────────────────────────────────── */
+:root {
+  /* backgrounds */
+  --page:      #FCFEFF;
+  --surface:   #FFFFFF;
+  --blue-tint: #EAF4FC;
+  --blue-mid:  #D4EAFA;
+
+  /* navy (text / borders / dark surfaces) */
+  --navy:      #16324A;
+  --navy-mid:  #1F4B6E;
+  --navy-soft: #2E6A97;
+  --rule:      rgba(22,50,74,0.10);
+  --muted:     rgba(22,50,74,0.55);
+
+  /* orange accent */
+  --orange:    #F2862B;
+  --orange-d:  #D96A12;
+
+  /* type */
+  --display: 'DM Serif Display', serif;
+  --body:    'Space Grotesk', sans-serif;
+  --mono:    'Space Mono', monospace;
+}
+
+/* ─── RESET ──────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; background:var(--page); color-scheme:light; }
+body {
+  font-family: var(--body);
+  background: var(--page);
+  color: var(--navy);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color:inherit; text-decoration:none; }
+img, svg { display:block; max-width:100%; }
+:focus-visible { outline:2px solid var(--orange); outline-offset:3px; border-radius:2px; }
+.wrap { max-width:1160px; margin:0 auto; padding:0 40px; }
+
+/* ─── TICKER ─────────────────────────────────────── */
+.ticker {
+  background: var(--navy);
+  overflow:hidden; white-space:nowrap; padding:10px 0;
+}
+.ticker-track {
+  display:inline-flex;
+  animation: ticker-scroll 28s linear infinite;
+}
+.ticker-track span {
+  font-family:var(--mono); font-size:0.73rem;
+  color:var(--orange); font-weight:700; letter-spacing:0.05em;
+  padding:0 28px;
+}
+.ticker-track span::after { content:'·'; padding-left:28px; color:rgba(255,255,255,0.3); }
+@keyframes ticker-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── NAV ────────────────────────────────────────── */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(252,254,255,0.96);
+  border-bottom:1px solid var(--rule);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.nav-inner {
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1160px; margin:0 auto; padding:17px 40px;
+}
+.logo {
+  display:flex; align-items:center; gap:10px;
+  color:var(--navy);
+}
+.brand-text {
+  font-family:'Fraunces', serif;
+  font-weight:600; font-size:1.18rem;
+  letter-spacing:-0.01em;
+}
+.brand-seren { color:var(--navy); }
+.brand-ora   { color:var(--orange); font-style:italic; }
+.brand-care  { color:var(--navy); margin-left:0.3em; }
+
+.nav-links { display:flex; align-items:center; gap:36px; }
+.nav-links a {
+  font-size:0.78rem; font-weight:600; letter-spacing:0.07em;
+  text-transform:uppercase; color:var(--muted);
+  transition:color 0.2s;
+}
+.nav-links a:hover { color:var(--navy); }
+.nav-cta {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--body); font-weight:700; font-size:0.78rem;
+  letter-spacing:0.07em; text-transform:uppercase;
+  padding:10px 22px; border-radius:2px;
+  border:1.5px solid var(--navy); color:var(--navy);
+  transition:background 0.2s, color 0.2s;
+}
+.nav-cta:hover { background:var(--navy); color:var(--page); }
+
+/* ─── HERO ───────────────────────────────────────── */
+.hero {
+  position:relative; min-height:90vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:80px 0 60px;
+  background: linear-gradient(175deg, var(--blue-tint) 0%, var(--page) 65%);
+  overflow:hidden;
+}
+/* binary rain — navy tinted, very faint */
+.binary-bg {
+  position:absolute; inset:0; pointer-events:none; z-index:0;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(38px,1fr));
+  overflow:hidden; opacity:0.045;
+}
+.binary-col {
+  display:flex; flex-direction:column;
+  font-family:var(--mono); font-size:0.68rem;
+  color:var(--navy); line-height:1.9;
+  animation:fall linear infinite;
+}
+.binary-col:nth-child(odd) { color:var(--orange); animation-duration:18s; }
+.binary-col:nth-child(3n) { animation-duration:24s; }
+.binary-col:nth-child(5n) { animation-duration:14s; }
+@keyframes fall { from{transform:translateY(-40%)} to{transform:translateY(10%)} }
+
+.hero-grid {
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:1fr 400px; gap:60px; align-items:center;
+}
+.hero-kicker {
+  font-family:var(--mono); font-size:0.7rem; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:26px;
+  display:flex; align-items:center; gap:12px;
+}
+.hero-kicker::before { content:''; flex:0 0 28px; height:1px; background:var(--orange); }
+.hero-h1 {
+  font-family:var(--display);
+  font-size:clamp(3rem,7vw,5.8rem);
+  line-height:1.0; letter-spacing:-0.02em;
+  color:var(--navy); margin-bottom:28px;
+}
+.hero-h1 em { font-style:italic; color:var(--orange); }
+.hero-h1 .dim { color:var(--muted); font-size:0.74em; display:block; }
+.hero-sub {
+  max-width:500px;
+  font-size:1.04rem; line-height:1.72; color:var(--muted);
+  margin-bottom:40px;
+}
+.hero-actions { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.btn-fill {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--body); font-weight:700; font-size:0.85rem;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:14px 30px; border-radius:2px;
+  background:var(--orange); color:var(--surface);
+  border:1.5px solid var(--orange);
+  transition:background 0.2s, transform 0.18s;
+}
+.btn-fill:hover { background:var(--orange-d); border-color:var(--orange-d); transform:translateY(-2px); }
+.btn-outline {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--body); font-weight:600; font-size:0.85rem;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:14px 30px; border-radius:2px;
+  border:1.5px solid var(--rule); color:var(--muted);
+  transition:border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color:var(--navy); color:var(--navy); }
+
+/* ─── CHAT CARD ──────────────────────────────────── */
+.chat-float {
+  position:relative; z-index:2;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px; overflow:hidden;
+  box-shadow:0 28px 72px -20px rgba(22,50,74,0.22);
+}
+.chat-bar {
+  display:flex; align-items:center; gap:10px;
+  padding:13px 16px; border-bottom:1px solid var(--rule);
+  background:var(--blue-tint);
+}
+.chat-dots { display:flex; gap:6px; }
+.chat-dots span { width:10px; height:10px; border-radius:50%; background:var(--rule); }
+.chat-dots span:nth-child(1){background:#FF5F57}
+.chat-dots span:nth-child(2){background:#FEBC2E}
+.chat-dots span:nth-child(3){background:#28C840}
+.chat-title {
+  flex:1; text-align:center;
+  font-family:var(--mono); font-size:0.7rem; color:var(--muted); letter-spacing:0.04em;
+}
+.chat-body { padding:18px 16px; display:flex; flex-direction:column; gap:11px; background:var(--surface); }
+.msg { max-width:84%; padding:11px 14px; font-size:0.85rem; line-height:1.5; border-radius:3px; }
+.msg.in { background:var(--blue-tint); border:1px solid var(--rule); align-self:flex-start; color:var(--navy); }
+.msg.out { background:var(--navy); color:var(--surface); align-self:flex-end; font-weight:500; }
+.msg-meta { display:block; margin-top:5px; font-size:0.64rem; opacity:0.5; font-family:var(--mono); }
+.chips { display:flex; gap:8px; flex-wrap:wrap; }
+.chip {
+  font-size:0.73rem; font-weight:600; letter-spacing:0.04em;
+  padding:6px 13px; border-radius:2px;
+  border:1px solid var(--rule); color:var(--muted); background:var(--surface);
+}
+.chip.active { border-color:var(--orange); color:var(--orange); background:rgba(242,134,43,0.06); }
+.stars { color:var(--orange); font-size:1.05rem; letter-spacing:2px; }
+.chat-foot {
+  padding:11px 16px; border-top:1px solid var(--rule);
+  font-family:var(--mono); font-size:0.66rem; color:var(--muted);
+  text-align:center; background:var(--blue-tint); letter-spacing:0.03em;
+}
+
+/* ─── MARQUEE DIVIDER ────────────────────────────── */
+.marquee-div {
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  overflow:hidden; white-space:nowrap; padding:16px 0;
+  background:var(--surface);
+}
+.marquee-track {
+  display:inline-flex;
+  animation:marquee 32s linear infinite;
+}
+.marquee-track span {
+  font-family:var(--display); font-style:italic;
+  font-size:1.4rem; color:var(--muted); opacity:0.45; padding:0 28px;
+}
+.marquee-track span.accent { color:var(--orange); opacity:1; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── SHARED SECTION LABELS ──────────────────────── */
+.section-label {
+  display:flex; align-items:center; gap:12px;
+  font-family:var(--mono); font-size:0.68rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:18px;
+}
+.section-label::after { content:''; flex:0 0 36px; height:1px; background:var(--orange); }
+h2.big {
+  font-family:var(--display);
+  font-size:clamp(2rem,4.2vw,3.2rem);
+  line-height:1.08; letter-spacing:-0.015em;
+  color:var(--navy); margin-bottom:14px;
+}
+h2.big em { font-style:italic; color:var(--orange); }
+.sub-p { font-size:1.02rem; color:var(--muted); line-height:1.7; max-width:560px; margin-bottom:50px; }
+
+/* ─── PROBLEM ────────────────────────────────────── */
+.problem { padding:96px 0; background:var(--surface); }
+.prob-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:4px; overflow:hidden;
+}
+.prob-card { padding:36px 32px; background:var(--surface); transition:background 0.2s; }
+.prob-card:hover { background:var(--blue-tint); }
+.prob-num {
+  font-family:var(--mono); font-size:0.66rem; font-weight:700;
+  letter-spacing:0.1em; color:var(--orange); margin-bottom:22px;
+}
+.prob-icon {
+  width:42px; height:42px; margin-bottom:20px;
+  border:1px solid var(--rule); border-radius:3px;
+  background:var(--blue-tint);
+  display:flex; align-items:center; justify-content:center;
+}
+.prob-card h3 { font-family:var(--display); font-size:1.3rem; line-height:1.2; margin-bottom:12px; color:var(--navy); }
+.prob-card p { font-size:0.93rem; color:var(--muted); line-height:1.62; }
+
+/* ─── STATS BAND ─────────────────────────────────── */
+.stats-band { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); background:var(--navy); padding:64px 0; }
+.stats-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;
+}
+.stat-cell { background:var(--navy); padding:36px 28px; text-align:center; transition:background 0.2s; }
+.stat-cell:hover { background:var(--navy-mid); }
+.stat-num { font-family:var(--display); font-size:3rem; line-height:1; color:var(--orange); margin-bottom:10px; }
+.stat-label { font-size:0.82rem; color:rgba(234,244,252,0.6); line-height:1.5; }
+
+/* ─── HOW ────────────────────────────────────────── */
+.how { padding:104px 0; background:var(--blue-tint); }
+.how-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+.how-steps { display:flex; flex-direction:column; }
+.how-step {
+  display:grid; grid-template-columns:56px 1fr; gap:0;
+  border-top:1px solid var(--rule); padding:28px 0; cursor:default;
+}
+.how-step:last-child { border-bottom:1px solid var(--rule); }
+.how-step-num {
+  font-family:var(--mono); font-size:0.68rem; font-weight:700;
+  color:var(--orange); letter-spacing:0.08em; padding-top:3px;
+}
+.how-step-body h3 { font-family:var(--display); font-size:1.18rem; color:var(--navy); margin-bottom:8px; line-height:1.25; }
+.how-step-body p { font-size:0.91rem; color:var(--muted); line-height:1.65; }
+.how-visual {
+  position:sticky; top:96px;
+  background:var(--surface); border:1px solid var(--rule);
+  border-radius:4px; overflow:hidden;
+  box-shadow:0 12px 40px -16px rgba(22,50,74,0.14);
+}
+.how-visual-head {
+  padding:13px 18px; border-bottom:1px solid var(--rule);
+  font-family:var(--mono); font-size:0.67rem; color:var(--muted);
+  background:var(--blue-tint); display:flex; align-items:center; justify-content:space-between;
+}
+.live-dot { color:var(--orange); font-weight:700; letter-spacing:0.06em; }
+.how-visual-body { padding:22px 18px; }
+.sched { display:flex; flex-direction:column; gap:9px; }
+.sched-row {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-radius:3px;
+  background:var(--blue-tint); border:1px solid var(--rule);
+}
+.sched-row.open { background:var(--surface); border-style:dashed; }
+.sched-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; background:var(--navy-soft); }
+.sched-dot.free { background:var(--orange); }
+.sched-name { font-size:0.83rem; color:var(--navy); flex:1; }
+.sched-name.dim { color:var(--muted); }
+.sched-time { font-family:var(--mono); font-size:0.7rem; color:var(--muted); }
+.sched-badge {
+  font-family:var(--mono); font-size:0.6rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:3px 8px; border-radius:2px;
+  background:var(--orange); color:var(--surface);
+}
+
+/* ─── PILLARS ────────────────────────────────────── */
+.pillars { padding:0 0 104px; background:var(--surface); }
+.pillar-group {
+  display:flex; flex-direction:column; gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:4px; overflow:hidden;
+}
+.pillar-item { display:grid; grid-template-columns:1fr 1fr; background:var(--surface); }
+.pillar-copy { padding:52px 48px; border-right:1px solid var(--rule); }
+.pillar-tag {
+  font-family:var(--mono); font-size:0.66rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--orange);
+  margin-bottom:16px; display:block;
+}
+.pillar-copy h3 { font-family:var(--display); font-size:clamp(1.4rem,2.2vw,1.85rem); line-height:1.15; margin-bottom:14px; color:var(--navy); }
+.pillar-copy h3 em { font-style:italic; color:var(--orange); }
+.pillar-copy p { font-size:0.94rem; color:var(--muted); line-height:1.72; margin-bottom:24px; }
+.pillar-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.pillar-list li { display:flex; align-items:flex-start; gap:10px; font-size:0.9rem; color:var(--navy); }
+.pillar-list li::before { content:'→'; color:var(--orange); flex-shrink:0; font-family:var(--mono); font-size:0.8rem; margin-top:2px; }
+.pillar-vis {
+  padding:44px 40px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--blue-tint);
+  min-height:280px;
+}
+
+/* viz: intake card */
+.intake { display:flex; flex-direction:column; gap:12px; width:100%; max-width:300px; }
+.intake-q { background:var(--surface); border:1px solid var(--rule); border-radius:3px; padding:16px 18px; }
+.intake-label { font-family:var(--mono); font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+.intake-text { font-size:0.9rem; color:var(--navy); line-height:1.45; }
+.intake-chips { display:flex; gap:8px; margin-top:11px; flex-wrap:wrap; }
+.i-chip { font-size:0.74rem; font-weight:600; padding:6px 13px; border-radius:2px; border:1px solid var(--rule); color:var(--muted); background:var(--surface); }
+.i-chip.sel { border-color:var(--orange); color:var(--orange); background:rgba(242,134,43,0.06); }
+.intake-flag {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(242,134,43,0.1); border:1px solid rgba(242,134,43,0.28);
+  border-radius:3px; padding:12px 16px;
+  font-size:0.8rem; color:var(--orange-d); font-family:var(--mono); letter-spacing:0.02em;
+}
+
+/* viz: review card */
+.review-card { background:var(--surface); border:1px solid var(--rule); border-radius:3px; padding:20px; width:100%; max-width:300px; }
+.r-stars { color:var(--orange); font-size:0.9rem; letter-spacing:2px; margin-bottom:10px; }
+.r-text { font-size:0.86rem; color:var(--muted); line-height:1.55; margin-bottom:14px; }
+.r-reply { background:var(--blue-tint); border:1px solid var(--rule); border-radius:3px; padding:12px 14px; }
+.r-reply-tag { font-family:var(--mono); font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--navy-soft); margin-bottom:6px; }
+.r-reply p { font-size:0.82rem; color:var(--navy); }
+
+/* ─── FEATURE GRID ───────────────────────────────── */
+.features { padding:104px 0; background:var(--blue-tint); }
+.feat-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:4px; overflow:hidden;
+}
+.feat-card { padding:30px 26px; background:var(--surface); transition:background 0.2s; }
+.feat-card:hover { background:var(--blue-tint); }
+.feat-icon {
+  width:38px; height:38px; margin-bottom:18px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--rule); border-radius:3px; background:var(--blue-tint);
+}
+.feat-card h4 { font-family:var(--display); font-size:1.05rem; color:var(--navy); margin-bottom:8px; }
+.feat-card p { font-size:0.84rem; color:var(--muted); line-height:1.58; }
+
+/* ─── QUOTE ──────────────────────────────────────── */
+.quote-section { padding:88px 0; background:var(--navy); text-align:center; }
+.quote-mark { font-family:var(--display); font-size:5rem; color:var(--orange); opacity:0.3; line-height:0.7; margin-bottom:22px; }
+blockquote { font-family:var(--display); font-style:italic; font-size:clamp(1.3rem,2.6vw,2rem); color:#EDF4FA; max-width:680px; margin:0 auto 22px; line-height:1.45; }
+.quote-attr { font-family:var(--mono); font-size:0.74rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--orange); }
+
+/* ─── PILOT CTA ──────────────────────────────────── */
+.pilot {
+  margin:0 40px 96px;
+  border:1px solid var(--rule); border-radius:4px;
+  padding:80px 64px;
+  background:var(--surface);
+  position:relative; overflow:hidden;
+}
+.pilot::before {
+  content:''; position:absolute; top:-80px; right:-80px;
+  width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle, rgba(242,134,43,0.09) 0%, transparent 70%);
+  pointer-events:none;
+}
+.pilot-inner { max-width:560px; position:relative; z-index:2; }
+.pilot-tag {
+  font-family:var(--mono); font-size:0.68rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:18px;
+  display:flex; align-items:center; gap:12px;
+}
+.pilot-tag::before { content:''; width:22px; height:1px; background:var(--orange); }
+.pilot h2 { font-family:var(--display); font-size:clamp(1.8rem,3.2vw,2.7rem); line-height:1.1; color:var(--navy); margin-bottom:16px; }
+.pilot h2 em { font-style:italic; color:var(--orange); }
+.pilot p.lead { font-size:1rem; color:var(--muted); line-height:1.72; margin-bottom:34px; }
+.pilot-form { display:flex; gap:10px; flex-wrap:wrap; max-width:480px; }
+.pilot-form input {
+  flex:1; min-width:220px; padding:14px 18px; border-radius:2px;
+  border:1.5px solid var(--rule);
+  background:var(--surface); color:var(--navy);
+  font-family:var(--body); font-size:0.95rem;
+}
+.pilot-form input::placeholder { color:var(--muted); }
+.pilot-form input:focus { outline:2px solid var(--orange); }
+.pilot-note { margin-top:16px; font-size:0.82rem; color:var(--muted); }
+.pilot-note a { color:var(--orange); text-decoration:underline; text-underline-offset:3px; }
+
+/* ─── FOOTER ─────────────────────────────────────── */
+footer { padding:44px 0 52px; border-top:1px solid var(--rule); background:var(--surface); }
+.foot-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+.foot-logo {
+  color:var(--navy);
+  display:flex; align-items:center; gap:10px;
+}
+.foot-meta { display:flex; gap:28px; flex-wrap:wrap; }
+.foot-meta span { font-family:var(--mono); font-size:0.7rem; color:var(--muted); }
+.foot-meta a { font-family:var(--mono); font-size:0.7rem; color:var(--orange); }
+
+/* ─── REVEAL ─────────────────────────────────────── */
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.62s ease, transform 0.62s ease; }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media (max-width:1020px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .chat-float { max-width:460px; }
+  .how-grid { grid-template-columns:1fr; }
+  .how-visual { position:relative; top:0; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .feat-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:820px) {
+  .prob-grid { grid-template-columns:1fr; }
+  .pillar-item { grid-template-columns:1fr; }
+  .pillar-copy { border-right:none; border-bottom:1px solid var(--rule); }
+  .pillar-vis { order:-1; }
+  .pilot { margin:0 20px 72px; padding:52px 32px; }
+}
+@media (max-width:640px) {
+  .wrap { padding:0 20px; }
+  .nav-inner { padding:15px 20px; }
+  .nav-links { display:none; }
+  .hero { padding:60px 0 40px; }
+  .hero-actions { flex-direction:column; width:100%; }
+  .hero-actions .btn-fill, .hero-actions .btn-outline { width:100%; justify-content:center; }
+  .feat-grid { grid-template-columns:1fr; }
+  .foot-row { flex-direction:column; align-items:flex-start; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation-duration:0.001s !important; transition-duration:0.001s !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>No app for patients</span>
+    <span>Real-time scheduling</span>
+    <span>Intake done before arrival</span>
+    <span>Feedback, mediated</span>
+    <span>Built by clinicians</span>
+    <span>Pilot testing now open</span>
+    <span>Dental &amp; medical clinics</span>
+    <span>No app for patients</span>
+    <span>Real-time scheduling</span>
+    <span>Intake done before arrival</span>
+    <span>Feedback, mediated</span>
+    <span>Built by clinicians</span>
+    <span>Pilot testing now open</span>
+    <span>Dental &amp; medical clinics</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <!-- Orange ring, navy fill, original logo inside -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="38" height="38" style="flex-shrink:0;overflow:visible;">
+        <defs>
+          <linearGradient id="lgLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#A7F3D0"/>
+            <stop offset="100%" stop-color="#10B981"/>
+          </linearGradient>
+          <clipPath id="lgToothClip">
+            <path d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+          </clipPath>
+          <style>
+            @keyframes lgToothPulse {
+              0%,100% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.4)) drop-shadow(0 0 12px rgba(255,255,255,0.3)); }
+              50%     { filter: drop-shadow(0 0 12px rgba(255,255,255,0.8)) drop-shadow(0 0 22px rgba(147,197,253,0.6)) drop-shadow(0 0 30px rgba(16,185,129,0.4)); }
+            }
+            @keyframes lgBreatheLeaf {
+              0%,100% { transform: scale(1) translateY(0); opacity:.85; }
+              50%     { transform: scale(1.08) translateY(-3px); opacity:1; }
+            }
+            @keyframes lgBreatheLeaf2 {
+              0%,100% { transform: scale(1) translateY(0); opacity:.8; }
+              50%     { transform: scale(1.06) translateY(-2px); opacity:.95; }
+            }
+            @keyframes lgFloatUp {
+              0%   { transform:translateY(5px);   opacity:0; }
+              25%  {                               opacity:0.6; }
+              60%  { transform:translateY(-50px); opacity:1; }
+              85%  { transform:translateY(-90px); opacity:0.6; }
+              100% { transform:translateY(-110px);opacity:0; }
+            }
+            .lg-tooth   { animation: lgToothPulse  4s ease-in-out infinite; }
+            .lg-leaf-lg { transform-origin:110px 100px; animation: lgBreatheLeaf  4s ease-in-out infinite; }
+            .lg-leaf-sm { transform-origin:85px  117px; animation: lgBreatheLeaf2 4s ease-in-out infinite; }
+            .ld1{fill:#ffffff;opacity:0;animation:lgFloatUp 8s   linear infinite;}
+            .ld2{fill:#93C5FD;opacity:0;animation:lgFloatUp 9s   linear infinite 1s;}
+            .ld3{fill:#6EE7B7;opacity:0;animation:lgFloatUp 7.5s linear infinite 2s;}
+            .ld4{fill:#93C5FD;opacity:0;animation:lgFloatUp 8.5s linear infinite 0.5s;}
+            .ld5{fill:#6EE7B7;opacity:0;animation:lgFloatUp 9.5s linear infinite 1.5s;}
+            .ld6{fill:#ffffff;opacity:0;animation:lgFloatUp 8s   linear infinite 2.5s;}
+            .ld7{fill:#6EE7B7;opacity:0;animation:lgFloatUp 7.8s linear infinite 1.2s;}
+            .ld8{fill:#ffffff;opacity:0;animation:lgFloatUp 8.8s linear infinite 2.2s;}
+          </style>
+          <!-- Circular clip so everything stays inside the ring -->
+          <clipPath id="lgCircleClip">
+            <circle cx="100" cy="115" r="95"/>
+          </clipPath>
+        </defs>
+        <!-- Orange ring border -->
+        <circle cx="100" cy="115" r="96" fill="none" stroke="#F2862B" stroke-width="5"/>
+        <!-- Navy background fill -->
+        <circle cx="100" cy="115" r="93" fill="#16324A"/>
+        <!-- All logo content clipped to circle -->
+        <g clip-path="url(#lgCircleClip)">
+          <!-- Tooth outline white -->
+          <path class="lg-tooth" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="3"
+            d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+          <!-- Floating dots -->
+          <g clip-path="url(#lgToothClip)">
+            <circle class="ld1" cx="85"  cy="185" r="2"/>
+            <circle class="ld2" cx="115" cy="185" r="2.3"/>
+            <circle class="ld3" cx="100" cy="190" r="2.1"/>
+            <circle class="ld4" cx="75"  cy="165" r="1.8"/>
+            <circle class="ld5" cx="125" cy="165" r="2.2"/>
+            <circle class="ld6" cx="100" cy="170" r="1.9"/>
+            <circle class="ld7" cx="90"  cy="145" r="1.7"/>
+            <circle class="ld8" cx="110" cy="145" r="1.8"/>
+          </g>
+          <!-- Large leaf -->
+          <g class="lg-leaf-lg">
+            <path fill="url(#lgLeafGrad)" d="M110 130 C135 115, 140 90, 110 70 C85 90, 90 115, 110 130 Z"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none"
+              d="M110 120 C115 105, 115 90, 110 75"/>
+          </g>
+          <!-- Small leaf -->
+          <g class="lg-leaf-sm">
+            <path fill="url(#lgLeafGrad)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none"
+              d="M85 130 C88 120, 88 105, 85 98"/>
+          </g>
+        </g>
+      </svg>
+      <span class="brand-text"><span class="brand-seren">Seren</span><span class="brand-ora">Ora</span><span class="brand-care">Care</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
+      <a href="#clinics">For clinics</a>
+      <a href="#pilot">Pilot</a>
+    </div>
+    <a href="#pilot" class="nav-cta">Join pilot →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="binary-bg" aria-hidden="true" id="binaryBg"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <p class="hero-kicker">For dental &amp; medical clinics</p>
+        <h1 class="hero-h1">
+          Patients and<br>
+          clinics, finally<br>
+          <em>in sync.</em>
+          <span class="dim">One thread. Three moments.</span>
+        </h1>
+        <p class="hero-sub">
+          SerenOra Care closes the everyday gaps between a clinic and the people
+          it treats — appointments, intake history, and feedback — all in one
+          ongoing conversation, right where your patients already check messages.
+        </p>
+        <div class="hero-actions">
+          <a href="#pilot" class="btn-fill">Request a pilot slot →</a>
+          <a href="#how" class="btn-outline">See how it works ↓</a>
+        </div>
+      </div>
+
+      <div class="chat-float reveal">
+        <div class="chat-bar">
+          <div class="chat-dots"><span></span><span></span><span></span></div>
+          <div class="chat-title">Riverside Dental · active</div>
+        </div>
+        <div class="chat-body">
+          <div class="msg in">Hi Asha! Your cleaning is confirmed for Tue, 4:00 PM.<span class="msg-meta">10:02 AM</span></div>
+          <div class="msg in">Quick one before your visit — any allergies or medications we should know about?<span class="msg-meta">10:02 AM</span></div>
+          <div class="chips">
+            <span class="chip active">No allergies</span>
+            <span class="chip">Yes, a few</span>
+          </div>
+          <div class="msg out">No allergies, all good!<span class="msg-meta">10:05 AM</span></div>
+          <div class="msg in">Hope the visit went well — mind sharing a quick rating?<span class="msg-meta">Tue, 4:42 PM</span></div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <div class="chat-foot">Sent automatically · No app for patients to download</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE DIVIDER -->
+<div class="marquee-div" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="accent">Booking</span><span>without the calls</span>
+    <span class="accent">Intake</span><span>told once</span>
+    <span class="accent">Feedback</span><span>that reaches someone</span>
+    <span class="accent">Clinics</span><span>that run smoother</span>
+    <span class="accent">Patients</span><span>who feel heard</span>
+    <span class="accent">Booking</span><span>without the calls</span>
+    <span class="accent">Intake</span><span>told once</span>
+    <span class="accent">Feedback</span><span>that reaches someone</span>
+    <span class="accent">Clinics</span><span>that run smoother</span>
+    <span class="accent">Patients</span><span>who feel heard</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="wrap">
+    <div class="section-label">The friction</div>
+    <h2 class="big reveal">The same day,<br>every day.</h2>
+    <p class="sub-p reveal">None of it is dramatic on its own. It just adds up — for the front desk and the patient on the other end of it.</p>
+    <div class="prob-grid">
+      <div class="prob-card reveal">
+        <div class="prob-num">#01</div>
+        <div class="prob-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 10h16M7 3v4M17 3v4M5 6h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z" stroke="#2E6A97" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Booking by back-and-forth</h3>
+        <p>Calls that go to voicemail, slots that end up double-booked, reminder texts that arrive too late for anyone to act on.</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num">#02</div>
+        <div class="prob-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l5 5v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="#2E6A97" stroke-width="1.5"/><path d="M9 13h6M9 17h4" stroke="#2E6A97" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>The same form, every visit</h3>
+        <p>Paper intake sheets rewritten from scratch each time, handwriting that's hard to read, and allergies that slip through anyway.</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num">#03</div>
+        <div class="prob-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 17.3l-5.4 3 1-6-4.6-4 6.1-.6L12 4l2.9 5.7 6.1.6-4.6 4 1 6z" stroke="#F2862B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Reviews with nowhere to go</h3>
+        <p>Genuine praise that never reaches the clinic, and complaints that go public before anyone gets a chance to address them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat-cell reveal">
+        <div class="stat-num">23%</div>
+        <div class="stat-label">Average no-show rate without<br>automated reminders</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-num">8 min</div>
+        <div class="stat-label">Lost per patient to<br>manual intake paperwork</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-num">72%</div>
+        <div class="stat-label">Of patients check messages<br>before making a call</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-num">1 thread</div>
+        <div class="stat-label">Booking · intake · feedback<br>all in one conversation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW -->
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-label">How it works</div>
+    <h2 class="big reveal">Simple for the clinic.<br><em>Effortless</em> for the patient.</h2>
+    <div class="how-grid">
+      <div class="how-steps reveal">
+        <div class="how-step">
+          <div class="how-step-num">01</div>
+          <div class="how-step-body">
+            <h3>A visit gets booked</h3>
+            <p>The patient lands in a real open slot on the clinic's schedule — confirmed instantly, no calls required. Changes and cancellations happen in the same thread.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">02</div>
+          <div class="how-step-body">
+            <h3>A short conversation happens</h3>
+            <p>Before the visit, a few guided questions build a clean patient history. After it, a brief check-in opens the door for feedback — through the same channel the patient already uses.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">03</div>
+          <div class="how-step-body">
+            <h3>The clinic sees it first</h3>
+            <p>History lands in the record before they arrive. Feedback reaches the clinic before it reaches anywhere public — giving your team the chance to acknowledge and respond.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">04</div>
+          <div class="how-step-body">
+            <h3>It carries forward</h3>
+            <p>History is remembered for every future visit. The patient never fills in the same form again. The clinic always has the full picture.</p>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual reveal">
+        <div class="how-visual-head">
+          <span>CLINIC SCHEDULE · Tuesday</span>
+          <span class="live-dot">● LIVE</span>
+        </div>
+        <div class="how-visual-body">
+          <div class="sched">
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">Root canal review — A. Mehta</span>
+              <span class="sched-time">10:30</span>
+            </div>
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">Cleaning — R. Kapoor</span>
+              <span class="sched-time">11:00</span>
+            </div>
+            <div class="sched-row open">
+              <span class="sched-dot free"></span>
+              <span class="sched-name dim">Open slot</span>
+              <span class="sched-time">11:30</span>
+            </div>
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">S. Patel &nbsp;<span class="sched-badge">INTAKE DONE</span></span>
+              <span class="sched-time">12:00</span>
+            </div>
+            <div class="sched-row open">
+              <span class="sched-dot free"></span>
+              <span class="sched-name dim">Open slot</span>
+              <span class="sched-time">12:30</span>
+            </div>
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">Check-up — D. Sharma</span>
+              <span class="sched-time">14:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars" id="clinics">
+  <div class="wrap">
+    <div class="section-label">Built for each part of that journey</div>
+    <h2 class="big reveal">Three problems.<br><em>One conversation.</em></h2>
+    <p class="sub-p reveal">Each piece works on its own — and quietly reinforces the other two.</p>
+    <div class="pillar-group">
+
+      <!-- Appointments -->
+      <div class="pillar-item reveal">
+        <div class="pillar-copy">
+          <span class="pillar-tag">01 · Appointments</span>
+          <h3>A schedule that <em>holds its shape</em></h3>
+          <p>Patients book into slots the clinic actually has open — no calls, no overlaps, no guessing. Reminders go out automatically, timed to when they're genuinely useful. Changes update both sides in real time.</p>
+          <ul class="pillar-list">
+            <li>Live availability, set entirely by the clinic</li>
+            <li>Automatic reminders that meaningfully cut no-shows</li>
+            <li>Reschedules and cancellations without a phone call</li>
+            <li>Works through the channels patients already check</li>
+          </ul>
+        </div>
+        <div class="pillar-vis">
+          <div class="sched" style="width:100%;max-width:290px;">
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">Root canal review</span>
+              <span class="sched-time">10:30</span>
+            </div>
+            <div class="sched-row open">
+              <span class="sched-dot free"></span>
+              <span class="sched-name" style="color:var(--orange);font-size:0.79rem;">↳ Asha just booked</span>
+              <span class="sched-time">11:00</span>
+            </div>
+            <div class="sched-row">
+              <span class="sched-dot"></span>
+              <span class="sched-name">Cleaning — R. Kapoor</span>
+              <span class="sched-time">11:30</span>
+            </div>
+            <div class="sched-row open">
+              <span class="sched-dot free"></span>
+              <span class="sched-name dim">Open slot</span>
+              <span class="sched-time">12:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intake -->
+      <div class="pillar-item reveal">
+        <div class="pillar-vis" style="order:-1;">
+          <div class="intake">
+            <div class="intake-q">
+              <div class="intake-label">Question 3 of 8</div>
+              <div class="intake-text">Any allergies to medications or anaesthesia?</div>
+              <div class="intake-chips">
+                <span class="i-chip sel">Yes</span>
+                <span class="i-chip">No</span>
+                <span class="i-chip">Not sure</span>
+              </div>
+            </div>
+            <div class="intake-flag">⚠ Allergy flagged — penicillin</div>
+          </div>
+        </div>
+        <div class="pillar-copy" style="border-right:none;border-left:1px solid var(--rule);">
+          <span class="pillar-tag">02 · Patient History</span>
+          <h3>One intake.<br><em>Told once.</em></h3>
+          <p>Patients answer guided questions about their history before they arrive — clearly, completely, and only once. The clinic gets a structured record instead of handwriting to decode at the front desk.</p>
+          <ul class="pillar-list">
+            <li>Plain-language questions, no clinical jargon</li>
+            <li>Flags allergies and red flags automatically</li>
+            <li>History carries forward to every future visit</li>
+            <li>Arrives before the patient does</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="pillar-item reveal">
+        <div class="pillar-copy">
+          <span class="pillar-tag">03 · Feedback</span>
+          <h3>Reviews that <em>reach someone</em></h3>
+          <p>Every rating goes to the clinic before it goes anywhere public. Clinics get a genuine chance to resolve a problem, or respond with context — so the record reflects the whole conversation, not just one side.</p>
+          <ul class="pillar-list">
+            <li>Clinics see and respond before reviews go live</li>
+            <li>Patients get an actual reply, not silence</li>
+            <li>A fairer record for everyone who reads it later</li>
+            <li>Positive feedback routed to where it can be amplified</li>
+          </ul>
+        </div>
+        <div class="pillar-vis">
+          <div class="review-card">
+            <div class="r-stars">★★★★☆</div>
+            <p class="r-text">"Waited a little longer than expected, but the cleaning itself was genuinely great."</p>
+            <div class="r-reply">
+              <div class="r-reply-tag">Clinic replied · 2 hrs ago</div>
+              <p>Thanks for the patience — we've adjusted our Tuesday slots to fix this.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE GRID -->
+<section class="features">
+  <div class="wrap">
+    <div class="section-label">Everything the front desk needs</div>
+    <h2 class="big reveal">Tools built around<br>how a clinic actually runs.</h2>
+    <p class="sub-p reveal">No new software to learn. No new app for patients. No extra tab open on the front desk computer.</p>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 10h16M7 3v4M17 3v4M5 6h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4>Automatic reminders</h4>
+        <p>Confirmations, nudges, and post-visit check-ins go out on their own, timed to when they're useful — not when it's convenient to remember to send them.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#F2862B" stroke-width="1.5"/><path d="M3 9h18M8 4v3M16 4v3" stroke="#F2862B" stroke-width="1.5"/></svg></div>
+        <h4>Clinic dashboard</h4>
+        <p>Bookings, intake status, and feedback all in one place — without switching between three different tools or checking three different inboxes.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h13" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4>Custom templates</h4>
+        <p>Write your own intake questions and reminders, or start from templates built with clinicians. Your clinic's voice, not ours.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9-9a5 5 0 019-3 5 5 0 019 3c-2 4.5-9 9-9 9z" stroke="#F2862B" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h4>Zero downloads for patients</h4>
+        <p>Everything runs through a conversation patients already have open. Nothing new to install, create an account for, or learn how to use.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4>Allergy &amp; flag alerts</h4>
+        <p>Responses needing clinical attention are surfaced automatically — before the patient arrives, not while they're already in the chair.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4>Persistent patient history</h4>
+        <p>Patients answer intake once and the record builds automatically with every visit, creating a complete picture over time.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4>Two-way messaging</h4>
+        <p>Patients can reply directly in the thread. The front desk sees and responds from the dashboard — no separate inbox to monitor.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="#F2862B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4>Analytics &amp; trends</h4>
+        <p>Track no-show rates, intake completion, and feedback trends — the numbers that tell you how the clinic is actually running day to day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="wrap">
+    <div class="quote-mark">"</div>
+    <blockquote class="reveal">We built this after enough years in clinics ourselves to know exactly which parts of the day eat the most time — for no good clinical reason.</blockquote>
+    <p class="quote-attr reveal">Built by clinicians, for clinics</p>
+  </div>
+</section>
+
+<!-- PILOT -->
+<section id="pilot">
+  <div class="pilot reveal">
+    <div class="pilot-inner">
+      <div class="pilot-tag">Pilot testing · Now open</div>
+      <h2>SerenOra Care is almost ready.<br><em>We'd like you to try it first.</em></h2>
+      <p class="lead">We're inviting a small number of clinics to pilot SerenOra Care before it opens more widely. Leave your email and we'll reach out personally — no sales call, just a real conversation about your clinic's day.</p>
+      <form class="pilot-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks — we\'ll be in touch →'; this.querySelector('input').disabled=true; this.querySelector('button').disabled=true; this.querySelector('button').style.opacity='0.6';">
+        <input type="email" placeholder="you@yourclinic.com" required aria-label="Email address">
+        <button type="submit" class="btn-fill">Request access →</button>
+      </form>
+      <p class="pilot-note">Or write directly to <a href="mailto:customercare@serenoracare.com">customercare@serenoracare.com</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="32" height="32" style="flex-shrink:0;overflow:visible;">
+        <defs>
+          <linearGradient id="ftLeafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#A7F3D0"/>
+            <stop offset="100%" stop-color="#10B981"/>
+          </linearGradient>
+          <clipPath id="ftToothClip2">
+            <path d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+          </clipPath>
+          <clipPath id="ftCircleClip2">
+            <circle cx="100" cy="115" r="95"/>
+          </clipPath>
+        </defs>
+        <circle cx="100" cy="115" r="96" fill="none" stroke="#F2862B" stroke-width="5"/>
+        <circle cx="100" cy="115" r="93" fill="#16324A"/>
+        <g clip-path="url(#ftCircleClip2)">
+          <path class="lg-tooth" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="3"
+            d="M100 30 C65 30, 50 70, 55 110 C65 170, 75 200, 90 200 C100 200, 100 165, 100 145 C100 165, 100 200, 110 200 C125 200, 135 170, 145 110 C150 70, 135 30, 100 30 Z"/>
+          <g clip-path="url(#ftToothClip2)">
+            <circle class="ld1" cx="85"  cy="185" r="2"/>
+            <circle class="ld3" cx="100" cy="190" r="2.1"/>
+            <circle class="ld5" cx="125" cy="165" r="2.2"/>
+            <circle class="ld7" cx="90"  cy="145" r="1.7"/>
+          </g>
+          <g class="lg-leaf-lg">
+            <path fill="url(#ftLeafGrad2)" d="M110 130 C135 115, 140 90, 110 70 C85 90, 90 115, 110 130 Z"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M110 120 C115 105, 115 90, 110 75"/>
+          </g>
+          <g class="lg-leaf-sm">
+            <path fill="url(#ftLeafGrad2)" d="M85 140 C100 130, 105 105, 85 95 C70 105, 70 130, 85 140 Z"/>
+            <path stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round" fill="none" d="M85 130 C88 120, 88 105, 85 98"/>
+          </g>
+        </g>
+      </svg>
+      <span class="brand-text"><span class="brand-seren">Seren</span><span class="brand-ora">Ora</span><span class="brand-care">Care</span></span>
+    </div>
+    <div class="foot-meta">
+      <span>© 2026 SerenOra Care</span>
+      <a href="mailto:customercare@serenoracare.com">customercare@serenoracare.com</a>
+      <span>Pilot open now</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* binary rain */
+(function(){
+  const bg = document.getElementById('binaryBg');
+  if (!bg) return;
+  const cols = Math.ceil(window.innerWidth / 38) + 2;
+  for (let c = 0; c < cols; c++) {
+    const col = document.createElement('div');
+    col.className = 'binary-col';
+    col.style.animationDuration = (12 + Math.random()*16) + 's';
+    col.style.animationDelay = (-Math.random()*20) + 's';
+    let h = '';
+    for (let r = 0; r < 32; r++) h += (Math.random()>.5?'1':'0') + '<br>';
+    col.innerHTML = h;
+    bg.appendChild(col);
+  }
+})();
+
+/* scroll reveal */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+  },{threshold:0.12});
+  els.forEach(e=>obs.observe(e));
+})();
+</script>
+</body>
+</html>
