@@ -963,14 +963,16 @@ footer { padding:44px 0 52px; border-top:1px solid var(--rule); background:var(-
       <div class="pilot-tag">Pilot testing · Now open</div>
       <h2>SerenOra Care is almost ready.<br><em>We'd like you to try it first.</em></h2>
       <p class="lead">We're inviting a small number of clinics to pilot SerenOra Care before it opens more widely. Leave your email and we'll reach out personally — no sales call, just a real conversation about your clinic's day.</p>
-      <form class="pilot-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks — we\'ll be in touch →'; this.querySelector('input').disabled=true; this.querySelector('button').disabled=true; this.querySelector('button').style.opacity='0.6';">
-        <input type="email" placeholder="you@yourclinic.com" required aria-label="Email address">
+      <form id="pilotForm" class="pilot-form">
+        <input id="pilotEmail" type="email" placeholder="you@yourclinic.com" required aria-label="Email address">
         <button type="submit" class="btn-fill">Request access →</button>
       </form>
+      <p id="pilotFormError" style="display:none; color:var(--orange); font-size:0.82rem; margin-top:10px;"></p>
       <p class="pilot-note">Or write directly to <a href="mailto:customercare@serenoracare.com">customercare@serenoracare.com</a></p>
     </div>
   </div>
 </section>
+
 
 <!-- FOOTER -->
 <footer>
