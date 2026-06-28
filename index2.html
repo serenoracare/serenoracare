@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitRoha — Consciousness Rising</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --black:    #04060A;
+      --deep:     #080C14;
+      --navy:     #0A1528;
+      --blue:     #1A4ED8;
+      --blue-lt:  #3B7BFF;
+      --blue-dim: rgba(27,79,216,0.12);
+      --orange:   #F56C0D;
+      --orange-lt:#FF8F3C;
+      --white:    #EEF1F6;
+      --muted:    #5A6478;
+      --muted-lt: #8899B4;
+      --border:   rgba(255,255,255,0.06);
+      --border-b: rgba(59,123,255,0.18);
+
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Space Grotesk', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+    }
+
+    /* ─── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── NOISE GRAIN ────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 9000;
+      mix-blend-mode: overlay;
+    }
+
+    /* ─── CURSOR GLOW ────────────────────────────────────── */
+    .cursor-glow {
+      position: fixed;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(27,79,216,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      z-index: 1;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.3rem 3rem;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(4,6,10,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
+      display: flex; align-items: center; gap: 0.55rem;
+    }
+    .nav-logo .cit { color: var(--white); }
+    .nav-logo .ro  { color: var(--blue-lt); }
+    .nav-logo .ha  { color: var(--orange); }
+    .logo-pip {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orange);
+      animation: pip 2.6s ease-in-out infinite;
+    }
+    @keyframes pip {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.8); opacity: 0.5; }
+    }
+    .nav-links {
+      display: flex; gap: 2.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-links a { transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid rgba(245,108,13,0.5);
+      color: var(--orange);
+      padding: 0.48rem 1.1rem;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--orange); color: var(--black); border-color: var(--orange); }
+
+    /* ─── TICKER ─────────────────────────────────────────── */
+    .ticker-wrap {
+      position: relative; z-index: 10;
+      margin-top: 70px;
+      overflow: hidden;
+      background: var(--orange);
+      padding: 0.48rem 0;
+    }
+    .ticker-track {
+      display: flex;
+      white-space: nowrap;
+      animation: scroll-ticker 30s linear infinite;
+    }
+    .ticker-track span {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1a0700;
+      padding-right: 2.8rem;
+    }
+    .ticker-sep { opacity: 0.35; }
+    @keyframes scroll-ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      padding: 0 3rem 5.5rem;
+      position: relative; overflow: hidden;
+      background: var(--black);
+    }
+
+    /* Sanskrit centrepiece — upper half, own dedicated space */
+    .hero-sanskrit-zone {
+      flex: 1;
+      position: relative;
+      min-height: 45vh;
+      overflow: hidden;
+    }
+    .hero-watermark {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(90px, 18vw, 260px);
+      font-family: 'Noto Sans Devanagari', 'Noto Sans', serif;
+      font-weight: 900;
+      white-space: nowrap;
+      pointer-events: none; user-select: none;
+      letter-spacing: 0.04em;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(59,123,255,0.5);
+      text-shadow:
+        0 0 60px  rgba(27,79,216,0.4),
+        0 0 140px rgba(27,79,216,0.2),
+        0 0 280px rgba(27,79,216,0.1);
+      animation: wmPulse 4s ease-in-out infinite;
+    }
+    @keyframes wmPulse {
+      0%,100% {
+        -webkit-text-stroke: 1.5px rgba(59,123,255,0.5);
+        text-shadow: 0 0 60px rgba(27,79,216,0.4), 0 0 140px rgba(27,79,216,0.2), 0 0 280px rgba(27,79,216,0.1);
+      }
+      50% {
+        -webkit-text-stroke: 1.5px rgba(59,123,255,0.75);
+        text-shadow: 0 0 90px rgba(59,123,255,0.55), 0 0 180px rgba(27,79,216,0.3), 0 0 320px rgba(27,79,216,0.14);
+      }
+    }
+
+    /* Ambient orbs */
+    .orb {
+      position: absolute; border-radius: 50%;
+      pointer-events: none;
+      filter: blur(100px);
+    }
+    .orb-blue {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(27,78,216,0.22) 0%, transparent 70%);
+      top: -100px; left: -200px;
+    }
+    .orb-orange {
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(245,108,13,0.10) 0%, transparent 70%);
+      bottom: 80px; right: -80px;
+    }
+    .orb-blue2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(59,123,255,0.12) 0%, transparent 70%);
+      top: 20%; left: 30%;
+    }
+
+    .hero-inner { position: relative; z-index: 2; }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 1.6rem;
+      display: flex; align-items: center; gap: 0.9rem;
+      opacity: 0; animation: fadeUp 0.8s 0.1s forwards;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: inline-block;
+      width: 28px; height: 1px; background: var(--orange);
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 10vw, 9.5rem);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeUp 0.9s 0.22s forwards;
+    }
+    .hero-headline .cit { color: var(--white); }
+    .hero-headline .ro  { color: var(--blue-lt); }
+    .hero-headline .ha  {
+      color: var(--orange);
+      position: relative;
+    }
+    .hero-headline .sub-tagline {
+      display: block;
+      font-size: 0.18em;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      margin-top: 1.4em;
+      line-height: 1;
+    }
+
+    .hero-desc {
+      max-width: 500px;
+      font-size: 1rem;
+      color: var(--muted-lt);
+      line-height: 1.75;
+      margin-bottom: 2.6rem;
+      opacity: 0; animation: fadeUp 0.9s 0.34s forwards;
+    }
+
+    /* Founder badge in hero */
+    .founder-badge {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      border: 1px solid var(--border-b);
+      padding: 0.55rem 1rem 0.55rem 0.7rem;
+      margin-bottom: 2rem;
+      background: rgba(10,21,40,0.6);
+      backdrop-filter: blur(8px);
+      opacity: 0; animation: fadeUp 0.9s 0.28s forwards;
+    }
+    .founder-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--orange));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem; font-weight: 800;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .founder-text { line-height: 1.3; }
+    .founder-text .founder-name {
+      font-family: var(--font-body);
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--white);
+    }
+    .founder-text .founder-role {
+      font-family: var(--font-mono);
+      font-size: 0.58rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange);
+    }
+
+    .hero-actions {
+      display: flex; gap: 0.9rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.9s 0.44s forwards;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 0.72rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.85rem 1.9rem;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--orange-lt); transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--muted-lt);
+      font-family: var(--font-mono);
+      font-size: 0.72rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.85rem 1.9rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 2rem; right: 3rem;
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted);
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      opacity: 0; animation: fadeUp 1s 0.8s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--orange), transparent);
+      animation: scrollDrop 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollDrop {
+      0%,100% { transform: scaleY(1); opacity: 0.4; }
+      50%      { transform: scaleY(0.4); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ─── DIVIDER ────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); margin: 0 3rem; }
+
+    /* ─── SECTION SHELL ──────────────────────────────────── */
+    section { padding: 7rem 3rem; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem; letter-spacing: 0.24em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+    .section-label::before {
+      content: ''; display: inline-block;
+      width: 20px; height: 1px; background: var(--orange);
+    }
+    h2.section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4.6rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.6rem;
+    }
+
+    /* ─── SCROLL ANIMATION CLASSES ───────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.75s cubic-bezier(.22,.61,.36,1),
+                  transform 0.75s cubic-bezier(.22,.61,.36,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-36px);
+      transition: opacity 0.75s cubic-bezier(.22,.61,.36,1),
+                  transform 0.75s cubic-bezier(.22,.61,.36,1);
+    }
+    .reveal-left.in { opacity: 1; transform: none; }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(36px);
+      transition: opacity 0.75s cubic-bezier(.22,.61,.36,1),
+                  transform 0.75s cubic-bezier(.22,.61,.36,1);
+    }
+    .reveal-right.in { opacity: 1; transform: none; }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.94);
+      transition: opacity 0.7s cubic-bezier(.22,.61,.36,1),
+                  transform 0.7s cubic-bezier(.22,.61,.36,1);
+    }
+    .reveal-scale.in { opacity: 1; transform: scale(1); }
+
+    /* Stagger delays */
+    .d1 { transition-delay: 0.05s; }
+    .d2 { transition-delay: 0.15s; }
+    .d3 { transition-delay: 0.25s; }
+    .d4 { transition-delay: 0.35s; }
+
+    /* ─── ABOUT ──────────────────────────────────────────── */
+    .about { background: var(--deep); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: start; margin-top: 3.5rem;
+    }
+    .about-body { font-size: 1.02rem; color: var(--muted-lt); line-height: 1.85; }
+    .about-body p + p { margin-top: 1.3rem; }
+    .about-body strong { color: var(--white); font-weight: 600; }
+
+    /* Founder card */
+    .founder-card {
+      margin-top: 2.2rem;
+      border: 1px solid var(--border-b);
+      padding: 1.6rem;
+      background: rgba(10,21,40,0.5);
+      display: flex; align-items: center; gap: 1.2rem;
+    }
+    .founder-card-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--orange) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 800; color: var(--white);
+      flex-shrink: 0;
+    }
+    .founder-card-text .name {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 700; color: var(--white);
+    }
+    .founder-card-text .role {
+      font-family: var(--font-mono);
+      font-size: 0.62rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--orange);
+      margin-top: 0.2rem;
+    }
+    .founder-card-text .qual {
+      font-size: 0.82rem; color: var(--muted-lt); margin-top: 0.3rem;
+    }
+
+    /* Etymology card */
+    .etymology-card {
+      border: 1px solid var(--border);
+      padding: 0;
+      background: var(--black);
+      position: relative; overflow: hidden;
+    }
+    .etymology-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--orange));
+    }
+    .etym-row {
+      display: flex; align-items: center; gap: 1.4rem;
+      padding: 1.6rem 2rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .etym-row:last-child { border-bottom: none; }
+    .etym-row:hover { background: rgba(255,255,255,0.02); }
+    .etym-word {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 800;
+      color: var(--blue-lt); min-width: 100px;
+      line-height: 1;
+    }
+    .etym-devanagari {
+      font-size: 1.3rem; color: var(--orange);
+      display: block; line-height: 1.2;
+    }
+    .etym-meaning { color: var(--white); font-size: 0.92rem; }
+    .etym-small {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.2rem;
+    }
+    .etym-combined .etym-word { color: var(--orange); font-size: 1.6rem; }
+
+    /* ─── VENTURES ───────────────────────────────────────── */
+    .ventures { background: var(--black); }
+    .ventures-header {
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 4rem; align-items: end; margin-bottom: 4.5rem;
+    }
+    .ventures-desc { color: var(--muted-lt); font-size: 1rem; line-height: 1.8; }
+
+    .ventures-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .venture-card {
+      background: var(--black);
+      padding: 2.6rem;
+      display: flex; flex-direction: column; gap: 1.3rem;
+      position: relative; overflow: hidden;
+      transition: background 0.3s;
+    }
+    .venture-card:hover { background: rgba(10,21,40,0.8); }
+    .venture-card.featured {
+      grid-column: span 2;
+      background: var(--navy);
+      border-right: 1px solid var(--border-b);
+    }
+    .venture-card.featured::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--orange));
+    }
+    .card-num {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.18em; color: var(--muted);
+    }
+    .card-tag {
+      display: inline-block;
+      font-family: var(--font-mono); font-size: 0.56rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.22rem 0.6rem; border: 1px solid;
+      margin-left: 0.8rem;
+    }
+    .tag-live { color: var(--orange); border-color: rgba(245,108,13,0.4); }
+    .tag-soon { color: var(--muted); border-color: var(--border); }
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .card-sub {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue-lt); margin-top: -0.7rem;
+    }
+    .card-body { color: var(--muted-lt); font-size: 0.93rem; line-height: 1.75; }
+    .pillars { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.4rem; }
+    .pillar {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.28rem 0.7rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .card-arrow {
+      margin-top: auto;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--orange);
+      display: flex; align-items: center; gap: 0.5rem;
+      transition: gap 0.2s;
+    }
+    .card-arrow::after { content: '→'; }
+    .venture-card:hover .card-arrow { gap: 0.9rem; }
+    .coming-soon-card {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 0.8rem;
+      background: rgba(10,21,40,0.3);
+    }
+    .coming-soon-card .card-name { font-size: 1.5rem; color: var(--muted); }
+
+    /* ─── VISION STRIP ───────────────────────────────────── */
+    .vision-strip {
+      background: var(--navy);
+      border-top: 1px solid var(--border-b);
+      border-bottom: 1px solid var(--border-b);
+      padding: 6rem 3rem;
+      display: grid; grid-template-columns: 1fr 2fr;
+      gap: 6rem; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .vision-strip::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(27,79,216,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .vision-number {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 9vw, 8rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+    }
+    .vision-number .n { color: var(--white); }
+    .vision-number .u { color: var(--blue-lt); }
+    .vision-label {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 0.6rem;
+    }
+    .vision-sub { font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--muted-lt); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-top: 0.4rem;
+    }
+    .vision-statement {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+      font-weight: 700; line-height: 1.18;
+      letter-spacing: -0.02em; margin-bottom: 1.4rem;
+    }
+    .vision-body {
+      color: var(--muted-lt); font-size: 1rem; line-height: 1.8;
+      max-width: 540px;
+    }
+
+    /* ─── STATS ROW ──────────────────────────────────────── */
+    .stats-row {
+      background: var(--deep);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item {
+      padding: 2.5rem 3rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 3rem; font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .stat-num .o { color: var(--orange); }
+    .stat-num .b { color: var(--blue-lt); }
+    .stat-lbl {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.5rem;
+    }
+
+    /* ─── PHILOSOPHY ─────────────────────────────────────── */
+    .philosophy { background: var(--black); }
+    .phil-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+    .phil-item {
+      background: var(--black);
+      padding: 3rem 2.4rem;
+      transition: background 0.3s;
+    }
+    .phil-item:hover { background: rgba(10,21,40,0.7); }
+    .phil-icon {
+      font-size: 1.4rem; margin-bottom: 1.4rem;
+      display: block; color: var(--blue-lt);
+    }
+    .phil-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: -0.01em; margin-bottom: 0.9rem;
+    }
+    .phil-body { color: var(--muted-lt); font-size: 0.9rem; line-height: 1.75; }
+
+    /* ─── CONTACT ────────────────────────────────────────── */
+    .contact {
+      background: var(--deep);
+      text-align: center;
+      padding: 9rem 3rem;
+      position: relative; overflow: hidden;
+    }
+    .contact-wm {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(80px, 16vw, 200px);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(27,79,216,0.07);
+      white-space: nowrap; pointer-events: none;
+      letter-spacing: -0.04em; user-select: none;
+    }
+    .contact-inner { position: relative; z-index: 2; }
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6.5vw, 6rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 0.95;
+      margin-bottom: 1.6rem;
+    }
+    .contact-title .o { color: var(--orange); }
+    .contact-sub {
+      color: var(--muted-lt); font-size: 1rem;
+      max-width: 460px; margin: 0 auto 2.8rem;
+      line-height: 1.75;
+    }
+    .contact-email {
+      font-family: var(--font-mono); font-size: 1rem;
+      letter-spacing: 0.05em; color: var(--white);
+      border-bottom: 1px solid var(--orange);
+      padding-bottom: 0.25rem;
+      transition: color 0.2s; display: inline-block;
+      margin-bottom: 2.6rem;
+    }
+    .contact-email:hover { color: var(--orange); }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.9rem; letter-spacing: 0.05em;
+    }
+    .footer-logo .ro { color: var(--blue-lt); }
+    .footer-logo .ha { color: var(--orange); }
+    .footer-note {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex; gap: 1.8rem;
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .footer-links a { transition: color 0.2s; }
+    .footer-links a:hover { color: var(--orange); }
+
+    /* ─── MOBILE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1.1rem 1.6rem; }
+      .nav-links { display: none; }
+      section { padding: 4.5rem 1.6rem; }
+      .divider { margin: 0 1.6rem; }
+      .hero { padding: 0 1.6rem 4.5rem; }
+      .scroll-hint { right: 1.6rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .ventures-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .ventures-grid { grid-template-columns: 1fr; }
+      .venture-card.featured { grid-column: span 1; }
+      .vision-strip { grid-template-columns: 1fr; gap: 2.5rem; padding: 4.5rem 1.6rem; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem 1.6rem; }
+      .phil-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; padding: 1.5rem 1.6rem; }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-left, .reveal-right, .reveal-scale {
+        opacity: 1; transform: none; transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-glow" id="glow"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-logo">
+      <span class="logo-pip"></span>
+      <span class="cit">Cit</span><span class="ro">Ro</span><span class="ha">ha</span>
+    </div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#ventures">Ventures</a>
+      <a href="#vision">Vision</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">Connect →</a>
+  </nav>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span>Consciousness Rising <span class="ticker-sep">✦</span></span>
+      <span>चित् · Awareness <span class="ticker-sep">✦</span></span>
+      <span>रोह · To Rise <span class="ticker-sep">✦</span></span>
+      <span>SerenOra Care — Dental Care <span class="ticker-sep">✦</span></span>
+      <span>Healthcare for India <span class="ticker-sep">✦</span></span>
+      <span>CitRoha Pvt Ltd <span class="ticker-sep">✦</span></span>
+      <span>Consciousness Rising <span class="ticker-sep">✦</span></span>
+      <span>चित् · Awareness <span class="ticker-sep">✦</span></span>
+      <span>रोह · To Rise <span class="ticker-sep">✦</span></span>
+      <span>SerenOra Care — Dental Care <span class="ticker-sep">✦</span></span>
+      <span>Healthcare for India <span class="ticker-sep">✦</span></span>
+      <span>CitRoha Pvt Ltd <span class="ticker-sep">✦</span></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="orb orb-blue"></div>
+    <div class="orb orb-orange"></div>
+    <div class="orb orb-blue2"></div>
+
+    <!-- Sanskrit centrepiece — upper half -->
+    <div class="hero-sanskrit-zone">
+      <div class="hero-watermark" id="watermark">चित्रोह</div>
+    </div>
+
+    <!-- Headline + content — lower half -->
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Pvt Ltd · Consciousness Rising · India</div>
+
+      <h1 class="hero-headline">
+        <span class="cit">Cit</span><span class="ro">Ro</span><span class="ha">ha</span>
+        <span class="sub-tagline">चित् + रोह &nbsp;·&nbsp; chit-RO-ha</span>
+      </h1>
+
+      <p class="hero-desc">
+        A private limited company building conscious healthcare ventures for India —
+        starting with oral health, expanding into every gap that matters.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#ventures" class="btn-primary">Explore ventures</a>
+        <a href="#about" class="btn-ghost">Our story</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="section-label reveal">About CitRoha</div>
+    <h2 class="section-title reveal">The name<br>holds the mission.</h2>
+
+    <div class="about-grid">
+      <div>
+        <div class="about-body reveal reveal-left">
+          <p>
+            <strong>CitRoha Pvt Ltd</strong> was founded on a conviction that every healthcare 
+            challenge is also a consciousness challenge — a gap in awareness, access, or action.
+            We exist to close those gaps.
+          </p>
+          <p>
+            Derived from two Sanskrit roots, our name is not a brand exercise. It is a reminder: 
+            that every company we build must remain conscious of the lives it touches, 
+            and that growth must always mean rising toward something better.
+          </p>
+          <p>
+            We are India-first and patient-first. Our ventures launch here, learn here, 
+            and scale outward — carrying the rigour of Indian healthcare needs as the 
+            gold standard for everything we do.
+          </p>
+        </div>
+
+        <div class="founder-card reveal d2">
+          <div class="founder-card-avatar">AG</div>
+          <div class="founder-card-text">
+            <div class="name">Dr. Akshita Gupta</div>
+            <div class="role">Founder &amp; Director, CitRoha Pvt Ltd</div>
+            <div class="qual">Building healthcare ventures rooted in consciousness &amp; purpose.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="etymology-card reveal reveal-right">
+        <div class="etym-row">
+          <div class="etym-word">Chit</div>
+          <div>
+            <span class="etym-devanagari">चित्</span>
+            <div class="etym-meaning">Consciousness · Pure Awareness</div>
+            <div class="etym-small">Sanskrit root · the knowing self</div>
+          </div>
+        </div>
+        <div class="etym-row">
+          <div class="etym-word">Roha</div>
+          <div>
+            <span class="etym-devanagari">रोह</span>
+            <div class="etym-meaning">To Rise · To Grow · To Ascend</div>
+            <div class="etym-small">Sanskrit root · upward movement</div>
+          </div>
+        </div>
+        <div class="etym-row etym-combined">
+          <div class="etym-word" style="color:var(--orange);font-size:1.5rem;">CitRoha</div>
+          <div>
+            <span class="etym-devanagari" style="color:var(--white);">चित् + रोह</span>
+            <div class="etym-meaning">Consciousness Rising</div>
+            <div class="etym-small">pronounced · chit-RO-ha</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- VENTURES -->
+  <section class="ventures" id="ventures">
+    <div class="ventures-header">
+      <div>
+        <div class="section-label reveal">Our Ventures</div>
+        <h2 class="section-title reveal">Healthcare,<br>reimagined.</h2>
+      </div>
+      <p class="ventures-desc reveal d2">
+        Each venture under CitRoha addresses a specific, meaningful gap in India's 
+        healthcare landscape. We begin with dental care and expand into every domain 
+        where greater awareness can mean better lives.
+      </p>
+    </div>
+
+    <div class="ventures-grid">
+      <div class="venture-card featured reveal-scale">
+        <div>
+          <span class="card-num">#01</span>
+          <span class="card-tag tag-live">Live</span>
+        </div>
+        <div>
+          <div class="card-name">SerenOra Care</div>
+          <div class="card-sub">Dental Care · India</div>
+        </div>
+        <p class="card-body">
+          SerenOra Care is CitRoha's flagship healthcare brand, dedicated to making 
+          quality dental care accessible, trustworthy, and compassionate for every Indian. 
+          Oral health is the gateway to whole-body wellness — a connection too often 
+          overlooked. SerenOra combines clinical excellence with patient education, 
+          closing the awareness gap one smile at a time.
+        </p>
+        <div class="pillars">
+          <span class="pillar">Oral Health</span>
+          <span class="pillar">Patient Education</span>
+          <span class="pillar">Preventive Care</span>
+          <span class="pillar">Accessible Dentistry</span>
+        </div>
+        <div class="card-arrow">Learn about SerenOra</div>
+      </div>
+
+      <div class="venture-card coming-soon-card reveal-scale d2">
+        <div class="card-num">#02</div>
+        <div class="card-name">Coming Next</div>
+        <div class="card-sub" style="color:var(--muted);">Healthcare · India</div>
+        <p class="card-body" style="font-size:0.85rem;text-align:center;max-width:220px;">
+          The next CitRoha venture is being built. Mapping a new gap — 
+          building the right solution before announcing it.
+        </p>
+        <span class="card-tag tag-soon">In Development</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISION STRIP -->
+  <div class="vision-strip" id="vision">
+    <div class="reveal-left">
+      <div class="vision-label">The Goal</div>
+      <div class="vision-number">
+        <span class="n">1.4</span><span class="u">B</span>
+      </div>
+      <div class="vision-sub">People. One country. Endless possibility.</div>
+    </div>
+    <div class="reveal-right">
+      <div class="vision-statement">
+        India deserves world-class healthcare — built by people who understand 
+        what India actually needs.
+      </div>
+      <p class="vision-body">
+        We are not importing solutions from abroad. We design from the ground up — 
+        with Indian patients, Indian realities, and Indian ambition. Once we have 
+        proven our models here, we take them to the world.
+      </p>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-item reveal d1">
+      <div class="stat-num"><span class="o">1</span></div>
+      <div class="stat-lbl">Venture launched — SerenOra Care</div>
+    </div>
+    <div class="stat-item reveal d2">
+      <div class="stat-num">India<span class="o">.</span></div>
+      <div class="stat-lbl">First — always</div>
+    </div>
+    <div class="stat-item reveal d3">
+      <div class="stat-num"><span class="b">∞</span></div>
+      <div class="stat-lbl">Healthcare gaps worth closing</div>
+    </div>
+    <div class="stat-item reveal d4">
+      <div class="stat-num">Pvt<span class="o">.</span></div>
+      <div class="stat-lbl">Founded with intent, built to last</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHILOSOPHY -->
+  <section class="philosophy">
+    <div class="section-label reveal">How We Work</div>
+    <h2 class="section-title reveal">Three principles.<br>Everything flows from these.</h2>
+
+    <div class="phil-grid">
+      <div class="phil-item reveal d1">
+        <span class="phil-icon">◎</span>
+        <div class="phil-title">Consciousness First</div>
+        <p class="phil-body">
+          Every product we build begins with a question: does this make someone 
+          more aware of their own health? Education is not an add-on — 
+          it is the foundation of everything we do at CitRoha.
+        </p>
+      </div>
+      <div class="phil-item reveal d2">
+        <span class="phil-icon">↑</span>
+        <div class="phil-title">Always Rising</div>
+        <p class="phil-body">
+          We do not settle at functional. We push toward excellent — in clinical 
+          outcomes, patient experience, and business integrity. Rising is not 
+          an achievement; it is our default direction.
+        </p>
+      </div>
+      <div class="phil-item reveal d3">
+        <span class="phil-icon">⬡</span>
+        <div class="phil-title">Rooted, then Global</div>
+        <p class="phil-body">
+          We solve for India first. Not because the world doesn't matter, 
+          but because solving genuinely hard Indian healthcare problems 
+          produces solutions strong enough to travel anywhere.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-wm">CitRoha</div>
+    <div class="contact-inner">
+      <div class="section-label reveal" style="justify-content:center;">Let's Connect</div>
+      <h2 class="contact-title reveal">
+        Build something<br><span class="o">meaningful</span> with us.
+      </h2>
+      <p class="contact-sub reveal d2">
+        Whether you are a clinician, investor, collaborator, or someone who simply 
+        believes in what we are building — we would love to hear from you.
+      </p>
+      <a href="mailto:hello@citroha.in" class="contact-email reveal d3">hello@citroha.in</a>
+      <br>
+      <a href="mailto:hello@citroha.in" class="btn-primary reveal d4" style="display:inline-block;margin-top:0.5rem;">Get in touch →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      Cit<span class="ro">Ro</span><span class="ha">ha</span>
+      <span style="color:var(--border);margin:0 0.4rem;">·</span>
+      <span style="color:var(--muted);font-weight:400;font-size:0.8rem;">Pvt Ltd</span>
+    </div>
+    <div class="footer-note">चित् + रोह · Consciousness Rising · India</div>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#ventures">Ventures</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Cursor glow ── */
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+    });
+
+    /* ── Nav scroll class ── */
+    const navEl = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      navEl.classList.toggle('scrolled', window.scrollY > 30);
+    }, { passive: true });
+
+    /* ── Parallax watermark ── */
+    const wm = document.getElementById('watermark');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      wm.style.transform = `translate(-50%, calc(-50% + ${y * 0.18}px))`;
+    }, { passive: true });
+
+    /* ── Scroll reveal ── */
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+    revealEls.forEach(el => revealObs.observe(el));
+
+    /* ── Stagger children in grids ── */
+    document.querySelectorAll('.ventures-grid, .phil-grid, .stats-row').forEach(grid => {
+      [...grid.children].forEach((child, i) => {
+        if (!child.style.transitionDelay) {
+          child.style.transitionDelay = `${i * 0.1}s`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
