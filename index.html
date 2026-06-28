@@ -118,22 +118,6 @@ nav {
   background: linear-gradient(175deg, var(--blue-tint) 0%, var(--page) 65%);
   overflow:hidden;
 }
-/* binary rain — navy tinted, very faint */
-.binary-bg {
-  position:absolute; inset:0; pointer-events:none; z-index:0;
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(38px,1fr));
-  overflow:hidden; opacity:0.045;
-}
-.binary-col {
-  display:flex; flex-direction:column;
-  font-family:var(--mono); font-size:0.68rem;
-  color:var(--navy); line-height:1.9;
-  animation:fall linear infinite;
-}
-.binary-col:nth-child(odd) { color:var(--orange); animation-duration:18s; }
-.binary-col:nth-child(3n) { animation-duration:24s; }
-.binary-col:nth-child(5n) { animation-duration:14s; }
-@keyframes fall { from{transform:translateY(-40%)} to{transform:translateY(10%)} }
 
 .hero-grid {
   position:relative; z-index:2;
@@ -609,7 +593,6 @@ footer { padding:44px 0 52px; border-top:1px solid var(--rule); background:var(-
 
 <!-- HERO -->
 <section class="hero" id="top">
-  <div class="binary-bg" aria-hidden="true" id="binaryBg"></div>
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-left">
@@ -1038,23 +1021,6 @@ footer { padding:44px 0 52px; border-top:1px solid var(--rule); background:var(-
 </footer>
 
 <script>
-/* binary rain */
-(function(){
-  const bg = document.getElementById('binaryBg');
-  if (!bg) return;
-  const cols = Math.ceil(window.innerWidth / 38) + 2;
-  for (let c = 0; c < cols; c++) {
-    const col = document.createElement('div');
-    col.className = 'binary-col';
-    col.style.animationDuration = (12 + Math.random()*16) + 's';
-    col.style.animationDelay = (-Math.random()*20) + 's';
-    let h = '';
-    for (let r = 0; r < 32; r++) h += (Math.random()>.5?'1':'0') + '<br>';
-    col.innerHTML = h;
-    bg.appendChild(col);
-  }
-})();
-
 /* scroll reveal */
 (function(){
   const els = document.querySelectorAll('.reveal');
@@ -1067,3 +1033,4 @@ footer { padding:44px 0 52px; border-top:1px solid var(--rule); background:var(-
 </script>
 </body>
 </html>
+
